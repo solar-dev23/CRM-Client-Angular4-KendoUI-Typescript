@@ -1,0 +1,36 @@
+@import "./main";
+
+.ma-form-shadow {
+  padding: 10px 20px 35px 20px;
+  -webkit-box-shadow: 4px 4px 16px 0 rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: 4px 4px 16px 0 rgba(50, 50, 50, 0.2);
+  box-shadow: 4px 4px 16px 0 rgba(50, 50, 50, 0.2);
+}
+
+.ma-form {
+  form {
+    width: 100%;
+  }
+
+  .ma-horizontal {
+    display: flex;
+    justify-content: space-between;
+
+    .ma-field {
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    & .ma-field:not(:first-child) {
+      margin-left: 10px;
+    }
+
+    & .ma-field:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
+
+  & .ma-field:first-child {
+    margin-top: 0;
+  }
+}

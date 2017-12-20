@@ -1,0 +1,47 @@
+<div class='ma-form-page ma-login-page'>
+    <span routerLink="/sign-up" class="ma-navigation-link">Sign up</span>
+    <form *ngIf="!userForgotPassword" class="ma-user-login-form ma-form ma-form-shadow" (ngSubmit)="login()">
+        <h3 class="k-header ma-text-center">Login to your account</h3>
+        <input type="text" class="k-textbox" [(ngModel)]="username" [ngModelOptions]="{standalone: true}"
+               placeholder="Username">
+        <div class="ma-forgot-password-field ma-horizontal-items-list align-right">
+            <span class="ma-link" (click)="restorePassword()">Forgot Password?</span>
+        </div>
+        <input type="password" class="k-textbox" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"
+               placeholder="Password">
+        <button class="ma-action-button" kendoButton type="submit" autoFocus [primary]="true">
+            Login to your account
+        </button>
+        <error-label class="ma-response-error" [error]="getLastError()"></error-label>
+    </form>
+    <div *ngIf="userForgotPassword" class="ma-form-shadow">
+        <h2 class="k-header ma-text-center">Restore password</h2>
+        <form *ngIf="!restorePasswordMessageSent"
+              class="ma-restore-password-form ma-form ma-not-collapsible-labels"
+              novalidate
+              [formGroup]="emailFormGroup"
+              (ngSubmit)="restorePassword()">
+            <b>Forgot your password?</b>
+            <p>No worries! Enter your login email address below and we will send you a link to reset your password.</p>
+            <div class="ma-field">
+                <label for="email" class="control-label">Email</label>
+                <input id="email" type="text" class="k-textbox" formControlName="email"/>
+                <error-label [error]="getErrorMessage('email')"></error-label>
+            </div>
+            <button class="ma-action-button" kendoButton type="submit" [disabled]="!emailFormGroup.valid"
+                    autoFocus [primary]="true">Activate account
+            </button>
+            <error-label class="ma-response-error" [error]="getLastError()"></error-label>
+        </form>
+        <div *ngIf="restorePasswordMessageSent" class="ma-successful ma-vertical-item-list no-indent">
+            <img class="ma-ok" src="~assets/img/ok.svg">
+            <p class="ma-text">
+                You sent a request to reset your password. If the submitted email address is valid, you will receive a link
+                to reset the password for your account.
+            </p>
+        </div>
+        <div class="ma-footer ma-horizontal-items-list">
+            <span class="ma-back ma-link" (click)="login()"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>Back to Login</span>
+        </div>
+    </div>
+</div>

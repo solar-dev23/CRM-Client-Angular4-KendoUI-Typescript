@@ -1,0 +1,44 @@
+@import "~crm-platform/styles";
+
+.ma-fill-window-space {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.ma-text-red {
+  color: @red-color;
+}
+
+h1, h2, h3, h4 {
+  color: @red-color;
+}
+
+p, b {
+  color: @black-color;
+}
+
+body {
+  .ma-fill-window-space;
+  background-color: #f9f9f9;
+  margin: 0;
+}
+
+.ma-load-app-progress {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+  }
+}
+
+.ma-hide-confirmation confirm-action-dialog {
+  display: none;
+}
