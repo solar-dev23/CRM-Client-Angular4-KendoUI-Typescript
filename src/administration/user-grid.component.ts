@@ -14,7 +14,7 @@ export class UserGridComponent {
   protected formGroup: ObjectFormGroup;
 
   public constructor(protected userService: UserService, protected http: Http) {
-    this.grid = userService.getUserGrid();
+    this.grid = userService.getUserGrid();    
   }
 
   protected edit(object): void {
