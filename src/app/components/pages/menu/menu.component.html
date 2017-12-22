@@ -1,0 +1,33 @@
+<div id="wrapper" [ngClass]="{'toggled': menuToggled}" [ngStyle]="wrapperStyle">
+
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper" #sidebar [style.width.px]="width">
+    <img src="assets/images/logo.jpg" class="navbar-brand" [ngStyle]="logoStyle" />
+    <ul class="sidebar-nav pt-4">
+      <li>
+        <a routerLink="/dashboard">
+          <i class="fa fa-tachometer"></i>Dashboard</a>
+      </li>
+      <li>
+        <a routerLink="/opportunity">
+          <i class="fa fa-users"></i>Opportunity</a>
+      </li>
+      <li>
+        <a routerLink="/report">
+          <i class="fa fa-list-alt"></i>Report</a>
+      </li>
+    </ul>
+  </div>
+  <div class="sidebar-edge" [style.left.px]="width" (mouseover)="onEdgeHover($event)" (mousedown)="mousedown($event)">
+    <div id="bar"></div>
+    <a href="javascript: void(0)" id="menu-toggle-icon" (click)="toggleMenu()">
+      <i class="fa fa-chevron-left"></i>
+    </a>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <ng-content></ng-content>
+  <!-- /#page-content-wrapper -->
+
+</div>

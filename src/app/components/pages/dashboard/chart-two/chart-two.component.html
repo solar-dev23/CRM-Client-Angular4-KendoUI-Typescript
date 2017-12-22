@@ -1,0 +1,112 @@
+<div id="theme-loader" *ngIf="isLoading">
+  <div class="loader">
+    <div class="loader-inner line-scale-pulse-out-rapid">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter on Top -->
+<div>
+  <label class="big">Value : </label>
+  <kendo-dropdownlist class="ex-small" [data]="valueList" (valueChange)="updatePieChart()" [(ngModel)]="filter.value"></kendo-dropdownlist>
+
+  <label class="big">Show By : </label>
+  <kendo-dropdownlist class="ex-small" [data]="showByList" (valueChange)="onFilterChange()" [(ngModel)]="filter.showBy"></kendo-dropdownlist>
+
+  <label class="big">By : </label>
+  <kendo-dropdownlist class="ex-small" [data]="showByList" (valueChange)="onFilterChange()" [(ngModel)]="filter.by"></kendo-dropdownlist>
+</div>
+
+<!-- Main Chart -->
+<div>
+  <div class="chart" style="width: 100%" *ngIf="type==Type.BAR_VERTICAL">
+    <!-- Bar Vertical Chart -->
+    <kendo-chart [seriesColors]="colors">
+      <kendo-chart-tooltip [shared]="true">
+        <ng-template kendoChartSharedTooltipTemplate let-category="category" let-points="points">
+          <div> {{ category }} </div>
+          <div *ngFor="let point of points">
+            {{ point.series.name }} : {{ point.value }}
+          </div>
+        </ng-template>
+      </kendo-chart-tooltip>
+      <kendo-chart-series>
+        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
+        <kendo-chart-category-axis>
+          <kendo-chart-category-axis-item [labels]="valueAxisLabels">
+          </kendo-chart-category-axis-item>
+        </kendo-chart-category-axis>
+        <kendo-chart-series-item type="column" [name]="data.name" [data]="data.series" categoryField="category" *ngFor="let data of pieData">
+          <kendo-chart-series-item-tooltip>
+          </kendo-chart-series-item-tooltip>
+        </kendo-chart-series-item>
+      </kendo-chart-series>
+    </kendo-chart>
+  </div>
+
+  <div class="chart" style="width: 100%" *ngIf="type==Type.BAR_HORIZONTAL">
+    <!-- Bar Horizontal Chart -->
+    <kendo-chart [seriesColors]="colors">
+      <kendo-chart-tooltip [shared]="true">
+        <ng-template kendoChartSharedTooltipTemplate let-category="category" let-points="points">
+          <div> {{ category }} </div>
+          <div *ngFor="let point of points">
+            {{ point.series.name }} : {{ point.value }}
+          </div>
+        </ng-template>
+      </kendo-chart-tooltip>
+      <kendo-chart-series>
+        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
+        <kendo-chart-value-axis>
+          <kendo-chart-value-axis-item [labels]="valueAxisLabels">
+          </kendo-chart-value-axis-item>
+        </kendo-chart-value-axis>
+        <kendo-chart-series-item type="bar" [name]="data.name" [data]="data.series" categoryField="category" *ngFor="let data of pieData" [stack]="true">
+          <kendo-chart-series-item-tooltip>
+          </kendo-chart-series-item-tooltip>
+        </kendo-chart-series-item>
+      </kendo-chart-series>
+    </kendo-chart>
+  </div>
+  <div class="chart" style="width: 100%" *ngIf="type==Type.LINE">
+    <!-- Line Chart -->
+    <kendo-chart [seriesColors]="colors">
+      <kendo-chart-tooltip [shared]="true">
+        <ng-template kendoChartSharedTooltipTemplate let-category="category" let-points="points">
+          <div> {{ category }} </div>
+          <div *ngFor="let point of points">
+            {{ point.series.name }} : {{ point.value }}
+          </div>
+        </ng-template>
+      </kendo-chart-tooltip>
+      <kendo-chart-series>
+        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
+        <kendo-chart-category-axis>
+          <kendo-chart-category-axis-item [labels]="valueAxisLabels">
+          </kendo-chart-category-axis-item>
+        </kendo-chart-category-axis>
+        <kendo-chart-series-item type="line" [name]="data.name" [data]="data.series" categoryField="category" *ngFor="let data of pieData">
+          <kendo-chart-series-item-tooltip>
+          </kendo-chart-series-item-tooltip>
+        </kendo-chart-series-item>
+      </kendo-chart-series>
+    </kendo-chart>
+  </div>
+</div>
+<div class="clearfix" style="margin: 0"></div>
+<!-- Filter on Bottom -->
+<div>
+  <label class="">Currency : </label>
+  <kendo-dropdownlist class="ex-small" [data]="currencyList" (valueChange)="onFilterChange()" [(ngModel)]="filter.currency"></kendo-dropdownlist>
+  <label class="">From : </label>
+  <kendo-datepicker class="small" [format]="'yyyy-MM-dd'" [min]="min_date" [max]="max_date" (valueChange)="onFilterChange()"
+    [(ngModel)]="filter.date_from"></kendo-datepicker>
+  <label class="">To : </label>
+  <kendo-datepicker class="small" [format]="'yyyy-MM-dd'" [min]="min_date" [max]="max_date" (valueChange)="onFilterChange()"
+    [(ngModel)]="filter.date_to"></kendo-datepicker>
+</div>

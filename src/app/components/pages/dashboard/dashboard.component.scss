@@ -1,0 +1,61 @@
+
+h1 {
+    text-align: center
+}
+
+.panel {
+    width: 100%;
+    float: left;
+}
+
+.div_chart {
+    width: 50%;
+    float: left;
+    text-align: center;
+}
+
+.div_filter {
+    width: 50%;
+    height: 100px;
+    float: left;
+    text-align: center;
+    background: #ff0;
+}
+
+.filter_div {
+    padding: 2rem;
+    border: 1px #ccc solid;
+    border-radius: 10px;
+    margin: 0px 50px 0px 50px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    h1 {
+        margin-top: 0;
+    }
+}
+
+.filter_component {
+    padding-top: 30px;
+}
+
+.filter_label {
+    width: 100px;
+    font-size: 15px;
+}
+
+.spliter {
+    height: 1px;
+    margin-left: 40px;
+    margin-right: 40px;
+    background: #ccc;
+}
+
+.color_div {
+    width: 10px;
+    height: 10px;
+    margin: auto;
+    margin-top: 7px
+}
+
+.menu-icon {
+  color: white;
+}

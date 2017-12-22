@@ -1,0 +1,94 @@
+<app-header title="Report"></app-header>
+<div class="container" style="padding-top: 30px">
+  <div class="header" id="header">
+    <kendo-dropdownlist [data]="pages" [textField]="'title'" [valueField]="'title'" [popupSettings]="{height: 500}" [(ngModel)]="currentPage" (valueChange)="pageChange($event)" id="page-selector">
+    </kendo-dropdownlist>
+    <button kendoButton (click)="onSetting()" [primary]="true" [icon]="'gear'" id="settings-button"></button>
+  </div>
+  <report-grid></report-grid>
+</div>
+
+<div class="popup-wrapper">
+  <kendo-popup [popupClass]="'content popup setting'" [anchor]="anchor" (anchorViewportLeave)="showSetting = false" *ngIf="showSetting">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4" style="padding-left: 40px">
+          <h3>Header</h3>
+          <div class="field">
+            <span class="label">Company name</span>
+            <div class="checkbox">
+              <input type="checkbox" id="company" class="k-checkbox" [(ngModel)]="reportParams.company.visible">
+              <label class="k-checkbox-label" for="company"></label>
+            </div>
+            <input class="k-textbox" placeholder=""  [(ngModel)]="reportParams.company.value"/>
+          </div>
+          <div class="field">
+            <span class="label">Report name</span>
+            <div class="checkbox">
+              <input type="checkbox" id="report" class="k-checkbox" [(ngModel)]="reportParams.reportName.visible">
+              <label class="k-checkbox-label" for="report"></label>
+            </div>
+            <input class="k-textbox" placeholder=""  [(ngModel)]="reportParams.reportName.value"/>
+          </div>
+          <div class="field">
+            <span class="label">Address</span>
+            <div class="checkbox">
+              <input type="checkbox" id="address" class="k-checkbox" [(ngModel)]="reportParams.address.visible">
+              <label class="k-checkbox-label" for="address"></label>
+            </div>
+            <input class="k-textbox" placeholder=""  [(ngModel)]="reportParams.address.value"/>
+          </div>
+          <div class="field checkbox-only">
+            <input type="checkbox" id="include-date" class="k-checkbox" [(ngModel)]="reportParams.includeDateInPrint">
+            <label class="k-checkbox-label" for="include-date">Include date in print and export</label>
+          </div>
+        </div>
+        <div class="col-md-4" style="padding-left: 40px">
+          <h3>Footer</h3>
+          <div class="field">
+            <span class="label">Note</span>
+            <div class="checkbox">
+              <input type="checkbox" id="note" class="k-checkbox" [(ngModel)]="reportParams.note.visible">
+              <label class="k-checkbox-label" for="note"></label>
+            </div>
+            <input class="k-textbox" placeholder=""  [(ngModel)]="reportParams.note.value"/>
+          </div>
+          <div class="field checkbox-only">
+            <input type="checkbox" id="include-user" class="k-checkbox" [(ngModel)]="reportParams.includeCreatedByUser">
+            <label class="k-checkbox-label" for="include-user">Include Created by USER</label>
+          </div>
+          <div class="field checkbox-only">
+            <input type="checkbox" id="include-created-date" class="k-checkbox" [(ngModel)]="reportParams.includeCreatedDate">
+            <label class="k-checkbox-label" for="include-created-date">Include Created date</label>
+          </div>
+          <div class="field checkbox-only">
+            <input type="checkbox" id="include-created-time" class="k-checkbox" [(ngModel)]="reportParams.includeCreatedTime">
+            <label class="k-checkbox-label" for="include-created-time">Include Created time</label>
+          </div>
+          <div class="field checkbox-only">
+            <input type="checkbox" id="include-pages-number" class="k-checkbox" [(ngModel)]="reportParams.includeNumberOfPages">
+            <label class="k-checkbox-label" for="include-pages-number">Include number of pages on report</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h3>Alignment</h3>
+
+          <div class="field">
+            <span class="label">Header</span>
+            <kendo-dropdownlist [data]="alignments" [(ngModel)]="reportParams.headerAlignment" id="page-selector">
+            </kendo-dropdownlist>
+          </div>
+          <div class="field">
+            <span class="label">Footer</span>
+            <kendo-dropdownlist [data]="alignments" [(ngModel)]="reportParams.footerAlignment" id="page-selector">
+            </kendo-dropdownlist>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button kendoButton (click)="saveSetting()" [primary]="true">Save Changes</button>
+        <button kendoButton (click)="showSetting = false">Cancel</button>
+      </div>
+    </div>
+  </kendo-popup>
+</div>

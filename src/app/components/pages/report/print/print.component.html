@@ -1,0 +1,22 @@
+<kendo-dialog title="Print, email, or save as PDF" *ngIf="open" (close)="close('cancel')" class="print-dialog">
+  <div class="row">
+    <div class="col-md-4">
+      <label [for]="orientation" style="margin-right: 50px;">Orientation: </label>
+      <kendo-dropdownlist [data]="orientations" [(ngModel)]="orientation" (valueChange)="orientationChange()" name="orientation"
+        style="width: calc(100% - 120px);"></kendo-dropdownlist>
+    </div>
+    <div class="col-md-8">
+      <div id="preview">
+        <iframe frameborder="0" framemargin="0" class="preview-pane" style="width: 100%; height: 100%; margin: 0px; padding: 0px;"
+          [src]="transformedURL" id="pdfFrame" name="pdfFrame"></iframe>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="actions">
+      <button kendoButton (click)="close('no')">Email</button>
+      <button kendoButton (click)="savePDF()">Save as PDF</button>
+      <button kendoButton (click)="print()" primary="true">Print</button>
+    </div>
+  </footer>
+</kendo-dialog>

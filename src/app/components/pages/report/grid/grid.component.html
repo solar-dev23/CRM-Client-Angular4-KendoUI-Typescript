@@ -1,0 +1,135 @@
+<!-- <div id="theme-loader" *ngIf="isLoading">
+  <div class="loader">
+    <div class="loader-inner line-scale-pulse-out-rapid">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
+ -->
+<div class="chart-viewer" *ngIf="viewMode=='chart'">
+  <div class="content" id="content">
+    <div class="report-header" [ngClass]="getHeaderAlignmentClass()">
+      <span class="company" *ngIf="reportParams.company.visible">{{reportParams.company.value}}</span>
+      <span class="address" *ngIf="reportParams.address.visible">{{reportParams.address.value}}</span>
+      <span class="report-title" *ngIf="reportParams.reportName.visible">{{reportParams.reportName.value || reportTitle | uppercase}}</span>
+      <span class="date" *ngIf="reportParams.includeDateInPrint">{{filter.date_from | date: 'shortDate'}} - {{filter.date_to | date: 'shortDate'}}</span>
+    </div>
+    <div class="controls">
+      <a href="javascript: void(0)" (click)="viewMode='grid'">
+        <span class="k-icon k-i-grid-layout"></span>
+      </a>
+    </div>
+  </div>
+
+  <kendo-dropdownlist [data]="availableChartTypes" [textField]="'display'" [valueField]="'value'" [(ngModel)]="chartType" id="chart-selector">
+  </kendo-dropdownlist>
+  <report-chart [type]="chartType.value" [filter]="filter" *ngIf="chartType.type=='default'"></report-chart>
+  <report-chart-two [type]="chartType.value" [filter]="filter" *ngIf="chartType.type=='double-axis'"></report-chart-two>
+</div>
+
+<div class="grid-viewer page-wrapper" [ngClass]="{'print': printMode}" *ngIf="viewMode=='grid'">
+  <div class="content" id="content">
+    <div class="report-header" [ngClass]="getHeaderAlignmentClass()">
+      <span class="company" *ngIf="reportParams.company.visible">{{reportParams.company.value}}</span>
+      <span class="address" *ngIf="reportParams.address.visible">{{reportParams.address.value}}</span>
+      <span class="report-title" *ngIf="reportParams.reportName.visible">{{reportParams.reportName.value || reportTitle | uppercase}}</span>
+      <span class="date" *ngIf="reportParams.includeDateInPrint">{{filter.date_from | date: 'shortDate'}} - {{filter.date_to | date: 'shortDate'}}</span>
+    </div>
+    <div class="filter" *ngIf="!printMode">
+      <label class="">From : </label>
+      <kendo-datepicker class="small" [format]="'yyyy-MM-dd'" [min]="min_date" [max]="max_date" (valueChange)="onFilterChange()"
+        [(ngModel)]="filter.date_from"></kendo-datepicker> &nbsp;
+      <label class="">To : </label>
+      <kendo-datepicker class="small" [format]="'yyyy-MM-dd'" [min]="min_date" [max]="max_date" (valueChange)="onFilterChange()"
+        [(ngModel)]="filter.date_to"></kendo-datepicker>
+    </div>
+    <div class="controls" *ngIf="!printMode">
+      <a href="javascript: void(0)" (click)="showPrintPopup()">
+        <span class="k-icon k-i-print"></span>
+      </a>
+      <a href="javascript: void(0)">
+        <span class="k-icon k-i-file-excel" (click)="openSaveAs('excel')"></span>
+      </a>
+      <a href="javascript: void(0)">
+        <span class="k-icon k-i-file-pdf" (click)="openSaveAs('pdf')"></span>
+      </a>
+      <a href="javascript: void(0)" (click)="viewMode='chart'">
+        <span class="k-icon k-i-shape"></span>
+      </a>
+    </div>
+    <kendo-grid [data]="gridView" [pageable]="true" [pageSize]="state.take" [skip]="state.skip" (pageChange)="pageChange($event)"
+      (pdfExport)="pdfExportDone($event)" [rowClass]="rowCallback" #report id="report-table" (excelExport)="onExcelExport($event)">
+      <kendo-grid-column field="name" [title]="filter.showBy" width="150">
+      </kendo-grid-column>
+      <kendo-grid-column [field]="getIdentifier(column)" [title]="column" *ngFor="let column of columnList" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          {{filter.value == 'Sum' ? (dataItem[getIdentifier(column)] | currency: 'USD':true:'.2-2') : dataItem[getIdentifier(column)]
+          }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="total" title="Total" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          {{filter.value == 'Sum' ? (dataItem.total | currency: 'USD':true:'.2-2') : dataItem.total}}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-pdf [fileName]="filename + '.pdf'" [allPages]="true" [paperSize]="paperSize" [repeatHeaders]="true" [scale]="0.6"
+        [landscape]="landscapeMode" #reportPDF>
+      <!-- <kendo-grid-pdf [fileName]="filename + '.pdf'" [allPages]="true" paperSize="Letter" [repeatHeaders]="true" [scale]="0.6"
+        [landscape]="landscapeMode" #reportPDF> -->
+        <kendo-grid-pdf-margin [top]="getTopMargin()" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+          <div class="report-note" *ngIf="reportParams.note.visible">
+            {{reportParams.note.value}}
+          </div>
+          <div class="page-template">
+            <div class="content">
+              <div class="report-header" [ngClass]="getHeaderAlignmentClass()">
+                <span class="company" *ngIf="reportParams.company.visible">{{reportParams.company.value}}</span>
+                <span class="address" *ngIf="reportParams.address.visible">{{reportParams.address.value}}</span>
+                <span class="report-title" *ngIf="reportParams.reportName.visible">{{reportParams.reportName.value || reportTitle | uppercase}}</span>
+                <span class="date" *ngIf="reportParams.includeDateInPrint">{{filter.date_from | date: 'shortDate'}} - {{filter.date_to | date: 'shortDate'}}</span>
+              </div>
+              <div class="report-footer" [ngClass]="getFooterAlignmentClass()">
+                <span *ngIf="reportParams.includeCreatedByUser || reportParams.includeCreatedDate || reportParams.includeCreatedTime">Created</span>
+                <span class="user" *ngIf="reportParams.includeCreatedByUser" [ngStyle]="footerStyle()"> by Mike Myers</span>
+                <span *ngIf="reportParams.includeCreatedDate || reportParams.includeCreatedTime"> on </span>
+                <span *ngIf="reportParams.includeCreatedDate">{{reportTime | date: 'shortDate'}}</span>
+                <span *ngIf="reportParams.includeCreatedTime">{{ reportTime | date: 'H:mm a Z'}}</span>
+                <span class="page" *ngIf="reportParams.includeNumberOfPages">Page {{pageNum}} of {{totalPages}}</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-pdf>
+      <kendo-grid-excel [fileName]="filename + '.xlsx'" [fetchData]="allData"></kendo-grid-excel>
+    </kendo-grid>
+  </div>
+
+  <div class="report-note" *ngIf="reportParams.note.visible">
+    {{reportParams.note.value}}
+  </div>
+
+  <div class="report-footer" [ngClass]="getFooterAlignmentClass()">
+    <span *ngIf="reportParams.includeCreatedByUser || reportParams.includeCreatedDate || reportParams.includeCreatedTime">Created</span>
+    <span class="user" *ngIf="reportParams.includeCreatedByUser"> by Mike Myers</span>
+    <span *ngIf="reportParams.includeCreatedDate || reportParams.includeCreatedTime"> on </span>
+    <span *ngIf="reportParams.includeCreatedDate">{{reportTime | date: 'shortDate'}}</span>
+    <span *ngIf="reportParams.includeCreatedTime">{{ reportTime | date: 'H:mm a Z'}}</span>
+    <span class="page" *ngIf="reportParams.includeNumberOfPages">Page {{page}} of {{pageCount}}</span>
+  </div>
+</div>
+
+<report-print [open]="isPrintPopupOpen" [pdfData]="pdfData" (closed)="isPrintPopupOpen = false; rowWhite = false;" (orientationChanged)="orientationChanged($event)"
+  (saveAsPDF)="saveAsPDF()"></report-print>
+
+<kendo-dialog title="Filename" *ngIf="isOpenSaveAs" (close)="isOpenSaveAs = false">
+  <input class="k-textbox" placeholder="File name" [(ngModel)]="filename" style="width: 100%" />
+  <kendo-dialog-actions>
+    <button kendoButton (click)="isOpenSaveAs = false;">No</button>
+    <button kendoButton (click)="saveGrid()" primary="true">Save</button>
+  </kendo-dialog-actions>
+</kendo-dialog>

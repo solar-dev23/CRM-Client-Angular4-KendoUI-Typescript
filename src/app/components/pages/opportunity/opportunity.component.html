@@ -1,0 +1,408 @@
+<div id="homepage">
+  <div class="home-header">
+    <app-header title="Opportunity"></app-header>
+    <div class="add-column col-sm-12">
+      <button kendoButton class="pull-left add-opportunity" [primary]="true" (click)="onCreate()">Add Opportunity</button>
+      <a class="add-column-button" (click)="addColumn = !addColumn" [hidden]="viewOpt=='grid'"><i class="add-column-button-icon fa fa-plus-square"></i></a>
+      <input type="text" [autofocus]="true" name="column" class="add-column-text" [(ngModel)]="newColumn" kendoTextBox *ngIf="addColumn" (keyup.enter)="onAddNewColumn()">
+      <div class="pull-right">
+        <div class="filter pull-left" [hidden]="viewOpt=='card'">
+          <label class="">
+              <span>Filter: &nbsp;</span>
+              <kendo-dropdownlist
+                  [data]="grid_quick_filter_options"
+                  [textField]="'name'"
+                  [valueField]="'id'"
+                  [valuePrimitive]="true"
+                  [defaultItem]="filter_default"
+                  [(ngModel)]="filter"
+                  (ngModelChange)="onFilter($event)">
+              </kendo-dropdownlist>
+          </label>
+        </div>
+        <div class="filter pull-left" [hidden]="viewOpt=='grid'">
+          <label class="">
+              <span>Filter: &nbsp;</span>
+              <ss-multiselect-dropdown [options]="card_quick_filter_options" [texts]="card_quick_filter_texts" [settings]="card_quick_filter_settings" [(ngModel)]="cardQuickFilterModel" (ngModelChange)="onChangeCardQuickFilter($event)"></ss-multiselect-dropdown>
+              <!-- <input type="text" name="search" class="filter-search" [hidden]="!isShowFilterSearch"> -->
+          </label>
+        </div>
+        <div class="views pull-left">
+          <a class="view-option" (click)="onChangeView('card')" [class.active]="viewOpt=='card'"><i class="fa fa-th"></i></a>
+          <a class="view-option" (click)="onChangeView('grid')" [class.active]="viewOpt=='grid'"><i class="fa fa-list"></i></a>
+        </div>
+        <div class="search pull-left">
+          <div class="criterias" #criteria>
+            <ul>
+              <li class="criteria" *ngFor="let criteria of criterias; let i = index">
+                <span>{{criteria}}</span>
+                <a (click)="onDeleteCriteria(i)"><i class="fa fa-times"></i></a>
+              </li>
+              <li>
+                <input type="text" name="search" placeholder="Search..." kendoTextBox [(ngModel)]="searchStr" (keyup.enter)="onAddCriteria()" (keyup.backspace)="onDeleteLastCriteria()">
+              </li>
+            </ul>
+          </div>
+          <i class="fa fa-search"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-view columns col-sm-12" [hidden]="viewOpt=='grid'" [ngStyle]="cardViewStyle">
+      <div class="column-grid" dnd-sortable-container [sortableData]="containers" [dropZones]="['container-dropZone']" (scroll)="onScroll($event)">
+          <div class="column"
+                  *ngFor="let container of containers; let i = index"
+                  [attr.id]="'column'+i"
+                  [ngClass]="container.isCollapse?'collapsed':'expanded'"
+                  dnd-sortable [sortableIndex]="i" [dragEnabled]="dragColumn" (dragstart)="onDragStart($event)" (dragend)="onDragEnd('status', $event)">
+              <div class="panel panel-warning expanded-panel"
+                  dnd-sortable-container [sortableData]="container.widgets" [dropZones]="['widget-dropZone']">
+                  <div class="panel-heading" [class.fixed]="navIsFixed" (click)="onCollapse(i, $event)" [ngStyle]="navFixed[i]">
+                      <span class="column-name" *ngIf="activeColumnId != container.id" (click)="activeColumnId=container.id; newColumnName=container.name">{{container.name}}</span>
+                      <input type="text" [autofocus]="true" name="column_name" class="column-name-input" [(ngModel)]="newColumnName" *ngIf="activeColumnId == container.id" (keyup.enter)="onUpdateColumn()">
+                      <div class="panel-heading-ops">
+                        <!-- <a (click)="onCollapse(i, $event)"><i class="fa fa-chevron-left"></i></a> -->
+                        <a (click)="onPopupColumnSetting(i, $event)"><i class="column-popup fa fa-cog"></i></a>
+                        <div class="popup_container" *ngIf="sColumnId == i">
+                            <ul class="popup_links">
+                              <li>
+                                <a (click)="onCollapse(i, $event); sColumnId=-1">Fold</a>
+                                <a (click)="onOpenArchiveAllDlg(container.id, $event)">Archive All</a>
+                                <a (click)="onOpenRemoveAllDlg(container.id, container.name, $event)">Delete</a>
+                              </li>
+                            </ul>
+                        </div>
+                        <a (click)="qColumnId = container.id"><i class="fa fa-plus"></i></a>
+                      </div>
+                  </div>
+                  <div class="panel-body">
+                      <div class="quick-add-opportunity" *ngIf="qColumnId == container.id">
+                        <input type="text" [autofocus]="true" name="opportunity" kendoTextBox class="opportunity-name" [(ngModel)]="newOpportunityName" (keyup.enter)="onQuickAddOpportunity(container)">
+                        <button kendoButton class="btn pull-left" [primary]="true" (click)="onQuickAddOpportunity(container)">Save</button>
+                        <button kendoButton class="btn pull-right" (click)="qColumnId = -1">Cancel</button>
+                      </div>
+                      <ul class="list-group">
+                          <li *ngFor="let widget of container.widgets; let x = index"
+                              class="list-group-item"
+                              [style.background] = "widget.bgColor"
+                              dnd-sortable [sortableIndex]="x"
+                              [dragEnabled]="dragWidget"
+                              [dragData]="widget"
+                              (dragstart)="onDragStart($event)"
+                              (onDropSuccess)="onDragEnd('opportunity', $event)"
+                              (click)="onEdit(widget, $event)">
+                              <div class="popup">
+                                  <a (click)="onPopup(i, x);"><i class="card-popup fa fa-cog"></i></a>
+                                  <div class="popup_container" *ngIf="'widget_'+i+'_'+x == widgetId">
+                                      <ul class="popup_links">
+                                        <li>
+                                          <a (click)="onEdit(widget, $event)">Edit</a>
+                                          <a id="oArchive" (click)="onOpenArchiveDlg(widget, $event)">Archive</a>
+                                          <a id="oRemove" (click)="onOpenRemoveDlg(widget, $event)">Remove</a>
+                                          <!-- <a>Schedule Activity</a> -->
+                                        </li>
+                                      </ul>
+                                      <ul class="color-buttons">
+                                        <li><a class="white" (click)="onChangeBg(widget, 'white')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="yellow" (click)="onChangeBg(widget, 'yellow')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="orange" (click)="onChangeBg(widget, 'orange')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="blue" (click)="onChangeBg(widget, 'blue')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="green" (click)="onChangeBg(widget, 'green')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="gray" (click)="onChangeBg(widget, 'gray')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                              <span (click)="onEdit(widget, $event)" class="card-name">{{ (widget.name.length>140)? (widget.name | slice:0:140)+'...':(widget.name) }}</span><br>
+                              <span (click)="onEdit(widget, $event)">{{widget.company}}</span><br>
+                              <span (click)="onEdit(widget, $event)">{{widget.contact}}</span><br>
+                              <span (click)="onEdit(widget, $event)" [hidden]="!widget.value">{{(widget.currency=='EUR')?'€':'$'}}{{widget.value| number:'1.2-2'}}</span><br>
+                              <div class="star-ratings-css">
+                                <div class="star-ratings-css-top" [ngClass]="'rate-'+widget.rating">
+                                  <span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span>
+                                </div>
+                                <div class="star-ratings-css-bottom">
+                                  <span (click)="onEdit(widget, $event)">☆</span><span (click)="onEdit(widget, $event)">☆</span><span (click)="onEdit(widget, $event)">☆</span><span (click)="onEdit(widget, $event)">☆</span><span (click)="onEdit(widget, $event)">☆</span>
+                                </div>
+                              </div>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="panel collapsed-panel" (click)="onExpand(i, $event)">
+                  <a (click)="onExpand(i, $event)"><i class="fa fa-chevron-right"></i></a>
+                  <span>{{container.name}} ({{container.widgets?.length}})</span>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
+      <!-- <kendo-grid
+          [kendoGridBinding]="temp_opportunities"
+          [pageSize]="pageSize"
+          [pageable]="true"
+          [sortable]="{
+            allowUnsort: true,
+            mode: 'multiple'
+          }"
+          [sort]="sort"
+          (sortChange)="sortChange($event)"
+      > -->
+      <kendo-grid
+          [data]="gridView"
+          [pageSize]="state.take"
+          [pageable]="true"
+          [skip]="state.skip"
+          [sortable]="{
+            allowUnsort: true,
+            mode: 'multiple'
+          }"
+          [sort]="sort"
+          (sortChange)="sortChange($event)"
+          (pageChange)="pageChange($event)"
+      >
+          <ng-template kendoGridToolbarTemplate>
+              <button kendoButton (click)="onPrint($event)"><span class="k-icon k-i-print"></span>Print</button>
+              <button kendoGridPDFCommand><span class="k-icon k-i-file-pdf"></span>Export to PDF</button>
+              <button kendoGridExcelCommand><span class="k-icon k-i-file-excel"></span>Export to Excel</button>
+          </ng-template>
+          <kendo-grid-column field="name" title="Name" width="250">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span (click)="onEdit(dataItem, $event)">{{dataItem.name}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="company" title="Company" width="80">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span (click)="onEdit(dataItem, $event)">{{dataItem.company}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="contact" title="Contact" width="80">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span (click)="onEdit(dataItem, $event)">{{dataItem.contact}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="value" title="Revenue" width="80">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span [hidden]="!dataItem.value" (click)="onEdit(dataItem, $event)">{{(dataItem.currency=='EUR')?'€':'$'}}{{dataItem.value| number:'1.2-2'}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="status_name" title="Status" width="80">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span (click)="onEdit(dataItem, $event)">{{dataItem.status_name}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="rating" title="Rating" width="80">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div class="star-ratings-css" (click)="onEdit(dataItem, $event)">
+                <div class="star-ratings-css-top" [ngClass]="'rate-'+dataItem.rating">
+                  <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <div class="star-ratings-css-bottom">
+                  <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+                </div>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="createdAt" title="Date created" width="90">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span (click)="onEdit(dataItem, $event)">{{dataItem.createdAt | date: 'MM/dd/yyyy'}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="description" title="Description" width="250">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span (click)="onEdit(dataItem, $event)">{{ (dataItem.description && dataItem.description.length>140)? (dataItem.description | slice:0:140)+'...':(dataItem.description) }}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column class="grid-edit-opt" width="40">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="remove" (click)="onOpenRemoveDlg(dataItem, $event)"><i class="fa fa-times"></i></a>
+              <i class="update fa fa-gear" (click)="onEdit(dataItem, $event)"></i>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-pdf fileName="Opportunities.pdf" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true" [scale]="0.6">
+              <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+              <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+               <div class="page-template">
+                  <div class="header">
+                    <div style="float: right">Page {{ pageNum }} of {{ totalPages }}</div>
+                    Multi-page grid with automatic page breaking
+                  </div>
+                  <div class="footer">
+                    Page {{ pageNum }} of {{ totalPages }}
+                  </div>
+                </div>
+              </ng-template>
+
+              <kendo-grid-column field="name" title="Name"></kendo-grid-column>
+              <kendo-grid-column field="company" title="Company"></kendo-grid-column>
+              <kendo-grid-column field="contact" title="Contact"></kendo-grid-column>
+              <kendo-grid-column field="value" title="Revenue">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <span [hidden]="!dataItem.value">{{(dataItem.currency=='EUR')?'€':'$'}}{{dataItem.value| number:'1.2-2'}}</span>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="status_name" title="Status"></kendo-grid-column>
+              <kendo-grid-column field="rating" title="Rating">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div class="star-ratings-css">
+                    <div class="star-ratings-css-top" [ngClass]="'rate-'+dataItem.rating">
+                      <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="star-ratings-css-bottom">
+                      <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+                    </div>
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="createdAt" title="Date created">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <span>{{dataItem.createdAt | date: 'MM/dd/yyyy'}}</span>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="description" title="Description" width="250">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <span>{{ (dataItem.description && dataItem.description.length>140)? (dataItem.description | slice:0:140)+'...':(dataItem.description) }}</span>
+                </ng-template>
+              </kendo-grid-column>
+          </kendo-grid-pdf>
+          <kendo-grid-excel fileName="Opportunities.xlsx" [fetchData]="allData"></kendo-grid-excel>
+      </kendo-grid>
+  </div>
+
+</div>
+
+<kendo-dialog id="addCardDlg"  [width]="500" title="Add/Edit Opportunity" *ngIf="isOpened" (close)="isOpened=false">
+
+    <form class="k-form" #opportunityForm="ngForm" (ngSubmit)="onFormSubmit(opportunityForm)">
+      <label class="k-form-field col-sm-12">
+          <span>Name<span class="k-required">*</span></span>
+          <input class="k-textbox" name="name" [(ngModel)]="o_name" required #name="ngModel" />
+      </label>
+      <label class="k-form-field col-sm-12">
+          <span>Company<span class="k-required">*</span></span>
+          <input class="k-textbox" name="company" [(ngModel)]="o_company" required #company="ngModel" />
+      </label>
+      <label class="k-form-field col-sm-12">
+          <span>Contact<span class="k-required">*</span></span>
+          <input class="k-textbox" name="contact" [(ngModel)]="o_contact" required #contact="ngModel" />
+      </label>
+      <label class="k-form-field col-sm-6">
+          <span>Deal revenue <span>(Optional)</span></span>
+          <kendo-numerictextbox
+              name="value" [(ngModel)]="o_value" #value="ngModel">
+          </kendo-numerictextbox>
+      </label>
+      <label class="k-form-field col-sm-6">
+          <span>Currency <span>(Optional)</span></span>
+          <kendo-dropdownlist
+              [data]="currencies"
+              name="currency"
+              [(ngModel)]="o_currency"
+              #currency="ngModel">
+          </kendo-dropdownlist>
+      </label>
+      <label class="k-form-field col-sm-12">
+          <span>Description <span>(Optional)</span></span>
+          <textarea class="k-textarea col-sm-12" name="description" [(ngModel)]="o_description" #description="ngModel">
+          </textarea>
+      </label>
+      <label class="k-form-field col-sm-12">
+          <span>Opportunity Status<span class="k-required">*</span></span>
+          <kendo-dropdownlist
+              [data]="containers"
+              [textField]="'name'"
+              [valueField]="'id'"
+              [valuePrimitive]="true"
+              name="status"
+              [(ngModel)]="o_status"
+              required
+              #status="ngModel">
+          </kendo-dropdownlist>
+      </label>
+      <label class="k-form-field col-sm-12">
+          <span>Rating</span>
+          <div class="star-ratings-css">
+            <div class="star-ratings-css-top" [ngClass]="'rate-'+o_rating">
+              <span (click)="o_rating=1">★</span><span (click)="o_rating=2">★</span><span (click)="o_rating=3">★</span><span (click)="o_rating=4">★</span><span (click)="o_rating=5">★</span>
+            </div>
+            <div class="star-ratings-css-bottom">
+              <span (click)="o_rating=1">☆</span><span (click)="o_rating=2">☆</span><span (click)="o_rating=3">☆</span><span (click)="o_rating=4">☆</span><span (click)="o_rating=5">☆</span>
+            </div>
+          </div>
+      </label>
+      <div class="remind-wrapper col-sm-12">
+        <div class="notify">
+          <input type="checkbox" id="notify_me" class="k-checkbox" [(ngModel)]="o_notify" name="notify" #notify="ngModel">
+          <label class="k-checkbox-label" for="notify_me">Notify me</label>
+        </div>
+        <label class="k-form-field reminder">
+          <span class="reminder-label">Remind me after</span>
+          <kendo-dropdownlist
+              [data]="reminder_list"
+              [textField]="'name'"
+              [valueField]="'id'"
+              [(ngModel)]="o_reminder"
+              name="reminder"
+              #reminder="ngModel">
+          </kendo-dropdownlist>
+        </label>
+        <label class="k-form-field pull-right" *ngIf="o_reminder['id']=='sd'">
+          <kendo-datepicker [(value)]="specific_date"></kendo-datepicker>
+        </label>
+      </div>
+      <div class="buttons col-sm-12">
+          <button kendoButton class="col-sm-6" (click)="isOpened=false">Cancel</button>
+          <button *ngIf="o_isActive" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Save</button>
+          <button *ngIf="!o_isActive" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Restore</button>
+      </div>
+    </form>
+</kendo-dialog>
+
+<kendo-dialog title="Please confirm" *ngIf="isRemoved" (close)="isRemoved=false">
+    <p style="margin: 30px; text-align: center;">Are you sure you want to remove this opportunity?</p>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="isRemoved=false">No</button>
+        <button kendoButton (click)="onRemove()" primary="true">Yes</button>
+    </kendo-dialog-actions>
+</kendo-dialog>
+
+<kendo-dialog title="Please confirm" *ngIf="isArchived" (close)="isArchived=false">
+    <p style="margin: 30px; text-align: center;">Are you sure you want to archive this opportunity?</p>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="isArchived=false">No</button>
+        <button kendoButton (click)="onArchive()" primary="true">Yes</button>
+    </kendo-dialog-actions>
+</kendo-dialog>
+
+<kendo-dialog title="Please confirm" *ngIf="isArchivedAll" (close)="isArchivedAll=false">
+    <p style="margin: 30px; text-align: center;">Are you sure you want to archive all opportunities in this column?</p>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="isArchivedAll=false">No</button>
+        <button kendoButton (click)="onArchiveAll($event)" primary="true">Yes</button>
+    </kendo-dialog-actions>
+</kendo-dialog>
+
+<kendo-dialog title="Please confirm" *ngIf="isArchivedAll2" (close)="isArchivedAll2=false">
+    <p style="margin: 30px; text-align: center;">Do you like to archive all cards first?</p>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="onArchiveAll2($event)" primary="true">Yes</button>
+        <button kendoButton (click)="isArchivedAll2=false;isRemoveAll=true;">No</button>
+        <button kendoButton (click)="isArchivedAll2=false">Cancel</button>
+    </kendo-dialog-actions>
+</kendo-dialog>
+
+<kendo-dialog title="Please confirm" *ngIf="isRemoveAll" (close)="isRemoveAll=false">
+    <p style="margin: 30px; text-align: center;">Are you sure you want to delete "{{removeColumnName}}"?</p>
+    <kendo-dialog-actions>
+        <button kendoButton (click)="isRemoveAll=false">No</button>
+        <button kendoButton (click)="onRemoveAll($event)" primary="true">Yes</button>
+    </kendo-dialog-actions>
+</kendo-dialog>
+
+<kendo-dialog title="Alert!" *ngIf="isShowAlert" (close)="isShowAlert=false">
+  <p style="margin: 30px; text-align: center;">{{alert_message}}</p>
+
+  <kendo-dialog-actions>
+      <button kendoButton (click)="isShowAlert=false;" [primary]="true">Close</button>
+  </kendo-dialog-actions>
+</kendo-dialog>
