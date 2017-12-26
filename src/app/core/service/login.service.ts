@@ -63,6 +63,10 @@ export class LoginService {
     return this.authData ? this.authData.userId : null;
   }
 
+  public getUserData(): any {
+    return this.authData ? this.authData.userData : null;
+  }
+
   public hasAdministrationPermission(): boolean {
     return this.hasAccess(PERMISSIONS.administration);
   }
@@ -157,7 +161,6 @@ export class LoginService {
   }
 
   public isLoggedIn(): boolean {
-console.log(this.isLoggedIn);    
     return this.loggedIn;
   }
 

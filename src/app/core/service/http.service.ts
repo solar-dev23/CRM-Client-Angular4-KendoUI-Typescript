@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptions } from "@angular/http";
 import { Observable } from "rxjs/Rx";
-import { CONFIG } from '../config';
+// import { CONFIG } from '../config';
 
-const api_url = CONFIG.SERVER_URL;
+// const api_url = CONFIG.SERVER_URL;
+const api_url = '';
 
 @Injectable()
 

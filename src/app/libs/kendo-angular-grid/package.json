@@ -1,0 +1,168 @@
+{
+  "@progress": {
+    "friendlyName": "Grid"
+  },
+  "_from": "@progress/kendo-angular-grid",
+  "_id": "@progress/kendo-angular-grid@1.5.0",
+  "_inBundle": false,
+  "_integrity": "sha1-nacL/NEns2hYwujufZJ4yacvkFM=",
+  "_location": "/@progress/kendo-angular-grid",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@progress/kendo-angular-grid",
+    "name": "@progress/kendo-angular-grid",
+    "escapedName": "@progress%2fkendo-angular-grid",
+    "scope": "@progress",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@progress/kendo-angular-grid/-/kendo-angular-grid-1.5.0.tgz",
+  "_shasum": "9da70bfcd127b36858c2e8ee7d9278c9a72f9053",
+  "_spec": "@progress/kendo-angular-grid",
+  "_where": "E:\\Work\\On\\Vlad\\Report\\report-client",
+  "author": {
+    "name": "Progress"
+  },
+  "bugs": {
+    "url": "https://github.com/telerik/kendo-angular"
+  },
+  "bundleDependencies": false,
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
+    },
+    "validate-commit-msg": {
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "chore",
+        "revert"
+      ],
+      "warnOnFail": false,
+      "maxSubjectLength": 100
+    }
+  },
+  "dependencies": {
+    "@progress/kendo-angular-pdf-export": "^1.0.0",
+    "@progress/kendo-angular-resize-sensor": "^1.0.0",
+    "@progress/kendo-file-saver": "^1.0.0",
+    "@telerik/kendo-draggable": "^1.2.0",
+    "tslib": "^1.7.0"
+  },
+  "deprecated": false,
+  "description": "Kendo UI Grid for Angular",
+  "devDependencies": {
+    "@angular/animations": "^4.3.1",
+    "@angular/common": "^4.3.1",
+    "@angular/compiler": "^4.3.1",
+    "@angular/compiler-cli": "^4.3.1",
+    "@angular/core": "^4.3.1",
+    "@angular/forms": "^4.3.1",
+    "@angular/http": "^4.3.1",
+    "@angular/platform-browser": "^4.3.1",
+    "@angular/platform-browser-dynamic": "^4.3.1",
+    "@angular/platform-server": "^4.3.1",
+    "@krux/condition-jenkins": "1.0.1",
+    "@progress/kendo-angular-dateinputs": "^1.0.0",
+    "@progress/kendo-angular-dialog": "^1.1.0",
+    "@progress/kendo-angular-dropdowns": "^1.0.0",
+    "@progress/kendo-angular-excel-export": "^1.0.0",
+    "@progress/kendo-angular-inputs": "^1.0.3",
+    "@progress/kendo-angular-intl": "^1.2.2",
+    "@progress/kendo-angular-l10n": "^1.0.0",
+    "@progress/kendo-angular-tasks": "^9.1.30",
+    "@progress/kendo-data-query": "^1.0.6",
+    "@progress/kendo-drawing": "^1.2.0",
+    "@progress/kendo-theme-default": "^2.38.2",
+    "@telerik/semantic-prerelease": "^1.1.5",
+    "@types/chai": "^3.4.34",
+    "@types/core-js": "0.9.35",
+    "@types/jasmine": "2.2.34",
+    "@types/selenium-webdriver": "2.53.33",
+    "@types/zone.js": "0.0.27",
+    "codelyzer": "^3.0.0",
+    "core-js": "^2.2.2",
+    "cz-conventional-changelog": "^1.1.5",
+    "ghooks": "^1.0.3",
+    "gulp": "^3.9.0",
+    "protractor": "4.0.9",
+    "rxjs": "^5.0.1",
+    "semantic-release": "^6.3.6",
+    "tslint": "5.4.3",
+    "typescript": "2.3.4",
+    "validate-commit-msg": "^1.1.1",
+    "webdriver-manager": "10.2.5",
+    "zone.js": "0.8.12"
+  },
+  "homepage": "https://github.com/telerik/kendo-angular-grid#readme",
+  "jsnext:main": "dist/es/main.js",
+  "keywords": [
+    "Kendo UI",
+    "Progress",
+    "Grid",
+    "Angular"
+  ],
+  "license": "SEE LICENSE in LICENSE.md",
+  "main": "dist/npm/main.js",
+  "module": "dist/es/main.js",
+  "name": "@progress/kendo-angular-grid",
+  "peerDependencies": {
+    "@angular/common": "^4.0.0 || ^5.0.0",
+    "@angular/core": "^4.0.0 || ^5.0.0",
+    "@angular/forms": "^4.0.0 || ^5.0.0",
+    "@progress/kendo-angular-dropdowns": "^1.0.0",
+    "@progress/kendo-angular-inputs": "^1.0.3",
+    "@progress/kendo-angular-intl": "^1.0.0",
+    "@progress/kendo-angular-l10n": "^1.0.0",
+    "@progress/kendo-data-query": "^1.0.0",
+    "@progress/kendo-drawing": "^1.0.0",
+    "@progress/kendo-angular-excel-export": "^1.0.0",
+    "@progress/kendo-angular-dateinputs": "^1.0.0",
+    "rxjs": "^5.0.1"
+  },
+  "release": {
+    "debug": false,
+    "branchTags": {
+      "develop": "dev"
+    },
+    "fallbackTags": {
+      "dev": "latest"
+    },
+    "analyzeCommits": "@telerik/semantic-prerelease/analyzeCommits",
+    "generateNotes": "@telerik/semantic-prerelease/generateNotes",
+    "getLastRelease": "@telerik/semantic-prerelease/getLastRelease",
+    "verifyConditions": "@telerik/semantic-prerelease/verifyConditions",
+    "verifyRelease": "@telerik/semantic-prerelease/verifyRelease"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/telerik/kendo-angular-grid.git"
+  },
+  "scripts": {
+    "api-check": "gulp api-check",
+    "build-cdn": "gulp build-cdn",
+    "build-package": "gulp build-package",
+    "e2e": "gulp e2e",
+    "lint": "gulp lint",
+    "semantic-release": "semantic-release pre && semantic-prerelease publish && semantic-release post",
+    "start": "gulp start",
+    "test": "gulp test"
+  },
+  "typings": "dist/es/main.d.ts",
+  "version": "1.5.0"
+}

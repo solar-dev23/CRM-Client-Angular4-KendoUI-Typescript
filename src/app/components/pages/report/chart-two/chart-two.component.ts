@@ -1,4 +1,4 @@
-import { HttpService } from '../../../services/http.service';
+// import { HttpService } from '../../../services/http.service';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
 
@@ -39,7 +39,8 @@ export class ReportChartTwoComponent implements OnInit {
     rotation: -45
   }
 
-  constructor(private httpService: HttpService) {
+  // constructor(private httpService: HttpService) {
+  constructor() {
 
   }
 
@@ -99,11 +100,11 @@ export class ReportChartTwoComponent implements OnInit {
       this.filter.currency = 'All';
     }
     this.isLoading = true;
-    this.httpService.calculate_v2(this.filter).subscribe(res => {
-      this.isLoading = false;
-      this.dataFromServer = res.data;
-      this.updatePieChart();
-    })
+    // this.httpService.calculate_v2(this.filter).subscribe(res => {
+    //   this.isLoading = false;
+    //   this.dataFromServer = res.data;
+    //   this.updatePieChart();
+    // })
   }
 
   ngOnChanges(changes: SimpleChanges) {

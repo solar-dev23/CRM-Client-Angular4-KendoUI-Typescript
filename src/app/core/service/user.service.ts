@@ -49,4 +49,12 @@ export class UserService extends DataSourceAdapter<any> {
     let roles = userRole ? [userRole] : [];
     return {active: true, roles: roles};
   }
+
+  public updateUser(data: any): Observable<any> {
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
+    return this.http.put('/rest/user', null, requestOptions).map(res => {
+console.log(res);      
+        return res.json();
+    })
+  }
 }

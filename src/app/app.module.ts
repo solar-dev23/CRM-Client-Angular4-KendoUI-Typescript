@@ -9,14 +9,13 @@ import { AppRoutingModule } from './app.routes';
 import { AppComponent } from "./app.component";
 import { CoreModule } from "./core";
 import { ComponentsModule } from "./components";
-import { MenuComponent } from './components/pages/menu/menu.component';
 
+import 'hammerjs';
 
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
-    AppComponent,
-    MenuComponent
+    AppComponent
   ],
   imports: [
   	RouterModule,

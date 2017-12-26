@@ -63,7 +63,8 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['css-loader', 'sass-loader']
+        exclude: /node_modules/,
+        loader: ['raw-loader', 'sass-loader']
       },
       {
         test: /\.(jpg|svg|png)$/i,
@@ -95,7 +96,9 @@ module.exports = {
       template: src('index.html'),
       favicon: src('assets/favicon.png')
     }),
-    new ExtractTextPlugin('[name]-[hash].css')
+    new ExtractTextPlugin({
+      filename: '[name]-[hash].css'
+    })
   ]
 };
 

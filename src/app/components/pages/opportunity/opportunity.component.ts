@@ -1,13 +1,13 @@
 import { Component, OnInit, HostListener, ViewEncapsulation, ElementRef, Renderer2, NgZone, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import _ from 'lodash';
-import { HttpService } from "../../services/http.service";
-import { EventEmitterService } from "../../services/event-emitter.service";
+// import { HttpService } from "../../services/http.service";
+// import { EventEmitterService } from "../../services/event-emitter.service";
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { State, SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
-import { CONFIG } from '../../config';
+// import { CONFIG } from '../../config';
 
 var gridSize: number = 0;
 
@@ -74,7 +74,8 @@ export class OpportunityComponent implements OnInit {
   public card_criterias: any = [];
   public sort: SortDescriptor[] = [];
   public enablePop: boolean = false;
-  public userId: string = CONFIG.CURRENT_USER_ID;
+  // public userId: string = CONFIG.CURRENT_USER_ID;
+  public userId: string = '1';
 
   public grid_quick_filter_options: any = [];
   // public card_quick_filter_options: any = ['My Opportunities', 'More than 30 days old'];
@@ -122,18 +123,19 @@ export class OpportunityComponent implements OnInit {
   public defaultCriteriaHeight: number = 30;
   public cardViewStyle: any;
 
-  constructor(private httpService:HttpService, private renderer: Renderer2, private el: ElementRef, private _ngZone: NgZone, private _eventEmitter: EventEmitterService) {
+  // constructor(private httpService:HttpService, private renderer: Renderer2, private el: ElementRef, private _ngZone: NgZone, private _eventEmitter: EventEmitterService) {
+  constructor(private renderer: Renderer2, private el: ElementRef, private _ngZone: NgZone) {
       this.allData = this.allData.bind(this);
 
-      this._eventEmitter.changeEmitted$.subscribe(
-        data => {
-            if(data == 'expanded')
-              this.menuWidth = 250;
-            else
-              this.menuWidth = 58;
+      // this._eventEmitter.changeEmitted$.subscribe(
+      //   data => {
+      //       if(data == 'expanded')
+      //         this.menuWidth = 250;
+      //       else
+      //         this.menuWidth = 58;
 
-            this._fixColumnHeader();
-        });
+      //       this._fixColumnHeader();
+      //   });
   }
 
   ngOnInit() {
@@ -161,62 +163,62 @@ export class OpportunityComponent implements OnInit {
 
   _getContainer() {
     let that = this;
-    this.httpService.getStatuses().subscribe (
-          res => {
-              that.containers = that.grid_quick_filter_options = _.toArray(res);
+    // this.httpService.getStatuses().subscribe (
+    //       res => {
+    //           that.containers = that.grid_quick_filter_options = _.toArray(res);
 
-              that.containers = that.containers.filter(function(container){
-                if(container.is_active)
-                  return container;
-              })
+    //           that.containers = that.containers.filter(function(container){
+    //             if(container.is_active)
+    //               return container;
+    //           })
 
-              that.httpService.getOpportunities().subscribe(
-                    res => {
-                        that.opportunities = _.toArray(res);
+    //           that.httpService.getOpportunities().subscribe(
+    //                 res => {
+    //                     that.opportunities = _.toArray(res);
 
-                        // Set notify value to opportunities for current user.
-                        _.forEach(that.opportunities, function(oppo){
-                          oppo.notify = false;
+    //                     // Set notify value to opportunities for current user.
+    //                     _.forEach(that.opportunities, function(oppo){
+    //                       oppo.notify = false;
 
-                          if(oppo.notify_users && oppo.notify_users.length > 0){
-                            let notify_list = oppo.notify_users.split(',');
-                            if(notify_list.indexOf(that.userId) !== -1){
-                              oppo.notify = true;
-                            }
-                          }
-                        });
+    //                       if(oppo.notify_users && oppo.notify_users.length > 0){
+    //                         let notify_list = oppo.notify_users.split(',');
+    //                         if(notify_list.indexOf(that.userId) !== -1){
+    //                           oppo.notify = true;
+    //                         }
+    //                       }
+    //                     });
 
-                        _.forEach(that.containers, function(val) {
-                            val.widgets = that.opportunities.filter(function(opp){
-                              if(val.id == opp.status_id)
-                                return opp;
-                            });
+    //                     _.forEach(that.containers, function(val) {
+    //                         val.widgets = that.opportunities.filter(function(opp){
+    //                           if(val.id == opp.status_id)
+    //                             return opp;
+    //                         });
 
-                            val.widgets = _.orderBy(val.widgets, 'order');
-                        })
+    //                         val.widgets = _.orderBy(val.widgets, 'order');
+    //                     })
 
-                        // Filter container with active opportunities
-                        that.temp_opportunities = that.opportunities.filter(function(oppo){
-                          if(oppo.is_active)
-                            return oppo;
-                        })
-                        that._getContainerByOppo(that.temp_opportunities);
+    //                     // Filter container with active opportunities
+    //                     that.temp_opportunities = that.opportunities.filter(function(oppo){
+    //                       if(oppo.is_active)
+    //                         return oppo;
+    //                     })
+    //                     that._getContainerByOppo(that.temp_opportunities);
 
-                        _.forEach(that.temp_opportunities, function(opportunity) {
-                          _.forEach(that.containers, function(container) {
-                            if(opportunity.status_id == container.id){
-                              opportunity.status_name = container.name;
-                            }
-                          })
-                        });
+    //                     _.forEach(that.temp_opportunities, function(opportunity) {
+    //                       _.forEach(that.containers, function(container) {
+    //                         if(opportunity.status_id == container.id){
+    //                           opportunity.status_name = container.name;
+    //                         }
+    //                       })
+    //                     });
 
-                        that._getGridOpportunities();
-                    },
-                    err => console.log(err, 'getting opportunities error')
-                )
-          },
-          err => console.log(err, 'getting statuses error')
-      )
+    //                     that._getGridOpportunities();
+    //                 },
+    //                 err => console.log(err, 'getting opportunities error')
+    //             )
+    //       },
+    //       err => console.log(err, 'getting statuses error')
+    //   )
   }
 
   _getGridOpportunities() {
@@ -303,7 +305,7 @@ export class OpportunityComponent implements OnInit {
 
       _.forEach(this.containers, function(container, index) {
         that.navFixed[index] = {
-          left: (that.menuWidth + that.columnPadding + 300 * index - that.scrollLeft) + 'px'
+          left: (that.menuWidth + that.columnPadding + 300 * parseInt(index) - that.scrollLeft) + 'px'
         }
       })
     }
@@ -329,11 +331,11 @@ export class OpportunityComponent implements OnInit {
 
     if(val == 'opportunity'){
       // Because of checking notify
-      this.httpService.updateOpportunity(event).subscribe(
-          res => {
-            this._reorder(val);
-          }
-        )
+      // this.httpService.updateOpportunity(event).subscribe(
+      //     res => {
+      //       this._reorder(val);
+      //     }
+      //   )
     }else{
       this._reorder(val);
     }
@@ -383,13 +385,13 @@ export class OpportunityComponent implements OnInit {
       order: opportunity.order,
       bgColor: bgColor
     }
-    this.httpService.updateOpportunity(params).subscribe(
-        res => {
-            opportunity.bgColor = bgColor;
-            this.widgetId = '';
-        },
-        err => console.log(err, 'opportunity update error')
-      )
+    // this.httpService.updateOpportunity(params).subscribe(
+    //     res => {
+    //         opportunity.bgColor = bgColor;
+    //         this.widgetId = '';
+    //     },
+    //     err => console.log(err, 'opportunity update error')
+    //   )
   }
 
   onCollapse(columnIndex, event) {
@@ -418,39 +420,39 @@ export class OpportunityComponent implements OnInit {
       name: this.newColumn,
       order: this.containers.length+1
     }
-    this.httpService.createStatus(params).subscribe(
-        res => {
-          let tmp_containers = this.containers.filter(function(container) {
-            if(container.name.toLowerCase() === res.name.toLowerCase())
-              return container;
-          })
+    // this.httpService.createStatus(params).subscribe(
+    //     res => {
+    //       let tmp_containers = this.containers.filter(function(container) {
+    //         if(container.name.toLowerCase() === res.name.toLowerCase())
+    //           return container;
+    //       })
 
-          this.containers.push({
-            id: res.id,
-            name: res.name,
-            order: res.order,
-            widgets: []
-          });
+    //       this.containers.push({
+    //         id: res.id,
+    //         name: res.name,
+    //         order: res.order,
+    //         widgets: []
+    //       });
 
-          // For quick filter in grid view.
-          let index = this.grid_quick_filter_options.length - 1;
-          this.grid_quick_filter_options.splice(index, 0, {
-            id: res.id,
-            name: res.name,
-            order: res.order,
-            widgets: []
-          });
+    //       // For quick filter in grid view.
+    //       let index = this.grid_quick_filter_options.length - 1;
+    //       this.grid_quick_filter_options.splice(index, 0, {
+    //         id: res.id,
+    //         name: res.name,
+    //         order: res.order,
+    //         widgets: []
+    //       });
 
-          this.newColumn = '';
-        },
-        err => {
-          if(JSON.parse(err._body).errors[0].message){
-            this.alert_message = "Column name already exists.";
-            this.isShowAlert = true;
-            this.newColumn = '';
-          }
-        }
-      )
+    //       this.newColumn = '';
+    //     },
+    //     err => {
+    //       if(JSON.parse(err._body).errors[0].message){
+    //         this.alert_message = "Column name already exists.";
+    //         this.isShowAlert = true;
+    //         this.newColumn = '';
+    //       }
+    //     }
+    //   )
   }
 
   onUpdateColumn() {
@@ -461,33 +463,33 @@ export class OpportunityComponent implements OnInit {
       id: this.activeColumnId,
       name: this.newColumnName
     }
-    this.httpService.updateStatus(params).subscribe(
-        res => {
-          _.forEach(this.containers, function(val) {
-            if(val.id == res.id)
-              val.name = res.name;
-          })
-          this.activeColumnId = -1;
-        },
-        err => console.log(err, 'status update error')
-      )
+    // this.httpService.updateStatus(params).subscribe(
+    //     res => {
+    //       _.forEach(this.containers, function(val) {
+    //         if(val.id == res.id)
+    //           val.name = res.name;
+    //       })
+    //       this.activeColumnId = -1;
+    //     },
+    //     err => console.log(err, 'status update error')
+    //   )
   }
 
   _reorder(type) {
       if(type == 'status'){
-          this.httpService.reorderStatus(this.containers).subscribe(
-              res => {
-                console.log(res);
-              },
-              err => console.log(err, 'status reorder error')
-            )
+          // this.httpService.reorderStatus(this.containers).subscribe(
+          //     res => {
+          //       console.log(res);
+          //     },
+          //     err => console.log(err, 'status reorder error')
+          //   )
       }else if (type == 'opportunity') {
-          this.httpService.reorderOpportunity(this.containers).subscribe(
-              res => {
-                console.log(res);
-              },
-              err => console.log(err, 'opportunity reorder error')
-            )
+          // this.httpService.reorderOpportunity(this.containers).subscribe(
+          //     res => {
+          //       console.log(res);
+          //     },
+          //     err => console.log(err, 'opportunity reorder error')
+          //   )
       }
   }
 
@@ -517,23 +519,23 @@ export class OpportunityComponent implements OnInit {
           user_id: this.userId
         }
 
-        this.httpService.createOpportunity(params).subscribe(
-            res => {
-              that.isOpened = false;
-              _.forEach(that.containers, function(container){
-                  if(container.id == res.status_id){
-                    container.widgets.unshift(res);
-                  }
-              })
-              that._reorder('opportunity');
-            },
-            err => {
-              if(JSON.parse(err._body).errors[0].message){
-                this.alert_message = "Card name already exists.";
-                this.isShowAlert = true;
-              }
-            }
-          )
+        // this.httpService.createOpportunity(params).subscribe(
+        //     res => {
+        //       that.isOpened = false;
+        //       _.forEach(that.containers, function(container){
+        //           if(container.id == res.status_id){
+        //             container.widgets.unshift(res);
+        //           }
+        //       })
+        //       that._reorder('opportunity');
+        //     },
+        //     err => {
+        //       if(JSON.parse(err._body).errors[0].message){
+        //         this.alert_message = "Card name already exists.";
+        //         this.isShowAlert = true;
+        //       }
+        //     }
+        //   )
     }else {
         let params = {};
         if(opportunityForm.controls['status'].value == 100) {
@@ -566,90 +568,90 @@ export class OpportunityComponent implements OnInit {
             }
           }
 
-          this.httpService.updateOpportunity(params).subscribe(
-              res => {
-                that.isOpened = false;
+          // this.httpService.updateOpportunity(params).subscribe(
+          //     res => {
+          //       that.isOpened = false;
 
-                // Update reminder if exist.
-                if(that.o_reminder['id']){
-                  let reminder_date = that._getReminderDate(that.o_reminder['id']);
-                  let params = {
-                    user_id: that.userId,
-                    opportunity_id: res.id,
-                    reminder_id: that.o_reminder['id'],
-                    reminder_date: reminder_date
-                  }
+          //       // Update reminder if exist.
+          //       if(that.o_reminder['id']){
+          //         let reminder_date = that._getReminderDate(that.o_reminder['id']);
+          //         let params = {
+          //           user_id: that.userId,
+          //           opportunity_id: res.id,
+          //           reminder_id: that.o_reminder['id'],
+          //           reminder_date: reminder_date
+          //         }
 
-                  that.httpService.updateReminder(params).subscribe(
-                      res => {
-                        console.log(res);
-                      }, err => console.log(err, 'reminder update error')
-                    )
-                }
+          //         that.httpService.updateReminder(params).subscribe(
+          //             res => {
+          //               console.log(res);
+          //             }, err => console.log(err, 'reminder update error')
+          //           )
+          //       }
 
-                // Update notify value for container and opportunities
-                res.notify = false;
-                if(res.notify_users && res.notify_users.length > 0){
-                  let notify_list = res.notify_users.split(',');
-                  if(notify_list.indexOf(that.userId) !== -1){
-                    res.notify = true;
-                  }
-                }
+          //       // Update notify value for container and opportunities
+          //       res.notify = false;
+          //       if(res.notify_users && res.notify_users.length > 0){
+          //         let notify_list = res.notify_users.split(',');
+          //         if(notify_list.indexOf(that.userId) !== -1){
+          //           res.notify = true;
+          //         }
+          //       }
 
-                // Update containers for card view.
-                _.forEach(that.containers, function(container){
-                    if(container.id == res.status_id){
-                      var i = container.widgets.findIndex(widget => widget.id === res.id);
-                      if (container.widgets[i]) {
-                        container.widgets[i] = res;
-                      }else {
-                        container.widgets.unshift(res);
-                      }
-                    }else {
-                      var j = container.widgets.findIndex(widget => widget.id === res.id);
-                      if (container.widgets[j]) {
-                        container.widgets.splice(j, 1);
-                      }
-                    }
-                });
+          //       // Update containers for card view.
+          //       _.forEach(that.containers, function(container){
+          //           if(container.id == res.status_id){
+          //             var i = container.widgets.findIndex(widget => widget.id === res.id);
+          //             if (container.widgets[i]) {
+          //               container.widgets[i] = res;
+          //             }else {
+          //               container.widgets.unshift(res);
+          //             }
+          //           }else {
+          //             var j = container.widgets.findIndex(widget => widget.id === res.id);
+          //             if (container.widgets[j]) {
+          //               container.widgets.splice(j, 1);
+          //             }
+          //           }
+          //       });
 
-                that._reorder('opportunity');
+          //       that._reorder('opportunity');
 
-                // Update temp opportunites for grid view.
-                var k = that.temp_opportunities.findIndex(opportunity => opportunity.id === res.id);
+          //       // Update temp opportunites for grid view.
+          //       var k = that.temp_opportunities.findIndex(opportunity => opportunity.id === res.id);
 
-                if (that.temp_opportunities[k] && that.o_isActive) {
-                  that.temp_opportunities[k] = res;
-                  _.forEach(that.containers, function(container) {
-                    if(that.temp_opportunities[k].status_id == container.id){
-                      that.temp_opportunities[k].status_name = container.name;
-                    }
-                  })
+          //       if (that.temp_opportunities[k] && that.o_isActive) {
+          //         that.temp_opportunities[k] = res;
+          //         _.forEach(that.containers, function(container) {
+          //           if(that.temp_opportunities[k].status_id == container.id){
+          //             that.temp_opportunities[k].status_name = container.name;
+          //           }
+          //         })
 
-                  that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-                      return obj.is_active;
-                  });
-                }else if (that.temp_opportunities[k] && !that.o_isActive) {
-                  that.temp_opportunities[k].is_active = true;
-                  that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-                      return !obj.is_active;
-                  });
-                }
+          //         that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+          //             return obj.is_active;
+          //         });
+          //       }else if (that.temp_opportunities[k] && !that.o_isActive) {
+          //         that.temp_opportunities[k].is_active = true;
+          //         that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+          //             return !obj.is_active;
+          //         });
+          //       }
 
-                // Update opportunites for grid view.
-                var o_index = that.opportunities.findIndex(opportunity => opportunity.id === res.id);
+          //       // Update opportunites for grid view.
+          //       var o_index = that.opportunities.findIndex(opportunity => opportunity.id === res.id);
 
-                if (that.opportunities[o_index] && that.o_isActive) {
-                  that.opportunities[o_index] = res;
-                }else if (that.opportunities[o_index] && !that.o_isActive) {
-                  that.opportunities[o_index] = res;
-                  that.opportunities[o_index].is_active = true;
-                }
+          //       if (that.opportunities[o_index] && that.o_isActive) {
+          //         that.opportunities[o_index] = res;
+          //       }else if (that.opportunities[o_index] && !that.o_isActive) {
+          //         that.opportunities[o_index] = res;
+          //         that.opportunities[o_index].is_active = true;
+          //       }
 
-                that._getGridOpportunities();
-              },
-              err => console.log(err, 'opportunity update error')
-            )
+          //       that._getGridOpportunities();
+          //     },
+          //     err => console.log(err, 'opportunity update error')
+          //   )
         }
     }
   }
@@ -724,18 +726,18 @@ export class OpportunityComponent implements OnInit {
     this.o_notify = opportunity.notify;
     this.o_reminder = {}
 
-    this.httpService.getReminder({user_id: this.userId, opportunity_id: opportunity.id}).subscribe(
-        res => {
-          this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
+    // this.httpService.getReminder({user_id: this.userId, opportunity_id: opportunity.id}).subscribe(
+    //     res => {
+    //       this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
 
-          if(res.reminder_id == 'sd')
-            this.specific_date = new Date(res.reminder_date);
-        },
-        err => {
-          console.log(err._body);
-          this.o_reminder = this.reminder_list[0];
-        }
-      )
+    //       if(res.reminder_id == 'sd')
+    //         this.specific_date = new Date(res.reminder_date);
+    //     },
+    //     err => {
+    //       console.log(err._body);
+    //       this.o_reminder = this.reminder_list[0];
+    //     }
+    //   )
   }
 
   onQuickAddOpportunity(status) {
@@ -754,26 +756,26 @@ export class OpportunityComponent implements OnInit {
       user_id: this.userId
     }
 
-    this.httpService.createOpportunity(params).subscribe(
-        res => {
-          that.newOpportunityName = '';
-          that.qColumnId = -1;
+    // this.httpService.createOpportunity(params).subscribe(
+    //     res => {
+    //       that.newOpportunityName = '';
+    //       that.qColumnId = -1;
 
-          _.forEach(that.containers, function(container){
-              if(container.id == res.status_id){
-                container.widgets.unshift(res);
-              }
-          })
+    //       _.forEach(that.containers, function(container){
+    //           if(container.id == res.status_id){
+    //             container.widgets.unshift(res);
+    //           }
+    //       })
 
-          that._reorder('opportunity');
-        },
-        err => {
-          if(JSON.parse(err._body).errors[0].message){
-            this.alert_message = "Card name already exists.";
-            this.isShowAlert = true;
-          }
-        }
-      )
+    //       that._reorder('opportunity');
+    //     },
+    //     err => {
+    //       if(JSON.parse(err._body).errors[0].message){
+    //         this.alert_message = "Card name already exists.";
+    //         this.isShowAlert = true;
+    //       }
+    //     }
+    //   )
   }
 
   onOpenRemoveDlg(opportunity, event) {
@@ -791,24 +793,24 @@ export class OpportunityComponent implements OnInit {
       id: this.removeObj['id']
     }
 
-    this.httpService.deleteOpportunity(params).subscribe(
-        res => {
-            _.forEach(that.containers, function(container){
-                if(container.id == that.removeObj['status_id']){
-                  var i = container.widgets.findIndex(widget => widget.id === that.removeObj['id']);
-                  container.widgets.splice(i, 1);
-                }
-            })
+    // this.httpService.deleteOpportunity(params).subscribe(
+    //     res => {
+    //         _.forEach(that.containers, function(container){
+    //             if(container.id == that.removeObj['status_id']){
+    //               var i = container.widgets.findIndex(widget => widget.id === that.removeObj['id']);
+    //               container.widgets.splice(i, 1);
+    //             }
+    //         })
 
-            var j = that.temp_opportunities.findIndex(opportunity => opportunity.id === that.removeObj['id']);
-            that.temp_opportunities.splice(j, 1);
-            that._getGridOpportunities();
+    //         var j = that.temp_opportunities.findIndex(opportunity => opportunity.id === that.removeObj['id']);
+    //         that.temp_opportunities.splice(j, 1);
+    //         that._getGridOpportunities();
 
-            that.removeObj = {};
-            that.isRemoved = false;
-        },
-        err => console.log(err, 'opportunity delete error')
-      )
+    //         that.removeObj = {};
+    //         that.isRemoved = false;
+    //     },
+    //     err => console.log(err, 'opportunity delete error')
+    //   )
   }
 
   onSearch(event) {
@@ -886,34 +888,34 @@ export class OpportunityComponent implements OnInit {
       this._getGridOpportunities();
     }else {
       if(this.filter == 'Archive'){
-        this.httpService.getStatuses().subscribe (
-          res => {
-              that.containers = _.toArray(res);
+        // this.httpService.getStatuses().subscribe (
+        //   res => {
+        //       that.containers = _.toArray(res);
 
-              let archive_opportunities = that.opportunities.filter(function(oppo){
-                if(!oppo.is_active)
-                  return oppo;
-              })
-              that._getContainerByOppo(archive_opportunities);
-          }, err => console.log(err)
-        )
+        //       let archive_opportunities = that.opportunities.filter(function(oppo){
+        //         if(!oppo.is_active)
+        //           return oppo;
+        //       })
+        //       that._getContainerByOppo(archive_opportunities);
+        //   }, err => console.log(err)
+        // )
       }else {
-        this.httpService.getStatuses().subscribe (
-          res => {
-              that.containers = _.toArray(res);
+        // this.httpService.getStatuses().subscribe (
+        //   res => {
+        //       that.containers = _.toArray(res);
 
-              that.containers = that.containers.filter(function(container) {
-                if(container.is_active)
-                  return container;
-              })
+        //       that.containers = that.containers.filter(function(container) {
+        //         if(container.is_active)
+        //           return container;
+        //       })
 
-              let active_opportunities = that.opportunities.filter(function(oppo){
-                if(oppo.is_active)
-                  return oppo;
-              })
-              that._getContainerByOppo(active_opportunities);
-          }, err => console.log(err)
-        )
+        //       let active_opportunities = that.opportunities.filter(function(oppo){
+        //         if(oppo.is_active)
+        //           return oppo;
+        //       })
+        //       that._getContainerByOppo(active_opportunities);
+        //   }, err => console.log(err)
+        // )
 
       }
     }
@@ -1136,24 +1138,24 @@ export class OpportunityComponent implements OnInit {
       order: this.archiveObj['order'],
       is_active: false
     }
-    this.httpService.updateOpportunity(params).subscribe(
-        res => {
-            _.forEach(that.opportunities, function(oppo) {
-              if(oppo.id == that.archiveObj['id'])
-                oppo.is_active = false;
-            })
+    // this.httpService.updateOpportunity(params).subscribe(
+    //     res => {
+    //         _.forEach(that.opportunities, function(oppo) {
+    //           if(oppo.id == that.archiveObj['id'])
+    //             oppo.is_active = false;
+    //         })
 
-            let active_opportunities = that.opportunities.filter(function(oppo){
-              if(oppo.is_active)
-                return oppo;
-            })
-            that._getContainerByOppo(active_opportunities);
+    //         let active_opportunities = that.opportunities.filter(function(oppo){
+    //           if(oppo.is_active)
+    //             return oppo;
+    //         })
+    //         that._getContainerByOppo(active_opportunities);
 
-            that._reorder('opportunity');
-            that.isArchived = false;
-        },
-        err => console.log(err, 'opportunity update error')
-      )
+    //         that._reorder('opportunity');
+    //         that.isArchived = false;
+    //     },
+    //     err => console.log(err, 'opportunity update error')
+    //   )
   }
 
   onOpenArchiveAllDlg(columnId, event) {
@@ -1190,23 +1192,23 @@ export class OpportunityComponent implements OnInit {
     let params={
       opportunities: opportunities
     }
-    this.httpService.archiveOpportunities(params).subscribe(
-        res => {
-          _.forEach(that.opportunities, function(oppo) {
-            if(oppo.status_id == that.archiveColumnId)
-              oppo.is_active = false;
-          });
+    // this.httpService.archiveOpportunities(params).subscribe(
+    //     res => {
+    //       _.forEach(that.opportunities, function(oppo) {
+    //         if(oppo.status_id == that.archiveColumnId)
+    //           oppo.is_active = false;
+    //       });
 
-          let active_opportunities = that.opportunities.filter(function(oppo){
-            if(oppo.is_active)
-              return oppo;
-          })
-          that._getContainerByOppo(active_opportunities);
+    //       let active_opportunities = that.opportunities.filter(function(oppo){
+    //         if(oppo.is_active)
+    //           return oppo;
+    //       })
+    //       that._getContainerByOppo(active_opportunities);
 
-          that._reorder('opportunity');
-          that.isArchivedAll = false;
-        }, err => console.log(err)
-    )
+    //       that._reorder('opportunity');
+    //       that.isArchivedAll = false;
+    //     }, err => console.log(err)
+    // )
   }
 
   onOpenRemoveAllDlg(columnId, columnName, event) {
@@ -1243,24 +1245,24 @@ export class OpportunityComponent implements OnInit {
     let params={
       opportunities: opportunities
     }
-    this.httpService.archiveOpportunities(params).subscribe(
-        res => {
-          _.forEach(that.opportunities, function(oppo) {
-            if(oppo.status_id == that.archiveColumnId)
-              oppo.is_active = false;
-          });
+    // this.httpService.archiveOpportunities(params).subscribe(
+    //     res => {
+    //       _.forEach(that.opportunities, function(oppo) {
+    //         if(oppo.status_id == that.archiveColumnId)
+    //           oppo.is_active = false;
+    //       });
 
-          let active_opportunities = that.opportunities.filter(function(oppo){
-            if(oppo.is_active)
-              return oppo;
-          })
-          that._getContainerByOppo(active_opportunities);
+    //       let active_opportunities = that.opportunities.filter(function(oppo){
+    //         if(oppo.is_active)
+    //           return oppo;
+    //       })
+    //       that._getContainerByOppo(active_opportunities);
 
-          that._reorder('opportunity');
-          that.isArchivedAll2 = false;
-          that.isRemoveAll = true;
-        }, err => console.log(err)
-    )
+    //       that._reorder('opportunity');
+    //       that.isArchivedAll2 = false;
+    //       that.isRemoveAll = true;
+    //     }, err => console.log(err)
+    // )
   }
 
   onRemoveAll(event){
@@ -1275,32 +1277,32 @@ export class OpportunityComponent implements OnInit {
       id: this.archiveColumnId,
       opportunities: opportunities
     }
-    this.httpService.deleteStatus(params).subscribe(
-        res => {
-            that.containers = that.containers.filter(function(container){
-              if(container.id != that.archiveColumnId)
-                return container;
-            });
+    // this.httpService.deleteStatus(params).subscribe(
+    //     res => {
+    //         that.containers = that.containers.filter(function(container){
+    //           if(container.id != that.archiveColumnId)
+    //             return container;
+    //         });
 
-            // For quick filter in grid view.
-            that.grid_quick_filter_options = that.grid_quick_filter_options.filter(function(container) {
-              if(container.id != that.archiveColumnId)
-                return container;
-            });
+    //         // For quick filter in grid view.
+    //         that.grid_quick_filter_options = that.grid_quick_filter_options.filter(function(container) {
+    //           if(container.id != that.archiveColumnId)
+    //             return container;
+    //         });
 
-            that.temp_opportunities = that.temp_opportunities.filter(function(oppo){
-              if(oppo.status_id != that.archiveColumnId){
-                return oppo;
-              }else {
-                if(!oppo.is_active)
-                  return oppo;
-              }
-            });
+    //         that.temp_opportunities = that.temp_opportunities.filter(function(oppo){
+    //           if(oppo.status_id != that.archiveColumnId){
+    //             return oppo;
+    //           }else {
+    //             if(!oppo.is_active)
+    //               return oppo;
+    //           }
+    //         });
 
-            that._getGridOpportunities();
-            that.isRemoveAll = false;
-        }, err => console.log(err)
-    )
+    //         that._getGridOpportunities();
+    //         that.isRemoveAll = false;
+    //     }, err => console.log(err)
+    // )
   }
 
   onChangeCardQuickFilter(event) {

@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener, ElementRef, Renderer2, ViewChild } from '@angular/core';
-import { HttpService } from "../../services/http.service";
-import { EventEmitterService } from "../../services/event-emitter.service";
-import { CONFIG } from '../../config';
+import { LoginService, UserService } from "../../../core";
+// import { HttpService } from "../../services/http.service";
+// import { EventEmitterService } from "../../services/event-emitter.service";
 
 @Component({
   selector: 'app-menu',
@@ -20,38 +20,33 @@ export class MenuComponent implements OnInit {
   public expandedWidth: number = 250;
   public logoStyle: any;
   public wrapperStyle: any;
-  public userId: string = CONFIG.CURRENT_USER_ID;
+  public loggedUser: any;
   
   @ViewChild('sidebar') sidebar: ElementRef;
 
-  constructor(private httpService:HttpService, private elementRef: ElementRef, private renderer: Renderer2, private _eventEmitter: EventEmitterService) {
+  // constructor(private httpService:HttpService, private elementRef: ElementRef, private renderer: Renderer2, private _eventEmitter: EventEmitterService) {
+  constructor(private elementRef: ElementRef, private renderer: Renderer2, private loginService: LoginService, private userService: UserService) {
     this.mouseup = this.unboundMouseup.bind(this);
     this.dragging = this.unboundDragging.bind(this);
   }
 
   ngOnInit() {
-    this.httpService.getUser({id: this.userId}).subscribe(
-        res => {
-          if(res.PreferredMenu == 'expanded'){
-            this.menuToggled = true;
-            this.logoStyle = {
-              'width': '150px',
-              'margin-left': '50px'
-            }
-            this._eventEmitter.menuChange('expanded');
-          } else{
-            this.menuToggled = false;
-            this.logoStyle = {
-              'width': '50px',
-              'margin-left': '4px'
-            }
-            this._eventEmitter.menuChange('collapsed');
-          }
-        },
-        err => {
-          console.log(err._body);
-        }
-      )
+    this.loggedUser = this.loginService.getUserData();
+    if(this.loggedUser.wide_menu){
+      this.menuToggled = true;
+      this.logoStyle = {
+        'width': '150px',
+        'margin-left': '50px'
+      }
+      // this._eventEmitter.menuChange('expanded');
+    } else{
+      this.menuToggled = false;
+      this.logoStyle = {
+        'width': '50px',
+        'margin-left': '4px'
+      }
+      // this._eventEmitter.menuChange('collapsed');
+    }
   }
 
   ngAfterViewInit() {
@@ -71,11 +66,11 @@ export class MenuComponent implements OnInit {
       }
 
       updatedUserParams = {
-        id: this.userId,
-        PreferredMenu: 'expanded'
+        id: this.loggedUser.id,
+        wide_menu: true
       }
 
-      this._eventEmitter.menuChange('expanded');
+      // this._eventEmitter.menuChange('expanded');
     } else{
       this.width = this.collapsedWidth;
 
@@ -85,14 +80,14 @@ export class MenuComponent implements OnInit {
       }
 
       updatedUserParams = {
-        id: this.userId,
-        PreferredMenu: 'collapsed'
+        id: this.loggedUser.id,
+        wide_menu: false
       }
 
-      this._eventEmitter.menuChange('collapsed');
+      // this._eventEmitter.menuChange('collapsed');
     }
 
-    this.httpService.updateUser(updatedUserParams).subscribe(
+    this.userService.updateUser(updatedUserParams).subscribe(
         res => {
           console.log("menu status successfully updated.");
         },
@@ -162,11 +157,11 @@ export class MenuComponent implements OnInit {
       }
 
       updatedUserParams = {
-        id: this.userId,
-        PreferredMenu: 'expanded'
+        id: this.loggedUser.id,
+        wide_menu: true
       }
 
-      this._eventEmitter.menuChange('expanded');
+      // this._eventEmitter.menuChange('expanded');
     } else {
       this.menuToggled = false;
 
@@ -176,19 +171,19 @@ export class MenuComponent implements OnInit {
       }
 
       updatedUserParams = {
-        id: this.userId,
-        PreferredMenu: 'collapsed'
+        id: this.loggedUser.id,
+        wide_menu: false
       }
 
-      this._eventEmitter.menuChange('collapsed');
+      // this._eventEmitter.menuChange('collapsed');
     }
 
-    this.httpService.updateUser(updatedUserParams).subscribe(
-        res => {
-          console.log("menu status successfully updated.");
-        },
-        err => console.log(err, 'opportunity update error')
-      )
+    // this.httpService.updateUser(updatedUserParams).subscribe(
+    //     res => {
+    //       console.log("menu status successfully updated.");
+    //     },
+    //     err => console.log(err, 'opportunity update error')
+    //   )
 
     this.wrapperStyle = {
       '-webkit-user-select': 'auto',

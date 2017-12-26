@@ -1,10 +1,13 @@
 export const ROUTE = {
-  dashboard: "",
+  home: "",
   login: "login",
   sign_up: "sign-up",
   activate_user: "activate",
   reset_password: "reset-password",
-  users: "users"
+  dashboard: "dashboard",
+  users: "users",
+  opportunity: "opportunity",
+  report: "report"
 };
 
 export const ENV_TYPE = {

@@ -1,7 +1,7 @@
 import { PAGES } from '../pages';
 import { ReportSettingParams } from '../report.component';
 import { SharedService } from '../shared.service';
-import { HttpService } from '../../../services/http.service';
+// import { HttpService } from '../../../services/http.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { GridDataResult, PageChangeEvent, RowClassArgs } from '@progress/kendo-angular-grid';
@@ -73,8 +73,8 @@ export class ReportGridComponent implements OnInit {
   availableChartTypes = [];
   chartType: any = this.chartTypes[0];
 
-
-  constructor(private datePipe: DatePipe, private route: ActivatedRoute, private httpService: HttpService, private sharedService: SharedService, private router: Router, private _ngZone: NgZone) {
+  // constructor(private datePipe: DatePipe, private route: ActivatedRoute, private httpService: HttpService, private sharedService: SharedService, private router: Router, private _ngZone: NgZone) {
+  constructor(private datePipe: DatePipe, private route: ActivatedRoute, private sharedService: SharedService, private router: Router, private _ngZone: NgZone) {
     this.sharedService.reportSettingListener().subscribe(params => {
       this.reportParams = $.extend(true, {}, params); // Deep Copy
     })
@@ -115,11 +115,11 @@ export class ReportGridComponent implements OnInit {
   onFilterChange() {
     this.isLoading = true;
     this.state.skip = 0; // Go to first page
-    this.httpService.calculate_v2(this.filter).subscribe(res => {
-      this.isLoading = false;
-      this.dataFromServer = res.data;
-      this.calculateGridData();
-    })
+    // this.httpService.calculate_v2(this.filter).subscribe(res => {
+    //   this.isLoading = false;
+    //   this.dataFromServer = res.data;
+    //   this.calculateGridData();
+    // })
   }
 
   columnList: string[] = [];

@@ -1,10 +1,12 @@
 import { Component } from "@angular/core";
 import { LoginService } from "./core";
 
+declare let $: any;
+
 @Component({
   selector: "app",
   template: `<progress-dialog [progress]="inProgress()"></progress-dialog>
-             <app-menu><router-outlet></router-outlet></app-menu>`,
+             <router-outlet></router-outlet>`,
   host: {'[class.ma-hide-confirmation]': 'inProgress()'}
 })
 export class AppComponent {

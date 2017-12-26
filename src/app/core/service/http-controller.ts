@@ -259,9 +259,4 @@ export class HttpController extends Http {
   //         .map(res => res.json())
   // }
 
-  // updateUser(data) {
-  //     let body = JSON.stringify(data);
-  //     return this.http.put(api_url+'/api/user', body, {headers: this.headers})
-  //         .map(res => res.json())    
-  // }
 }
