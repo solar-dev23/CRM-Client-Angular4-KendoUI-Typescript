@@ -53,7 +53,6 @@ export class UserService extends DataSourceAdapter<any> {
   public updateUser(data: any): Observable<any> {
     let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
     return this.http.put('/rest/user', null, requestOptions).map(res => {
-console.log(res);      
         return res.json();
     })
   }

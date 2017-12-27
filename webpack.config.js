@@ -65,7 +65,7 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         loader: ['raw-loader', 'sass-loader']
-      },
+      },      
       {
         test: /\.(jpg|svg|png)$/i,
         loader: 'url-loader?limit=1&name=assets/img/[name]-[hash].[ext]'

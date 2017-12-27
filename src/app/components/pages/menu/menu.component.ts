@@ -13,7 +13,6 @@ export class MenuComponent implements OnInit {
 
   public menuToggled: boolean = true;
   public width: number;
-  public defaultWidth: number;
   public mousemoveEvent: any; 
   public mouseupEvent: any;
   public collapsedWidth: number = 58;
@@ -49,16 +48,12 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit() {
-    this.defaultWidth = this.sidebar.nativeElement.offsetWidth;
-  }
-
   toggleMenu() {
     this.menuToggled = !this.menuToggled;
     let updatedUserParams = {}
 
     if(this.menuToggled){
-      this.width = this.defaultWidth;
+      this.width = this.expandedWidth;
 
       this.logoStyle = {
         'width': '150px',
@@ -89,7 +84,9 @@ export class MenuComponent implements OnInit {
 
     this.userService.updateUser(updatedUserParams).subscribe(
         res => {
-          console.log("menu status successfully updated.");
+          let userData = this.loggedUser;
+          userData.wide_menu = updatedUserParams['wide_menu'];
+          this.loginService.setUserData(userData);
         },
         err => console.log(err, 'opportunity update error')
       )
@@ -105,7 +102,7 @@ export class MenuComponent implements OnInit {
     if (event.button === 0/*only left mouse click*/) {
 
       if(this.menuToggled){
-        this.width = this.defaultWidth;
+        this.width = this.expandedWidth;
 
         this.logoStyle = {
           'width': '150px',
@@ -143,12 +140,12 @@ export class MenuComponent implements OnInit {
   unboundMouseup(event: any) {
     let updatedUserParams = {}
 
-    if( (this.defaultWidth * 2)/3 < event.clientX )
-      this.width = this.defaultWidth;
+    if( (this.expandedWidth * 2)/3 < event.clientX )
+      this.width = this.expandedWidth;
     else
       this.width = this.collapsedWidth;
 
-    if(this.width == this.defaultWidth){
+    if(this.width == this.expandedWidth){
       this.menuToggled = true;
 
       this.logoStyle = {
@@ -178,12 +175,12 @@ export class MenuComponent implements OnInit {
       // this._eventEmitter.menuChange('collapsed');
     }
 
-    // this.httpService.updateUser(updatedUserParams).subscribe(
-    //     res => {
-    //       console.log("menu status successfully updated.");
-    //     },
-    //     err => console.log(err, 'opportunity update error')
-    //   )
+    this.userService.updateUser(updatedUserParams).subscribe(
+        res => {
+          console.log("menu status successfully updated.");
+        },
+        err => console.log(err, 'opportunity update error')
+      )
 
     this.wrapperStyle = {
       '-webkit-user-select': 'auto',

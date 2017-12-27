@@ -20,7 +20,7 @@ export class RouteController implements CanActivate, CanActivateChild {
   public checkRoute(state: RouterStateSnapshot): boolean {
     let canNavigate = true;
     let url = state.root.firstChild.routeConfig.path;
-    if (url === ROUTE.users && !this.loginService.isLoggedIn()) {
+    if (url === ROUTE.home && !this.loginService.isLoggedIn()) {
       this.router.navigate([ROUTE.login]);
       canNavigate = false;
     }

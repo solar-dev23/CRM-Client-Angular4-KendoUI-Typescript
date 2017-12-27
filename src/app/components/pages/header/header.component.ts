@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { LoginService } from "../../../core";
 import _ from 'lodash';
 
 @Component({
@@ -10,7 +11,7 @@ export class HeaderComponent implements OnInit {
 	@Input() title: string;
 
 	public showMenu: boolean= false;
-  constructor() {
+  constructor(private loginService: LoginService) {
   }
 
   ngOnInit() {
@@ -18,8 +19,12 @@ export class HeaderComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-  	if(!_.includes(event.target.classList, 'menu-icon')){
-      this.showMenu = false
-    }
+  	// if(!_.includes(event.target.classList, 'menu-icon')){
+   //    this.showMenu = false
+   //  }
+  }
+
+  protected logout(): void {
+    this.loginService.logout();
   }
 }

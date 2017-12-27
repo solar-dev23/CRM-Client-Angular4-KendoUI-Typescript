@@ -1,7 +1,4 @@
-<div class="ma-navigation-bar">
-    <h2 class="ma-caption ma-text-black">Boilerplate</h2>
-    <button class="ma-logout-button k-button k-primary" (click)="logout()">Logout</button>
-</div>
+<app-header title="Users"></app-header>
 <div class="ma-content">
     <user-grid *ngIf="hasAdministrationPermission"></user-grid>
 </div>

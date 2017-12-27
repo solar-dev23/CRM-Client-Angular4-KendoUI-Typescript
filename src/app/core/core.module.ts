@@ -5,6 +5,7 @@ import { LoginService } from "./service/login.service";
 import { UserService } from "./service/user.service";
 import { HttpController } from "./service/http-controller";
 import { RouteController } from "./service/route-controller.service";
+import { DashboardService } from "./service/dashboard.service";
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { RouteController } from "./service/route-controller.service";
     UserService,
     LocalStorageService,
     RouteController,
+    DashboardService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

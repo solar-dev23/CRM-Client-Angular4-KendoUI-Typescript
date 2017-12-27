@@ -67,6 +67,10 @@ export class LoginService {
     return this.authData ? this.authData.userData : null;
   }
 
+  public setUserData(userData: any): void {
+    this.authData.userData = userData;
+  }
+
   public hasAdministrationPermission(): boolean {
     return this.hasAccess(PERMISSIONS.administration);
   }

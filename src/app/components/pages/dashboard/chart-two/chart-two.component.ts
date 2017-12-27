@@ -1,12 +1,13 @@
-// import { HttpService } from '../../../services/http.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
+import { DashboardService } from '../../../../core';
 
 @Component({
   selector: 'app-chart-two',
   templateUrl: './chart-two.component.html',
   styleUrls: ['./chart-two.component.scss']
 })
+
 export class ChartTwoComponent implements OnInit {
   Type = {
     BAR_VERTICAL: 'bar-vert',
@@ -47,7 +48,7 @@ export class ChartTwoComponent implements OnInit {
   }
 
   // constructor(private httpService: HttpService) {
-  constructor() {
+  constructor(private dashboardService: DashboardService) {
 
   }
 
@@ -108,12 +109,12 @@ export class ChartTwoComponent implements OnInit {
       this.filter.currency = 'All';
     }
     this.isLoading = true;
-    // this.httpService.calculate_v2(this.filter).subscribe(res => {
-    //   this.isLoading = false;
-    //   this.dataFromServer = res.data;
-    //   console.log(res.data, 'response data');
-    //   this.updatePieChart();
-    // })
+    this.dashboardService.calculate_v2(this.filter).subscribe(res => {
+      this.isLoading = false;
+      this.dataFromServer = res.data;
+      console.log(res.data);
+      this.updatePieChart();
+    })    
   }
   public labelContent(e: any): string {
     return e.category;

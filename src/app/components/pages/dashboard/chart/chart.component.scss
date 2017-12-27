@@ -1,0 +1,39 @@
+div {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+label {
+    margin-left: .5rem;
+    font-size: 80%;
+
+    &.big {
+        font-weight: 800;
+        margin-left: 1rem;
+        margin-right: .5rem;
+    }
+    &:first-child {
+        margin-left: 0;
+    }
+}
+.ex-small {
+    width: 80px;
+}
+.small {
+    width: 120px;
+}
+.normal {
+    width: 155px;
+}
+.chart {
+    display: inline-block;
+    width: calc(100% - 170px);
+}
+.legend {
+    float: right;
+}
+
+app-chart-legend,
+report-chart-legend {
+    width: 155px;
+    display: block;
+}

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { LoginService } from "../../../core";
 
 @Component({
 	selector: 'dashboard',
@@ -7,8 +6,7 @@ import { LoginService } from "../../../core";
 	styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-  public constructor(private loginService: LoginService) {
-
+  public constructor() {
   }
 
   ngOnInit() {
