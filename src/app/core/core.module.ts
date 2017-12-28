@@ -6,6 +6,10 @@ import { UserService } from "./service/user.service";
 import { HttpController } from "./service/http-controller";
 import { RouteController } from "./service/route-controller.service";
 import { DashboardService } from "./service/dashboard.service";
+import { OpportunityService } from "./service/opportunity.service";
+import { StatusService } from "./service/status.service";
+import { ReminderService } from "./service/reminder.service";
+import { EventEmitterService } from "./service/event-emitter.service";
 
 
 @NgModule({
@@ -22,6 +26,10 @@ import { DashboardService } from "./service/dashboard.service";
     LocalStorageService,
     RouteController,
     DashboardService,
+    OpportunityService,
+    StatusService,
+    ReminderService,
+    EventEmitterService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

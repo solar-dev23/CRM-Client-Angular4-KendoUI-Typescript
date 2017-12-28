@@ -3,11 +3,10 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs";
 import { HttpUtils } from "../http-utils";
-import { LoginService } from "./login.service";
 
 @Injectable()
 export class DashboardService {
-  public constructor(private http: Http, private loginService: LoginService) {
+  public constructor(private http: Http) {
   };
 
   public calculate(data: any): Observable<any> {

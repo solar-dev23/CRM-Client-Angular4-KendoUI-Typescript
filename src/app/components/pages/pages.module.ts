@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { DndModule } from 'ng2-dnd';
+import { LocalStorageModule } from 'angular-2-local-storage';
 import { CrmEditorModule, CrmGridModule, CrmDialogModule } from "crm-platform";
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
@@ -54,7 +55,11 @@ import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-gri
     CrmDialogModule,
     SharedModule,
     RouterModule,
-    DndModule,
+    DndModule.forRoot(),
+    LocalStorageModule.withConfig({
+        prefix: 'drag-drop',
+        storageType: 'localStorage'
+    }),
     MultiselectDropdownModule,
 
     // Register the modules

@@ -1,7 +1,5 @@
 import { Component, OnInit, HostListener, ElementRef, Renderer2, ViewChild } from '@angular/core';
-import { LoginService, UserService } from "../../../core";
-// import { HttpService } from "../../services/http.service";
-// import { EventEmitterService } from "../../services/event-emitter.service";
+import { LoginService, UserService, EventEmitterService } from "../../../core";
 
 @Component({
   selector: 'app-menu',
@@ -23,8 +21,13 @@ export class MenuComponent implements OnInit {
   
   @ViewChild('sidebar') sidebar: ElementRef;
 
-  // constructor(private httpService:HttpService, private elementRef: ElementRef, private renderer: Renderer2, private _eventEmitter: EventEmitterService) {
-  constructor(private elementRef: ElementRef, private renderer: Renderer2, private loginService: LoginService, private userService: UserService) {
+  constructor(
+    private elementRef: ElementRef, 
+    private renderer: Renderer2, 
+    private loginService: LoginService, 
+    private _eventEmitter: EventEmitterService,
+    private userService: UserService) 
+  {
     this.mouseup = this.unboundMouseup.bind(this);
     this.dragging = this.unboundDragging.bind(this);
   }
@@ -37,14 +40,14 @@ export class MenuComponent implements OnInit {
         'width': '150px',
         'margin-left': '50px'
       }
-      // this._eventEmitter.menuChange('expanded');
+      this._eventEmitter.menuChange('expanded');
     } else{
       this.menuToggled = false;
       this.logoStyle = {
         'width': '50px',
         'margin-left': '4px'
       }
-      // this._eventEmitter.menuChange('collapsed');
+      this._eventEmitter.menuChange('collapsed');
     }
   }
 
@@ -65,7 +68,7 @@ export class MenuComponent implements OnInit {
         wide_menu: true
       }
 
-      // this._eventEmitter.menuChange('expanded');
+      this._eventEmitter.menuChange('expanded');
     } else{
       this.width = this.collapsedWidth;
 
@@ -79,7 +82,7 @@ export class MenuComponent implements OnInit {
         wide_menu: false
       }
 
-      // this._eventEmitter.menuChange('collapsed');
+      this._eventEmitter.menuChange('collapsed');
     }
 
     this.userService.updateUser(updatedUserParams).subscribe(
@@ -158,7 +161,7 @@ export class MenuComponent implements OnInit {
         wide_menu: true
       }
 
-      // this._eventEmitter.menuChange('expanded');
+      this._eventEmitter.menuChange('expanded');
     } else {
       this.menuToggled = false;
 
@@ -172,7 +175,7 @@ export class MenuComponent implements OnInit {
         wide_menu: false
       }
 
-      // this._eventEmitter.menuChange('collapsed');
+      this._eventEmitter.menuChange('collapsed');
     }
 
     this.userService.updateUser(updatedUserParams).subscribe(

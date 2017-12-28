@@ -26,10 +26,10 @@ const appRoutes: Routes = [
       { path: ROUTE.dashboard, component: DashboardComponent, canActivate: [RouteController] },
       { path: ROUTE.users, component: UsersComponent, canActivate: [RouteController] },
       { path: ROUTE.opportunity, component: OpportunityComponent, canActivate: [RouteController] },
-      { path: ROUTE.report, component: ReportComponent, canActivate: [RouteController] }
+      { path: ROUTE.report, component: ReportComponent, canActivate: [RouteController] },
+      { path: "**", redirectTo: ROUTE.users, pathMatch: 'full' }
     ]
   },
-  { path: "**", redirectTo: ROUTE.users, pathMatch: 'full' }
 ];
 
 @NgModule({
