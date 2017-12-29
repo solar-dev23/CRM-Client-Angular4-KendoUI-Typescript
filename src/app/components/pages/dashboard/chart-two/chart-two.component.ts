@@ -47,7 +47,6 @@ export class ChartTwoComponent implements OnInit {
     rotation: -45
   }
 
-  // constructor(private httpService: HttpService) {
   constructor(private dashboardService: DashboardService) {
 
   }

@@ -7,7 +7,8 @@ export const ROUTE = {
   dashboard: "dashboard",
   users: "users",
   opportunity: "opportunity",
-  report: "report"
+  report: "report",
+  reportPage: "report/:page"
 };
 
 export const ENV_TYPE = {
@@ -16,11 +17,13 @@ export const ENV_TYPE = {
 };
 
 export const ENTITY_NAME = {
-  user: "users"
+  user: "users",
+  opportunity: "opportunity"
 };
 
 export const REQUEST_URL = {
-  unique_user: "/user/already-exist"
+  unique_user: "/user/already-exist",
+  unique_opportunity: "/opportunity/already-exist",
 };
 
 export const PERMISSIONS = {

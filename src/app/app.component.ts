@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewEncapsulation } from "@angular/core";
 import { LoginService } from "./core";
 
 declare let $: any;
@@ -7,7 +7,9 @@ declare let $: any;
   selector: "app",
   template: `<progress-dialog [progress]="inProgress()"></progress-dialog>
              <router-outlet></router-outlet>`,
-  host: {'[class.ma-hide-confirmation]': 'inProgress()'}
+  host: {'[class.ma-hide-confirmation]': 'inProgress()'},
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
 

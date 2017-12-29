@@ -1,7 +1,7 @@
 import "./pages.module.less";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { DndModule } from 'ng2-dnd';
 import { LocalStorageModule } from 'angular-2-local-storage';
@@ -33,6 +33,7 @@ import { MenuComponent } from './menu/menu.component';
 import { HeaderComponent } from './header/header.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OpportunityComponent } from './opportunity/opportunity.component';
+import { OpportunityGridComponent } from './opportunity/opportunity-grid.component';
 import { ChartComponent } from './dashboard/chart/chart.component';
 import { ChartLegendComponent } from './dashboard/chart-legend/chart-legend.component';
 import { ChartTwoComponent } from './dashboard/chart-two/chart-two.component';
@@ -44,6 +45,9 @@ import { ReportChartLegendComponent } from './report/chart-legend/chart-legend.c
 import { ReportChartTwoComponent } from './report/chart-two/chart-two.component';
 
 import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-grid/dist/es/main';
+
+import { SharedService } from './report/shared.service';
+
 
 @NgModule({
   imports: [
@@ -74,7 +78,7 @@ import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-gri
     PopupModule,
     DialogModule,
     InputsModule,
-    DateInputsModule,
+    DateInputsModule
   ],
   declarations: [
     LoginComponent,
@@ -92,13 +96,15 @@ import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-gri
     ChartLegendComponent,
     ChartTwoComponent,
     OpportunityComponent,
+    OpportunityGridComponent,
     ReportComponent,
     ReportPrintComponent,
     ReportGridComponent,
     ReportChartComponent,
     ReportChartLegendComponent,
     ReportChartTwoComponent
-  ]
+  ],
+  providers: [SharedService, DatePipe]
 })
 export class PagesModule {
 }

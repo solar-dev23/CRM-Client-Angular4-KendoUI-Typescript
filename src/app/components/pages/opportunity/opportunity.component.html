@@ -137,17 +137,9 @@
   </div>
 
   <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
-      <!-- <kendo-grid
-          [kendoGridBinding]="temp_opportunities"
-          [pageSize]="pageSize"
-          [pageable]="true"
-          [sortable]="{
-            allowUnsort: true,
-            mode: 'multiple'
-          }"
-          [sort]="sort"
-          (sortChange)="sortChange($event)"
-      > -->
+    <opportunity-grid></opportunity-grid>
+  </div>
+  <!-- <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
       <kendo-grid
           [data]="gridView"
           [pageSize]="state.take"
@@ -267,7 +259,7 @@
           </kendo-grid-pdf>
           <kendo-grid-excel fileName="Opportunities.xlsx" [fetchData]="allData"></kendo-grid-excel>
       </kendo-grid>
-  </div>
+  </div> -->
 
 </div>
 

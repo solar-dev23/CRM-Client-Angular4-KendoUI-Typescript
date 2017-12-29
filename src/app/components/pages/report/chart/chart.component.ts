@@ -1,6 +1,6 @@
-// import { HttpService } from '../../../services/http.service';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
+import { DashboardService } from '../../../../core';
 
 @Component({
   selector: 'report-chart',
@@ -43,8 +43,7 @@ export class ReportChartComponent implements OnInit {
     rotation: -45
   }
 
-  // constructor(private httpService: HttpService) {
-  constructor() {
+  constructor(private dashboardService: DashboardService) {
 
   }
 
@@ -112,11 +111,11 @@ export class ReportChartComponent implements OnInit {
       this.valueList = ['Count'];
     }
     this.isLoading = true;
-    // this.httpService.calculate(this.filter).subscribe(res => {
-    //   this.isLoading = false;
-    //   this.dataFromServer = res.data;
-    //   this.updatePieChart();
-    // })
+    this.dashboardService.calculate(this.filter).subscribe(res => {
+      this.isLoading = false;
+      this.dataFromServer = res.data;
+      this.updatePieChart();
+    })
   }
   public labelContent(e: any): string {
     return e.category;

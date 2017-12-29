@@ -178,7 +178,7 @@ export class OpportunityComponent implements OnInit {
                   return container;
               })
 
-              that.opportunityService.getOpportunities().subscribe(
+              that.opportunityService.read().subscribe(
                     res => {
                         that.opportunities = _.toArray(res);
 
@@ -337,7 +337,7 @@ export class OpportunityComponent implements OnInit {
 
     if(val == 'opportunity'){
       // Because of checking notify
-      this.opportunityService.updateOpportunity(event).subscribe(
+      this.opportunityService.save(event).subscribe(
           res => {
             this._reorder(val);
           }
@@ -391,7 +391,7 @@ export class OpportunityComponent implements OnInit {
       order: opportunity.order,
       bgColor: bgColor
     }
-    this.opportunityService.updateOpportunity(params).subscribe(
+    this.opportunityService.save(params).subscribe(
         res => {
             opportunity.bgColor = bgColor;
             this.widgetId = '';
@@ -525,7 +525,7 @@ export class OpportunityComponent implements OnInit {
           user_id: this.userId
         }
 
-        this.opportunityService.createOpportunity(params).subscribe(
+        this.opportunityService.save(params).subscribe(
             res => {
               that.isOpened = false;
               _.forEach(that.containers, function(container){
@@ -574,7 +574,7 @@ export class OpportunityComponent implements OnInit {
             }
           }
 
-          this.opportunityService.updateOpportunity(params).subscribe(
+          this.opportunityService.save(params).subscribe(
               res => {
                 that.isOpened = false;
 
@@ -762,7 +762,7 @@ export class OpportunityComponent implements OnInit {
       user_id: this.userId
     }
 
-    this.opportunityService.createOpportunity(params).subscribe(
+    this.opportunityService.save(params).subscribe(
         res => {
           that.newOpportunityName = '';
           that.qColumnId = -1;
@@ -799,7 +799,7 @@ export class OpportunityComponent implements OnInit {
       id: this.removeObj['id']
     }
 
-    this.opportunityService.deleteOpportunity(params).subscribe(
+    this.opportunityService.remove(params).subscribe(
         res => {
             _.forEach(that.containers, function(container){
                 if(container.id == that.removeObj['status_id']){
@@ -1144,7 +1144,7 @@ export class OpportunityComponent implements OnInit {
       order: this.archiveObj['order'],
       is_active: false
     }
-    this.opportunityService.updateOpportunity(params).subscribe(
+    this.opportunityService.save(params).subscribe(
         res => {
             _.forEach(that.opportunities, function(oppo) {
               if(oppo.id == that.archiveObj['id'])

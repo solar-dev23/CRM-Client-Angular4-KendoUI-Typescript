@@ -1,12 +1,13 @@
-// import { HttpService } from '../../../services/http.service';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
+import { DashboardService } from '../../../../core';
 
 @Component({
   selector: 'report-chart-two',
   templateUrl: './chart-two.component.html',
   styleUrls: ['./chart-two.component.scss']
 })
+
 export class ReportChartTwoComponent implements OnInit {
   Type = {
     BAR_VERTICAL: 'bar-vert',
@@ -39,8 +40,7 @@ export class ReportChartTwoComponent implements OnInit {
     rotation: -45
   }
 
-  // constructor(private httpService: HttpService) {
-  constructor() {
+  constructor(private dashboardService: DashboardService) {
 
   }
 
@@ -100,11 +100,11 @@ export class ReportChartTwoComponent implements OnInit {
       this.filter.currency = 'All';
     }
     this.isLoading = true;
-    // this.httpService.calculate_v2(this.filter).subscribe(res => {
-    //   this.isLoading = false;
-    //   this.dataFromServer = res.data;
-    //   this.updatePieChart();
-    // })
+    this.dashboardService.calculate_v2(this.filter).subscribe(res => {
+      this.isLoading = false;
+      this.dataFromServer = res.data;
+      this.updatePieChart();
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {

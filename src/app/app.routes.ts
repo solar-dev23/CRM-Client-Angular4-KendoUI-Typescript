@@ -27,6 +27,7 @@ const appRoutes: Routes = [
       { path: ROUTE.users, component: UsersComponent, canActivate: [RouteController] },
       { path: ROUTE.opportunity, component: OpportunityComponent, canActivate: [RouteController] },
       { path: ROUTE.report, component: ReportComponent, canActivate: [RouteController] },
+      { path: ROUTE.reportPage, component: ReportComponent, canActivate: [RouteController] },
       { path: "**", redirectTo: ROUTE.users, pathMatch: 'full' }
     ]
   },

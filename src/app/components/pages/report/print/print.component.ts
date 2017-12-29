@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@
 import { ReportSettingParams } from '../report.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import b64toBlob from 'b64-to-blob';
+const b64toBlob = require('b64-to-blob');
 
 declare var $: any;
 
@@ -34,7 +34,7 @@ export class ReportPrintComponent implements OnInit {
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     //Add '${implements OnChanges}' to the class.
     console.log(changes, 'print onchanges');
-    if (changes.pdfData) {
+    if (this.pdfData !=='' && changes.pdfData) {
       this.transformedURL = this.transform(this.pdfData);
     }
   }
@@ -49,7 +49,6 @@ export class ReportPrintComponent implements OnInit {
   }
   transform(url) {
     const b64 = url.replace("data:application/pdf;base64,", "");
-    
     const contentType = "application/pdf",
       blob = b64toBlob(b64, contentType),
       blobUrl = URL.createObjectURL(blob);
