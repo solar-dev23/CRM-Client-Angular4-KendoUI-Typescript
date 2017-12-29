@@ -98,7 +98,12 @@ module.exports = {
     }),
     new ExtractTextPlugin({
       filename: '[name]-[hash].css'
-    })
+    }),
+    new webpack.ProvidePlugin({
+      '$': 'jquery',
+      'jquery': 'jquery',
+      'jQuery': 'jquery'
+    }),
   ]
 };
 
