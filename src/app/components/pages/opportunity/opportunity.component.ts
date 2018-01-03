@@ -268,29 +268,29 @@ export class OpportunityComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-    // if(!_.includes(event.target.classList, 'add-column-text')){
-    //   this.onAddNewColumn();
-    // }
+    if(!_.includes(event.target.classList, 'add-column-text')){
+      this.onAddNewColumn();
+    }
 
-    // if(!_.includes(event.target.classList, 'add-column-text') && !_.includes(event.target.classList, 'add-column-button-icon')){
-    //   this.addColumn = false;
-    // }
+    if(!_.includes(event.target.classList, 'add-column-text') && !_.includes(event.target.classList, 'add-column-button-icon')){
+      this.addColumn = false;
+    }
 
-    // if(!_.includes(event.target.classList, 'column-name')){
-    //   this.onUpdateColumn();
-    // }
+    if(!_.includes(event.target.classList, 'column-name')){
+      this.onUpdateColumn();
+    }
 
-    // if(!_.includes(event.target.classList, 'column-popup')){
-    //   this.sColumnId = -1;
-    // }
+    if(!_.includes(event.target.classList, 'column-popup')){
+      this.sColumnId = -1;
+    }
 
-    // if(!_.includes(event.target.classList, 'card-popup')){
-    //   this.widgetId = '';
-    // }
+    if(!_.includes(event.target.classList, 'card-popup')){
+      this.widgetId = '';
+    }
 
-    // if(_.includes(event.target.classList, 'dropdown-toggle')){
-    //   this.isShowFilterSearch = !this.isShowFilterSearch;
-    // }
+    if(_.includes(event.target.classList, 'dropdown-toggle')){
+      this.isShowFilterSearch = !this.isShowFilterSearch;
+    }
   }
 
   onScroll(event) {

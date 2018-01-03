@@ -1,4 +1,18 @@
 <app-header title="Users"></app-header>
 <div class="ma-content">
-    <user-grid *ngIf="hasAdministrationPermission"></user-grid>
+	<div class="row">
+    <div class="col-md-2">
+      <button id="btnaddnewuser" kendoButton  [primary]="true"  (click)="open()"><span class="k-icon k-i-plus"></span> Add User</button>
+    </div>
+    <div class="search-container pull-right">
+      <label [for]="drpFilter">View: </label>
+      <kendo-dropdownlist #drpFilter [data]="viewlist" [(ngModel)]="selectview" (selectionChange)="selectionChange($event)">
+      </kendo-dropdownlist>
+      <a class="k-button k-primary" (click)="onChangeView('card')"><span class="k-icon k-i-grid"></span></a>
+      <a class="k-button k-primary" (click)="onChangeView('grid')"><span class="k-icon k-i-grid-layout"></span></a>
+      <input kendoTextBox /><a style="margin-left:5px " (click)="searchOnClick($event)"><span class="k-icon k-i-search"></span></a>
+    </div>
+  </div>
+  <user-grid *ngIf="hasAdministrationPermission && viewOpt=='grid'"></user-grid>
+  <user-card *ngIf="hasAdministrationPermission && viewOpt=='card'"></user-card>
 </div>

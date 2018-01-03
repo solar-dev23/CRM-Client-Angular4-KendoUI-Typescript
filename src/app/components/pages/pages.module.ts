@@ -7,6 +7,8 @@ import { DndModule } from 'ng2-dnd';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { CrmEditorModule, CrmGridModule, CrmDialogModule } from "crm-platform";
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { ImageCropperComponent, CropperSettings, ImageCropperModule } from 'ng2-img-cropper';
 
 // Kendo UI modules
 import { ChartsModule } from '@progress/kendo-angular-charts';
@@ -29,6 +31,7 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
 import { HomeComponent } from "./home.component";
 import { UsersComponent } from "./users/users.component";
 import { UserGridComponent } from "./users/user-grid.component";
+import { UserCardComponent } from "./users/user-card.component";
 import { MenuComponent } from './menu/menu.component';
 import { HeaderComponent } from './header/header.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -43,6 +46,8 @@ import { ReportGridComponent } from './report/grid/grid.component';
 import { ReportChartComponent } from './report/chart/chart.component';
 import { ReportChartLegendComponent } from './report/chart-legend/chart-legend.component';
 import { ReportChartTwoComponent } from './report/chart-two/chart-two.component';
+import { ImageCropperDialogComponent } from './image-cropper/image-cropper.component';
+import { ControlMessages } from '../shared/control-messages';
 
 import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-grid/dist/es/main';
 
@@ -65,6 +70,8 @@ import { SharedService } from './report/shared.service';
         storageType: 'localStorage'
     }),
     MultiselectDropdownModule,
+    NgxPaginationModule,
+    ImageCropperModule,
 
     // Register the modules
     // Kendo UI
@@ -89,6 +96,7 @@ import { SharedService } from './report/shared.service';
     HomeComponent,
     UsersComponent,
     UserGridComponent,
+    UserCardComponent,
     MenuComponent,
     HeaderComponent,
     DashboardComponent,
@@ -102,7 +110,9 @@ import { SharedService } from './report/shared.service';
     ReportGridComponent,
     ReportChartComponent,
     ReportChartLegendComponent,
-    ReportChartTwoComponent
+    ReportChartTwoComponent,
+    ImageCropperDialogComponent,
+    ControlMessages
   ],
   providers: [SharedService, DatePipe]
 })

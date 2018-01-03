@@ -180,7 +180,9 @@ export class MenuComponent implements OnInit {
 
     this.userService.updateUser(updatedUserParams).subscribe(
         res => {
-          console.log("menu status successfully updated.");
+          let userData = this.loggedUser;
+          userData.wide_menu = updatedUserParams['wide_menu'];
+          this.loginService.setUserData(userData);
         },
         err => console.log(err, 'opportunity update error')
       )

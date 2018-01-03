@@ -56,4 +56,25 @@ export class UserService extends DataSourceAdapter<any> {
         return res.json();
     })
   }
+
+  public queryCards(state?: any, callback?:any): any{
+    var skip=1, pagesize=10, isactive=``;
+    if(state!=null){
+        skip = state.skip * state.take;
+        pagesize = state.take;
+    }
+
+    if(state.IsActive!=undefined && state.IsActive !=null){
+        isactive=`&isactive=${state.IsActive}`;
+    }
+
+    if(callback==null){
+        callback=function(){};      
+    }
+
+    return this.http
+        .get(`/rest/user?skip=${skip}&pagesize=${pagesize}${isactive}`)
+        .map(response=> response.json())
+        .map(response=>{return {data:response.rows, count:response.count,skip:skip}});
+  }
 }

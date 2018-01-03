@@ -69,6 +69,7 @@ export class LoginService {
 
   public setUserData(userData: any): void {
     this.authData.userData = userData;
+    this.localStorage.set(LoginService.AUTH_DATA_KEY, this.authData);
   }
 
   public hasAdministrationPermission(): boolean {

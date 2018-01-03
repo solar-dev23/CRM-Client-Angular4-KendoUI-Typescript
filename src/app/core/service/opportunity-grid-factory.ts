@@ -1,10 +1,13 @@
 import { FIELD_TYPE, FieldTemplate, Grid, GridColumn, GridTemplate, VALIDATOR_TYPE, ERROR_MESSAGES } from "crm-platform";
 import { ENTITY_NAME, REQUEST_URL } from "../constants";
 // import { DisplayNameField } from "../domain/display-name-field";
-// import { UserRole } from "../domain/user-role";
-// import { UserRoleField } from "../domain/user-role-field";
+// import { Statuses } from "../domain/statuses";
+import { StatusField } from "../domain/status-field";
+import { StatusService } from "./status.service";
+import * as _ from "lodash";
 
 export class OpportunityGridFactory {
+  public static statuses = [];
 
   public static NAME_FIELD_TEMPLATE: FieldTemplate = {
     name: "name",
@@ -79,22 +82,27 @@ export class OpportunityGridFactory {
       {field: OpportunityGridFactory.COMPANY_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.CONTACT_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.REVENUE_FIELD_TEMPLATE},
-      {field: OpportunityGridFactory.STATUS_FIELD_TEMPLATE},
+      // {field: OpportunityGridFactory.STATUS_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.RATING_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.CREATED_DATE_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.DESCRIPTION_FIELD_TEMPLATE}
     ]
   };
 
-  private constructor() {
+  private constructor(private statusService: StatusService) {
     // do nothing;
+    this.statusService.getStatuses().subscribe (
+      res => {
+        OpportunityGridFactory.statuses = _.toArray(res);
+      }
+    )
   }
 
   public static newGridInstance(): Grid {
     let grid = Grid.newInstance(OpportunityGridFactory.OPPORTUNITY_GRID_TEMPLATE);
     // grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
-    // let roleField = UserRoleField.newUserRoleFieldInstance(OpportunityGridFactory.ROLE_FIELD_TEMPLATE, roles);
-    // grid.addColumn(GridColumn.newInstanceByField(roleField), grid.columns.length - 1);
+    let statusField = StatusField.newStatusFieldInstance(OpportunityGridFactory.STATUS_FIELD_TEMPLATE, OpportunityGridFactory.statuses);
+    grid.addColumn(GridColumn.newInstanceByField(statusField), grid.columns.length - 1);
     
     return grid;
   }

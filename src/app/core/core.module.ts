@@ -10,6 +10,7 @@ import { OpportunityService } from "./service/opportunity.service";
 import { StatusService } from "./service/status.service";
 import { ReminderService } from "./service/reminder.service";
 import { EventEmitterService } from "./service/event-emitter.service";
+import { ImageUploadService } from "./service/image-upload.service";
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { EventEmitterService } from "./service/event-emitter.service";
     StatusService,
     ReminderService,
     EventEmitterService,
+    ImageUploadService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

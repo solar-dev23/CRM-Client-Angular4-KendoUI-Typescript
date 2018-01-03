@@ -1,0 +1,9 @@
+<kendo-dialog title="Crop Profile Image" *ngIf="visible" (close)="close('cancel')" [minWidth]="250" [width]="450">
+
+  <img-cropper #cropper [image]="imageData" [settings]="imageCropSettings"></img-cropper>
+  
+  <kendo-dialog-actions>
+    <button kendoButton (click)="close('cancel')">Cancel</button>
+    <button kendoButton (click)="close('yes')" primary="true">Confirm</button>
+  </kendo-dialog-actions>
+</kendo-dialog>

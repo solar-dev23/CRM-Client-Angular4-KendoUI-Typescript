@@ -1,0 +1,267 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="padding:20px;">
+  <div class="row">
+    <div class="col-md-10">
+    	<div class="row">
+    		<div class=" col-lg-3 col-md-3 col-sm-3 col-xs-12 card-padding-col" *ngFor="let user of users | paginate: { itemsPerPage: page.take, currentPage: page.skip, totalItems:page.totals }">
+          <div class="user-card media" [ngStyle]="setColorOnCard(user)">
+            <span class="card-gear-icon" (click)="showMenu($event)"><i class="fa fa-gear"></i></span>
+              <div class="card-menu" (mouseleave)="menuLeave($event)">
+                <a href="javascript:void(0)" class="user-option" (click)="editUser(user)">Edit</a>
+                <a href="javascript:void(0)" class="user-option" (click)="deleteUser(user)">Delete</a>
+                <div>
+                  <a href="javascript:void(0)" *ngFor="let colormenu of menuColors" [style.color]="colormenu.color" class="color-option" (click)="changeColor(user,colormenu)">
+                    <i class="fa fa-sticky-note" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            <div  (click)="editUser(user)">
+              <div class="media-left">
+                <a href="javascript:void(0)">
+                  <img class="media-object" [src]="user.Image" alt="No Image" style="width:80px;height:80px">
+                </a>
+              </div>
+              <div class="media-body">
+                <div>
+                  <p><span>{{user.DisplayName}}</span></p>
+                  <p class="card-address">{{user.Street}} {{user.City}}{{ user.State||user.Country||user.Zip?',':'' }} {{user.State}} {{user.Country}} {{user.Zip}}</p>
+                  <p class="card-email">{{user.Email}}</p>
+                  <p>{{user.Role}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+    		</div>
+    	</div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="has-text-centered">
+              <!--<pagination-controls (pageChange)="pageChange($event)" [hidden]="pagingHide"></pagination-controls>-->
+              <pagination-template #p="paginationApi"   (pageChange)="pageChange($event)" [hidden]="pagingHide">
+                <ul class="pagination">
+
+                  <li class="page-item" [class.disabled]="p.isFirstPage()">
+                      <a class="page-link" href="javascript:void(0)" (click)="jumpFirst(p)" *ngIf="!p.isFirstPage()"> <i class="fa fa-angle-double-left"></i> </a>
+                      <a class="page-link" href="javascript:void(0)" *ngIf="p.isFirstPage()"> <i class="fa fa-angle-double-left"></i> </a>
+                  </li>
+                  <li class="page-item" [class.disabled]="p.isFirstPage()">
+                      <a class="page-link" href="javascript:void(0)" (click)="p.previous()" *ngIf="!p.isFirstPage()"> <i class="fa fa-angle-left"></i> </a>
+                      <a class="page-link" href="javascript:void(0)" *ngIf="p.isFirstPage()"> <i class="fa fa-angle-left"></i> </a>
+                  </li>
+
+                  <li class="page-item" *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value">
+                      <a class="page-link" (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                          <span>{{ page.label }}</span>
+                      </a>
+                      <a class="page-link" href="javascript:void(0)" *ngIf="p.getCurrent() === page.value">
+                          <span>{{ page.label }}</span>
+                      </a>
+                  </li>
+
+                  <li class="page-item" [class.disabled]="p.isLastPage()">
+                      <a class="page-link" href="javascript:void(0)" (click)="p.next()" *ngIf="!p.isLastPage()"> <i class="fa fa-angle-right"></i> </a>
+                      <a class="page-link" href="javascript:void(0)" *ngIf="p.isLastPage()"> <i class="fa fa-angle-right"></i> </a>
+                  </li>
+
+                  <li class="page-item" [class.disabled]="p.isLastPage()">
+                      <a class="page-link" href="javascript:void(0)" (click)="jumpLast(p)" *ngIf="!p.isLastPage()"><i class="fa fa-angle-double-right"></i> </a>
+                      <a class="page-link" href="javascript:void(0)" *ngIf="p.isLastPage()"><i class="fa fa-angle-double-right"></i> </a>
+                  </li>
+                </ul>
+
+              </pagination-template>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <!--Dialog binding-->
+        <div class="col-md-12">
+          <kendo-dialog title="{{title}}" *ngIf="opened" (close)="close('cancel')" [minWidth]="250" [width]="600">
+              <div>
+                  <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <form class="k-form" [formGroup]="userEditForm">
+                              <div class="row">
+                                <div class="col-md-8">
+                                  <label class="k-form-field">
+                                      <span class="required">First Name</span>
+                                      <input formControlName="FirstName" id="FirstName" class="k-textbox" placeholder="First Name" (change)="changeDisplayName()" [value]="userEditForm.value.FirstName"/>
+                                      <control-messages [control]="userEditForm.controls.FirstName"></control-messages>
+                                  </label>
+                                  <label class="k-form-field">
+                                      <span class="required">Last Name</span>
+                                      <input formControlName="LastName" id="LastName" class="k-textbox" placeholder="Last Name" (change)="changeDisplayName()" [value]="userEditForm.value.LastName"/>
+                                      <control-messages [control]="userEditForm.controls.LastName"></control-messages>
+                                  </label>
+                                </div>
+                                <div class="col-md-4 image-edit-icon">
+                                  <div class="img-cover" style="width:130px;height:120px">
+                                    <img [src]="image==null?imageUploadUrl:image" style="width:130px;height: 120px;" alt=""/>
+                                  </div>
+                                  <input id="card-upload-input" type="file" class="upload custom-file-selector" accept="image/*" (change)="fileChangeListener($event); fileSelector.value=null" #fileSelector >
+                                  <a href="javascript:void(0)" class="img-edit-btn" (click)="onProfileImgClick($event)" ><span><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span></a>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <label class="k-form-field">
+                                      <span>Display Name</span>
+                                      <input name="DisplayName" formControlName="DisplayName" id="DisplayName" class="k-textbox" placeholder="Display Name" [value]="userEditForm.value.DisplayName" />
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label class="k-form-field">
+                                      <span class="required">Email</span>
+                                      <input name="Email" class="k-textbox" placeholder="Email" formControlName="Email" id="email" [value]="userEditForm.value.Email"/>
+                                      <control-messages [control]="userEditForm.controls.Email"></control-messages>
+                                  </label>
+                                </div>
+                                <div class="col-md-6">
+                                   <label class="k-form-field">
+                                      <span>Phone#</span>
+                                      <input name="PhoneNo" formControlName="PhoneNo" id="PhoneNo" class="k-textbox" placeholder="Phone" [value]="userEditForm.value.PhoneNo"/>
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                    <label class="k-form-field">
+                                        <span>Address</span>
+                                        <input name="Street" formControlName="Street" id="Street" class="k-textbox" placeholder="Address" [value]="userEditForm.value.Street"/>
+                                    </label>
+                                </div>
+                              </div>
+                              <!--City,State-->
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label class="k-form-field">
+                                      <span>City</span>
+                                      <input name="City" formControlName="City" id="City"  class="k-textbox" placeholder="City" [value]="userEditForm.value.City"/>
+                                  </label>
+                                </div>
+                                <div class="col-md-6">
+                                   <label class="k-form-field">
+                                      <span>State</span>
+                                      <input name="State" formControlName="State" id="State" class="k-textbox" placeholder="State" [value]="userEditForm.value.State"/>
+                                  </label>
+                                </div>
+                              </div>
+                              <!--Zip codem Country-->
+                              <div class="row">
+                                <div class="col-md-6">
+                                <label class="k-form-field">
+                                  <span>Zip code</span>
+                                  <input name="Zip" formControlName="Zip" id="Zip" class="k-textbox" placeholder="Zip Code" [value]="userEditForm.value.Zip"/>
+                                  <control-messages [control]="userEditForm.controls.Zip"></control-messages>
+                                </label>
+                                </div>
+                                <div class="col-md-6">
+                                 <label class="k-form-field">
+                                  <span>Country</span>
+                                  <!--<kendo-dropdownlist #drpCountry [data]="countryList" [value]="selectCountry">-->
+                                  <select name="Country" [value]="userEditForm.value.Country" formControlName="Country">
+                                    <option>USA</option>
+                                    <option>Chicago</option>
+                                    <option>Other</option>
+                                  </select>
+                                </label>
+                                </div>
+                              </div>
+                              <!--User Name password-->
+                              <div class="row">
+                                <div class="col-md-6">
+                                <label class="k-form-field">
+                                  <span class="required">userEditForm</span>
+                                  <input name="UserName" formControlName="UserName" id="UserName"  class="k-textbox" placeholder="Username" [value]="userEditForm.value.UserName"/>
+                                  <control-messages [control]="userEditForm.controls.UserName"></control-messages>
+                                </label>
+                                </div>
+                                <div class="col-md-6">
+                                 <label class="k-form-field">
+                                  <span class="required">Password</span>
+                                  <input formControlName="Password" id="Password"  class="k-textbox" placeholder="Password" [value]="userEditForm.value.Password"/>
+                                  <control-messages [control]="userEditForm.controls.Password"></control-messages>
+                                </label>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <label class="k-form-field">
+                                    <span>Date Of Birth</span>
+                                    <kendo-datepicker
+                                        name="DOB" 
+                                        [value]="userEditForm.value.DOB"
+                                        formControlName="DOB"
+                                    ></kendo-datepicker >
+                                  </label>
+                                </div>
+                                <div class="col-md-4">
+                                  <label class="k-form-field">
+                                    <span>Hire date</span>
+                                    <kendo-datepicker
+                                        name="HireDate" 
+                                        [value]="userEditForm.value.HireDate"
+                                        formControlName="HireDate"
+                                    ></kendo-datepicker >
+                                  </label>
+                                </div>
+                                <div class="col-md-4">
+                                   <label class="k-form-field">
+                                    <span>Release date</span>
+                                    <kendo-datepicker 
+                                        name="TerminateDate"
+                                        [value]="userEditForm.value.TerminateDate"
+                                        formControlName="TerminateDate"
+                                    ></kendo-datepicker >
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label class="k-form-field">
+                                    <span>Role</span>
+                                    <select name="Role" [value]="userEditForm.value.Role" formControlName="Role">
+                                      <option>Super Administrator</option>
+                                      <option>Administrator</option>
+                                      <option>User</option>
+                                    </select>
+                                  </label>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="checkbox">
+                                    <input formControlName="IsActive" name="IsActive" type="checkbox" [value]="userEditForm.value.IsActive">Is Active
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+              <kendo-dialog-actions>
+                  <button kendoButton (click)="saveUser()" primary="true">Save</button>
+                  <button kendoButton (click)="close('no')">Cancel</button>
+              </kendo-dialog-actions>
+          </kendo-dialog>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <kendo-dialog title="Delete?" *ngIf="confirmDelete" (close)="delClose('no')" [minWidth]="250" [width]="450">
+            <p style="margin: 30px; text-align: center;">Sure to delete this?</p>
+            <kendo-dialog-actions>
+                <button kendoButton (click)="delClose('no')">No</button>
+                <button kendoButton (click)="delClose('yes')" primary="true">Yes</button>
+            </kendo-dialog-actions>
+          </kendo-dialog>
+        </div>
+      </div>
+       <div>
+         <app-image-cropper [visible]="cropperVisible" [base64]="base64Image" (onCropped)="onCropped($event)" ></app-image-cropper>
+      </div>
+    </div> 
+  </div>
+</div>
