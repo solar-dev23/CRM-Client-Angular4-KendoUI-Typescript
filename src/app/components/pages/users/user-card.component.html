@@ -18,15 +18,15 @@
             <div  (click)="editUser(user)">
               <div class="media-left">
                 <a href="javascript:void(0)">
-                  <img class="media-object" [src]="user.Image" alt="No Image" style="width:80px;height:80px">
+                  <img class="media-object" [src]="user.image" alt="No Image" style="width:80px;height:80px">
                 </a>
               </div>
               <div class="media-body">
                 <div>
-                  <p><span>{{user.DisplayName}}</span></p>
-                  <p class="card-address">{{user.Street}} {{user.City}}{{ user.State||user.Country||user.Zip?',':'' }} {{user.State}} {{user.Country}} {{user.Zip}}</p>
-                  <p class="card-email">{{user.Email}}</p>
-                  <p>{{user.Role}}</p>
+                  <p><span>{{user.displayName}}</span></p>
+                  <!-- <p class="card-address">{{user.Street}} {{user.City}}{{ user.State||user.Country||user.Zip?',':'' }} {{user.State}} {{user.Country}} {{user.Zip}}</p> -->
+                  <p class="card-email">{{user.email}}</p>
+                  <!-- <p>{{user.Role}}</p> -->
                 </div>
               </div>
             </div>
@@ -86,13 +86,13 @@
                                 <div class="col-md-8">
                                   <label class="k-form-field">
                                       <span class="required">First Name</span>
-                                      <input formControlName="FirstName" id="FirstName" class="k-textbox" placeholder="First Name" (change)="changeDisplayName()" [value]="userEditForm.value.FirstName"/>
-                                      <control-messages [control]="userEditForm.controls.FirstName"></control-messages>
+                                      <input formControlName="firstName" id="firstName" class="k-textbox" placeholder="First Name" (change)="changeDisplayName()" [value]="userEditForm.value.firstName"/>
+                                      <control-messages [control]="userEditForm.controls.firstName"></control-messages>
                                   </label>
                                   <label class="k-form-field">
                                       <span class="required">Last Name</span>
-                                      <input formControlName="LastName" id="LastName" class="k-textbox" placeholder="Last Name" (change)="changeDisplayName()" [value]="userEditForm.value.LastName"/>
-                                      <control-messages [control]="userEditForm.controls.LastName"></control-messages>
+                                      <input formControlName="lastName" id="lastName" class="k-textbox" placeholder="Last Name" (change)="changeDisplayName()" [value]="userEditForm.value.lastName"/>
+                                      <control-messages [control]="userEditForm.controls.lastName"></control-messages>
                                   </label>
                                 </div>
                                 <div class="col-md-4 image-edit-icon">
@@ -107,7 +107,7 @@
                                 <div class="col-md-12">
                                   <label class="k-form-field">
                                       <span>Display Name</span>
-                                      <input name="DisplayName" formControlName="DisplayName" id="DisplayName" class="k-textbox" placeholder="Display Name" [value]="userEditForm.value.DisplayName" />
+                                      <input name="displayName" formControlName="displayName" id="displayName" class="k-textbox" placeholder="Display Name" [value]="userEditForm.value.displayName" />
                                   </label>
                                 </div>
                               </div>
@@ -115,27 +115,27 @@
                                 <div class="col-md-6">
                                   <label class="k-form-field">
                                       <span class="required">Email</span>
-                                      <input name="Email" class="k-textbox" placeholder="Email" formControlName="Email" id="email" [value]="userEditForm.value.Email"/>
-                                      <control-messages [control]="userEditForm.controls.Email"></control-messages>
+                                      <input name="email" class="k-textbox" placeholder="Email" formControlName="email" id="email" [value]="userEditForm.value.email"/>
+                                      <control-messages [control]="userEditForm.controls.email"></control-messages>
                                   </label>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                    <label class="k-form-field">
                                       <span>Phone#</span>
                                       <input name="PhoneNo" formControlName="PhoneNo" id="PhoneNo" class="k-textbox" placeholder="Phone" [value]="userEditForm.value.PhoneNo"/>
                                   </label>
-                                </div>
+                                </div> -->
                               </div>
-                              <div class="row">
+                              <!-- <div class="row">
                                 <div class="col-md-12">
                                     <label class="k-form-field">
                                         <span>Address</span>
                                         <input name="Street" formControlName="Street" id="Street" class="k-textbox" placeholder="Address" [value]="userEditForm.value.Street"/>
                                     </label>
                                 </div>
-                              </div>
+                              </div> -->
                               <!--City,State-->
-                              <div class="row">
+                              <!-- <div class="row">
                                 <div class="col-md-6">
                                   <label class="k-form-field">
                                       <span>City</span>
@@ -148,9 +148,9 @@
                                       <input name="State" formControlName="State" id="State" class="k-textbox" placeholder="State" [value]="userEditForm.value.State"/>
                                   </label>
                                 </div>
-                              </div>
+                              </div> -->
                               <!--Zip codem Country-->
-                              <div class="row">
+                              <!-- <div class="row">
                                 <div class="col-md-6">
                                 <label class="k-form-field">
                                   <span>Zip code</span>
@@ -160,34 +160,34 @@
                                 </div>
                                 <div class="col-md-6">
                                  <label class="k-form-field">
-                                  <span>Country</span>
+                                  <span>Country</span> -->
                                   <!--<kendo-dropdownlist #drpCountry [data]="countryList" [value]="selectCountry">-->
-                                  <select name="Country" [value]="userEditForm.value.Country" formControlName="Country">
+                              <!--    <select name="Country" [value]="userEditForm.value.Country" formControlName="Country">
                                     <option>USA</option>
                                     <option>Chicago</option>
                                     <option>Other</option>
                                   </select>
                                 </label>
                                 </div>
-                              </div>
+                              </div> -->
                               <!--User Name password-->
                               <div class="row">
                                 <div class="col-md-6">
                                 <label class="k-form-field">
-                                  <span class="required">userEditForm</span>
-                                  <input name="UserName" formControlName="UserName" id="UserName"  class="k-textbox" placeholder="Username" [value]="userEditForm.value.UserName"/>
-                                  <control-messages [control]="userEditForm.controls.UserName"></control-messages>
+                                  <span class="required">User Name</span>
+                                  <input name="username" formControlName="username" id="username"  class="k-textbox" placeholder="User Name" [value]="userEditForm.value.username"/>
+                                  <control-messages [control]="userEditForm.controls.username"></control-messages>
                                 </label>
                                 </div>
                                 <div class="col-md-6">
                                  <label class="k-form-field">
                                   <span class="required">Password</span>
-                                  <input formControlName="Password" id="Password"  class="k-textbox" placeholder="Password" [value]="userEditForm.value.Password"/>
-                                  <control-messages [control]="userEditForm.controls.Password"></control-messages>
+                                  <input formControlName="password" id="password"  class="k-textbox" placeholder="Password" [value]="userEditForm.value.password"/>
+                                  <control-messages [control]="userEditForm.controls.password"></control-messages>
                                 </label>
                                 </div>
                               </div>
-                              <div class="row">
+                              <!-- <div class="row">
                                 <div class="col-md-4">
                                   <label class="k-form-field">
                                     <span>Date Of Birth</span>
@@ -218,8 +218,8 @@
                                     ></kendo-datepicker >
                                   </label>
                                 </div>
-                              </div>
-                              <div class="row">
+                              </div> -->
+                              <!-- <div class="row">
                                 <div class="col-md-6">
                                   <label class="k-form-field">
                                     <span>Role</span>
@@ -235,7 +235,7 @@
                                     <input formControlName="IsActive" name="IsActive" type="checkbox" [value]="userEditForm.value.IsActive">Is Active
                                   </div>
                                 </div>
-                              </div>
+                              </div> -->
                             </form>
                         </div>
                     </div>

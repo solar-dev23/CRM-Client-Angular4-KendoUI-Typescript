@@ -1,4 +1,4 @@
-import { Component,ViewEncapsulation,ChangeDetectorRef ,OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { ValidationService  } from '../../shared/validation.service';
 import { ControlMessages } from '../../shared/control-messages';
@@ -13,7 +13,7 @@ import { ImageCropperDialogComponent } from '../image-cropper/image-cropper.comp
 @Component({
   selector: 'user-card',
   templateUrl: './user-card.component.html',
-  // styleUrls: ['./user-card.component.scss'],
+  styleUrls: ['./user-card.component.scss']
   /*host: {
     '(document:click)': 'onClick($event)'
   }*/
@@ -38,26 +38,26 @@ export class UserCardComponent implements OnInit {
 	// constructor(private formBuilder: FormBuilder,private service: UserService, private opService : OperationService,private cd: ChangeDetectorRef, private comm: CommService,private imageUploadService: ImageUploadService) {
 	constructor(private formBuilder: FormBuilder, private cd: ChangeDetectorRef, private imageUploadService: ImageUploadService, private userService: UserService) {
 		this.userEditForm = this.formBuilder.group({
-	      'FirstName': ['', Validators.required],
-	      'LastName': ['', Validators.required],
-	      'UserName': ['', Validators.required],
-	      'Password': ['', [Validators.required,ValidationService.passwordValidator]],
-	      'Email': ['', [Validators.required, ValidationService.emailValidator]],
-	      'Zip':['',[ValidationService.numberValidator]],
-	      'DOB':new FormControl(null),
-	      'TerminateDate':new FormControl(null),
-	      'HireDate':new FormControl(null),
-	      'DisplayName':new FormControl(null),
-	      'Street':new FormControl(null),
-	      'Street2':new FormControl(null),
-	      'City':new FormControl(null),
-	      'State':new FormControl(null),
-	      'Country':new FormControl(null),
-	      'Role':new FormControl(null),
-	      'IsActive':new FormControl(false),
-	      'PhoneNo':new FormControl(null),
-	      'Id':new FormControl(0),
-	      'Image':new FormControl(null)
+	      'firstName': ['', Validators.required],
+	      'lastName': ['', Validators.required],
+	      'username': ['', Validators.required],
+	      'password': ['', [Validators.required,ValidationService.passwordValidator]],
+	      'email': ['', [Validators.required, ValidationService.emailValidator]],
+	      // 'Zip':['',[ValidationService.numberValidator]],
+	      // 'DOB':new FormControl(null),
+	      // 'TerminateDate':new FormControl(null),
+	      // 'HireDate':new FormControl(null),
+	      'displayName':new FormControl(null),
+	      // 'Street':new FormControl(null),
+	      // 'Street2':new FormControl(null),
+	      // 'City':new FormControl(null),
+	      // 'State':new FormControl(null),
+	      // 'Country':new FormControl(null),
+	      // 'Role':new FormControl(null),
+	      // 'IsActive':new FormControl(false),
+	      // 'PhoneNo':new FormControl(null),
+	      'id':new FormControl(0),
+	      'image':new FormControl(null)
     	});
     	this.menuColors = new Array<any>({color:"#fbf8f8"},{color:"yellow"},{color:"#ffcc00"},{color:"#00ffff"},{color:"#66ffcc"},{color:"#e2dede"});
     	this.cardColors = [];
@@ -106,6 +106,7 @@ export class UserCardComponent implements OnInit {
 	public saveToServer(that:UserCardComponent):void{
 		if(that.imageUploadUrl!=null)
 	        that.userEditForm.patchValue({"Image":that.imageUploadUrl});
+	  
      //    that.opService.update(that.userEditForm.value,function(){
 	    //     that.opened = false;
 	    //     that.users.forEach(function(f){
@@ -130,25 +131,25 @@ export class UserCardComponent implements OnInit {
 	//Clear forms
 	clearForm(){
     	this.userEditForm.patchValue({
-	      	Id:0,
-	  		City:"",
-	  		Country:"",
-	  		DOB:null,
-	  		DisplayName:"",
-	  		Email:"",
-	  		FirstName:"",
-	  		HireDate:null,
-	  		IsActive:false,
-	  		LastName:"",
-	  		Password:"",
-	  		Phone:"",
-	  		Role:"",
-	  		State:"",
-	  		Street:"",
-	  		Street1:"",
-	  		TerminateDate:null,
-	  		UserName:"",
-	  		ZipCode:""
+	      id:0,
+	  		// City:"",
+	  		// Country:"",
+	  		// DOB:null,
+	  		displayName:"",
+	  		email:"",
+	  		firstName:"",
+	  		// HireDate:null,
+	  		// IsActive:false,
+	  		lastName:"",
+	  		password:"",
+	  		// Phone:"",
+	  		// Role:"",
+	  		// State:"",
+	  		// Street:"",
+	  		// Street1:"",
+	  		// TerminateDate:null,
+	  		username:"",
+	  		// ZipCode:""
     	});
     	this.imageUploadUrl=null;
     	this.image=null;
@@ -172,7 +173,7 @@ export class UserCardComponent implements OnInit {
     }
     //display name merging
 	public changeDisplayName (){
-		this.userEditForm.patchValue({"DisplayName":this.userEditForm.value.FirstName + ' '+this.userEditForm.value.LastName});
+		this.userEditForm.patchValue({"DisplayName":this.userEditForm.value.firstName + ' '+this.userEditForm.value.lastName});
 	}
   	//Validate all form input
 	public validateAllFormFields(formGroup: FormGroup) {             
@@ -193,10 +194,9 @@ export class UserCardComponent implements OnInit {
 		console.log("page=>",_page);
 		this.userService.read().subscribe(
 			res => {
-console.log(res);
-			// me.users = res.data;
-			// me.page.totals = res.count;
-			// me.pagingHide = false;				
+				me.users = res;
+				me.page.totals = res.length;
+				me.pagingHide = false;
 			}
 		)
 		// this.opService.queryCards(_page).subscribe(res=> {

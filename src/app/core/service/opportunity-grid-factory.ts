@@ -1,6 +1,6 @@
 import { FIELD_TYPE, FieldTemplate, Grid, GridColumn, GridTemplate, VALIDATOR_TYPE, ERROR_MESSAGES } from "crm-platform";
 import { ENTITY_NAME, REQUEST_URL } from "../constants";
-// import { DisplayNameField } from "../domain/display-name-field";
+import { RevenueField } from "../domain/revenue-field";
 // import { Statuses } from "../domain/statuses";
 import { StatusField } from "../domain/status-field";
 import { StatusService } from "./status.service";
@@ -45,11 +45,11 @@ export class OpportunityGridFactory {
     ]
   };
 
-  public static REVENUE_FIELD_TEMPLATE: FieldTemplate = {
-    name: "value",
-    type: FIELD_TYPE.text,
-    title: "Revenue"
-  };
+  // public static REVENUE_FIELD_TEMPLATE: FieldTemplate = {
+  //   name: "value",
+  //   type: FIELD_TYPE.decimal,
+  //   title: "Revenue"
+  // };
 
   public static STATUS_FIELD_TEMPLATE: FieldTemplate = {
     name: "status_id",
@@ -81,7 +81,7 @@ export class OpportunityGridFactory {
       {field: OpportunityGridFactory.NAME_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.COMPANY_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.CONTACT_FIELD_TEMPLATE},
-      {field: OpportunityGridFactory.REVENUE_FIELD_TEMPLATE},
+      // {field: OpportunityGridFactory.REVENUE_FIELD_TEMPLATE},
       // {field: OpportunityGridFactory.STATUS_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.RATING_FIELD_TEMPLATE},
       {field: OpportunityGridFactory.CREATED_DATE_FIELD_TEMPLATE},
@@ -100,7 +100,7 @@ export class OpportunityGridFactory {
 
   public static newGridInstance(): Grid {
     let grid = Grid.newInstance(OpportunityGridFactory.OPPORTUNITY_GRID_TEMPLATE);
-    // grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
+    grid.addColumn(GridColumn.newInstanceByField(new RevenueField()), 3);
     let statusField = StatusField.newStatusFieldInstance(OpportunityGridFactory.STATUS_FIELD_TEMPLATE, OpportunityGridFactory.statuses);
     grid.addColumn(GridColumn.newInstanceByField(statusField), grid.columns.length - 1);
     
