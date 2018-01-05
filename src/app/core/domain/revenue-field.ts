@@ -4,13 +4,13 @@ export class RevenueField extends Field {
   public constructor() {
     super({});
     this.setName("revenue");
-    this.setType(FIELD_TYPE.decimal);
+    this.setType(FIELD_TYPE.text);
     this.setTitle("Revenue");
   }
 
-  public valueToString(object: any): any {
+  public valueToString(object: any): any {   
     let currency = object.currency || "";
-    let value = parseFloat(object.value).toFixed(2) || "";
+    let value = parseFloat(object.value).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || "";
 
     if(value !== "NaN" && value !== ""){
       if(currency === "USD")
@@ -18,6 +18,5 @@ export class RevenueField extends Field {
       else
         return `€${value}`;
     }
-
   }
 }

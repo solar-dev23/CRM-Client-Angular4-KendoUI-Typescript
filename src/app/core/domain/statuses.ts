@@ -1,13 +1,6 @@
-import { StatusService } from "../service/status.service";
+import { Status } from "crm-platform";
 
-export class Statuses {
-  
-  constructor(private statusService: StatusService) {
-  	this.getAllStatuses();
-  }
-
-  getAllStatuses() {
-  	return this.statusService.getStatuses();
-  }
+export interface Statuses extends Status {
+	readonly statuses: string[]  
 }
 

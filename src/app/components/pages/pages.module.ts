@@ -13,13 +13,12 @@ import { ImageCropperComponent, CropperSettings, ImageCropperModule } from 'ng2-
 // Kendo UI modules
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 // import { GridModule, PDFModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { DatePickerModule, DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 // Application
 import { SharedModule } from "../shared";

@@ -5,11 +5,11 @@ import { Observable } from "rxjs";
 import { HttpUtils } from "../http-utils";
 import { DataSourceAdapter, Grid } from "crm-platform";
 import { OpportunityGridFactory } from "./opportunity-grid-factory";
-
+import { StatusService } from "./status.service";
 
 @Injectable()
 export class OpportunityService extends DataSourceAdapter<any>  {
-  public constructor(private http: Http) {
+  public constructor(private http: Http, private statusService: StatusService) {
     super();
   };
   
@@ -71,6 +71,7 @@ export class OpportunityService extends DataSourceAdapter<any>  {
   }
 
   public getOpportunityGrid(): Grid {
-    return OpportunityGridFactory.newGridInstance();
+    let statuses = _.toArray(this.statusService.getAllStatuses());
+    return OpportunityGridFactory.newGridInstance(statuses);
   }
 }
