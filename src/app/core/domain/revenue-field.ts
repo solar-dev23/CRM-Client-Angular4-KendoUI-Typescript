@@ -3,8 +3,8 @@ import { Field, FIELD_TYPE } from "crm-platform";
 export class RevenueField extends Field {
   public constructor() {
     super({});
-    this.setName("revenue");
-    this.setType(FIELD_TYPE.text);
+    this.setName("value");
+    this.setType(FIELD_TYPE.currency);
     this.setTitle("Revenue");
   }
 

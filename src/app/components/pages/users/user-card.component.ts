@@ -82,20 +82,19 @@ export class UserCardComponent implements OnInit {
 		//this.userForm.dirty &&
 		if (this.userEditForm.valid) {
 			var me=this;
-	        //If Id >0 then consider as update existing value.
-	        if(this.userEditForm.value.Id>0){
-	        	if(this.image!=null){
-		           this.imageUploadService.uploadImage(this.image).then(res => {
-				      me.clearImage();
-				      //console.log("response=>",res);
-				      me.imageUploadUrl = res.image;
-				      me.saveToServer(me);
-				   });
-	       	   }
-			   else
-			   		this.saveToServer(this);
-	        }
-
+      //If id >0 then consider as update existing value.
+      if(this.userEditForm.value.id){
+      	if(this.image!=null){
+          this.imageUploadService.uploadImage(this.image).subscribe(res => {
+			      me.clearImage();
+			      console.log("response=>",res);
+			      me.imageUploadUrl = res.image;
+			      me.saveToServer(me);
+			   	});
+     	  }
+	   else
+	   		this.saveToServer(this);
+      }
 		}
 		else{
 			this.validateAllFormFields(this.userEditForm);
@@ -281,12 +280,11 @@ export class UserCardComponent implements OnInit {
 	}
 
 	//Image upload
-    public onCropped(croppedInBase64):void{
+  public onCropped(croppedInBase64):void{
     this.cropperVisible = false;
     if (croppedInBase64) {
       this.image = croppedInBase64;
     }
-
   }
 
   public onProfileImgClick(e):void{
@@ -310,7 +308,7 @@ export class UserCardComponent implements OnInit {
 
   public uploadImage():void{
     var me= this;
-    this.imageUploadService.uploadImage(this.image).then(res => {
+    this.imageUploadService.uploadImage(this.image).subscribe(res => {
       this.clearImage();
       //console.log("response=>",res);
       me.imageUploadUrl = res.image;
