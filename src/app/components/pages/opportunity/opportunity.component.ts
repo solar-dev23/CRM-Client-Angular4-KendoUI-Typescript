@@ -1,12 +1,11 @@
 import { Component, OnInit, HostListener, ViewEncapsulation, ElementRef, Renderer2, NgZone, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import * as _ from "lodash";
-import { OpportunityService, StatusService, ReminderService, EventEmitterService } from "../../../core";
+import { OpportunityService, StatusService, ReminderService, EventEmitterService, LoginService } from "../../../core";
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { State, SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
-// import { CONFIG } from '../../config';
 
 var gridSize: number = 0;
 
@@ -72,9 +71,8 @@ export class OpportunityComponent implements OnInit {
   public grid_criterias: any = [];
   public card_criterias: any = [];
   public sort: SortDescriptor[] = [];
-  public enablePop: boolean = false;
-  // public userId: string = CONFIG.CURRENT_USER_ID;
-  public userId: string = '1';
+  public enablePop: boolean = false;  
+  public loggedUser: any;
 
   public grid_quick_filter_options: any = [];
   // public card_quick_filter_options: any = ['My Opportunities', 'More than 30 days old'];
@@ -123,10 +121,11 @@ export class OpportunityComponent implements OnInit {
   public cardViewStyle: any;
 
   constructor(
-    private opportunityService: OpportunityService, 
+    private opportunityService: OpportunityService,
     private statusService: StatusService,
     private reminderService: ReminderService,
     private _eventEmitter: EventEmitterService,
+    private loginService: LoginService,
     private renderer: Renderer2, 
     private el: ElementRef, 
     private _ngZone: NgZone) 
@@ -145,6 +144,13 @@ export class OpportunityComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loggedUser = this.loginService.getUserData();
+    if(this.loggedUser.wide_menu)
+      this.menuWidth = 250;
+    else
+      this.menuWidth = 58;
+
+    this._fixColumnHeader();
     this._getContainer();
 
     this.card_quick_filter_options = [
@@ -169,7 +175,7 @@ export class OpportunityComponent implements OnInit {
 
   _getContainer() {
     let that = this;
-    this.statusService.getStatuses().subscribe (
+    this.statusService.read().subscribe (
           res => {
               that.containers = that.grid_quick_filter_options = _.toArray(res);
 
@@ -188,7 +194,7 @@ export class OpportunityComponent implements OnInit {
 
                           if(oppo.notify_users && oppo.notify_users.length > 0){
                             let notify_list = oppo.notify_users.split(',');
-                            if(notify_list.indexOf(that.userId) !== -1){
+                            if(notify_list.indexOf(that.loggedUser.id) !== -1){
                               oppo.notify = true;
                             }
                           }
@@ -426,7 +432,7 @@ export class OpportunityComponent implements OnInit {
       name: this.newColumn,
       order: this.containers.length+1
     }
-    this.statusService.createStatus(params).subscribe(
+    this.statusService.save(params).subscribe(
         res => {
           let tmp_containers = this.containers.filter(function(container) {
             if(container.name.toLowerCase() === res.name.toLowerCase())
@@ -469,7 +475,7 @@ export class OpportunityComponent implements OnInit {
       id: this.activeColumnId,
       name: this.newColumnName
     }
-    this.statusService.updateStatus(params).subscribe(
+    this.statusService.save(params).subscribe(
         res => {
           _.forEach(this.containers, function(val) {
             if(val.id == res.id)
@@ -522,7 +528,7 @@ export class OpportunityComponent implements OnInit {
           status_id: opportunityForm.controls['status'].value,
           order: 1,
           rating: this.o_rating,
-          user_id: this.userId
+          user_id: this.loggedUser.id
         }
 
         this.opportunityService.save(params).subscribe(
@@ -569,7 +575,7 @@ export class OpportunityComponent implements OnInit {
 
           if(opportunityForm.controls['notify'].value != undefined){
             params['notify'] = {
-              id: this.userId,
+              id: this.loggedUser.id,
               value: opportunityForm.controls['notify'].value
             }
           }
@@ -582,7 +588,7 @@ export class OpportunityComponent implements OnInit {
                 if(that.o_reminder['id']){
                   let reminder_date = that._getReminderDate(that.o_reminder['id']);
                   let params = {
-                    user_id: that.userId,
+                    user_id: that.loggedUser.id,
                     opportunity_id: res.id,
                     reminder_id: that.o_reminder['id'],
                     reminder_date: reminder_date
@@ -599,7 +605,7 @@ export class OpportunityComponent implements OnInit {
                 res.notify = false;
                 if(res.notify_users && res.notify_users.length > 0){
                   let notify_list = res.notify_users.split(',');
-                  if(notify_list.indexOf(that.userId) !== -1){
+                  if(notify_list.indexOf(that.loggedUser.id) !== -1){
                     res.notify = true;
                   }
                 }
@@ -732,7 +738,7 @@ export class OpportunityComponent implements OnInit {
     this.o_notify = opportunity.notify;
     this.o_reminder = {}
 
-    this.reminderService.getReminder({user_id: this.userId, opportunity_id: opportunity.id}).subscribe(
+    this.reminderService.getReminder({user_id: this.loggedUser.id, opportunity_id: opportunity.id}).subscribe(
         res => {
           this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
 
@@ -759,7 +765,7 @@ export class OpportunityComponent implements OnInit {
       name: this.newOpportunityName,
       status_id: statusId,
       order: order,
-      user_id: this.userId
+      user_id: this.loggedUser.id
     }
 
     this.opportunityService.save(params).subscribe(
@@ -772,7 +778,7 @@ export class OpportunityComponent implements OnInit {
                 container.widgets.unshift(res);
               }
           })
-
+          that.opportunities.unshift(res);
           that._reorder('opportunity');
         },
         err => {
@@ -894,7 +900,7 @@ export class OpportunityComponent implements OnInit {
       this._getGridOpportunities();
     }else {
       if(this.filter == 'Archive'){
-        this.statusService.getStatuses().subscribe (
+        this.statusService.read().subscribe (
           res => {
               that.containers = _.toArray(res);
 
@@ -906,7 +912,7 @@ export class OpportunityComponent implements OnInit {
           }, err => console.log(err)
         )
       }else {
-        this.statusService.getStatuses().subscribe (
+        this.statusService.read().subscribe (
           res => {
               that.containers = _.toArray(res);
 
@@ -1283,7 +1289,7 @@ export class OpportunityComponent implements OnInit {
       id: this.archiveColumnId,
       opportunities: opportunities
     }
-    this.statusService.deleteStatus(params).subscribe(
+    this.statusService.remove(params).subscribe(
         res => {
             that.containers = that.containers.filter(function(container){
               if(container.id != that.archiveColumnId)
@@ -1332,7 +1338,7 @@ export class OpportunityComponent implements OnInit {
             let diff = Math.abs(today.getTime() - createdAt.getTime());
             let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
 
-            if(val.id == opp.status_id && opp.user_id == that.userId && diffDays >= 30 && opp.is_active == true)
+            if(val.id == opp.status_id && opp.user_id == that.loggedUser.id && diffDays >= 30 && opp.is_active == true)
               return opp;
           });
       })
@@ -1340,8 +1346,9 @@ export class OpportunityComponent implements OnInit {
       if(this.cardQuickFilterModel.includes(1)){
         _.forEach(that.containers, function(val) {
             val.widgets = that.opportunities.filter(function(opp){
-              if(val.id == opp.status_id && opp.user_id == that.userId && opp.is_active == true)
+              if(val.id == opp.status_id && opp.user_id == that.loggedUser.id && opp.is_active == true){
                 return opp;
+              }
             });
 
             val.widgets = _.orderBy(val.widgets, 'order');

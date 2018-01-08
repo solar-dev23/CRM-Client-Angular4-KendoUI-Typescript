@@ -19,7 +19,7 @@ export class OpportunityService extends DataSourceAdapter<any>  {
 
   public save(data: any): Observable<any> {
     let requestOptions = HttpUtils.buildRequestOptions(data);
-    return this.http.put('/rest/opportunity', null, requestOptions).map(res => {
+    return this.http.post('/rest/opportunity', null, requestOptions).map(res => {
         return res.json();
     })
   }

@@ -10,35 +10,53 @@ export class StatusService {
   private static STATUS_DATA_KEY: string = "statusData";
 
   public constructor(private http: Http, private localStorage: LocalStorageService) {
-    this.getStatuses().subscribe(res => {
+    this.read().subscribe(res => {
       this.localStorage.set(StatusService.STATUS_DATA_KEY, res);
     });
-  }; 
+  };
 
-  public getStatuses () {
+  public read(): Observable<any[]> {
     return this.http.get("/rest/status", null).map((res) => res.json());
   }
 
-  public createStatus(data) {
-  	let requestOptions = HttpUtils.buildRequestOptions(data);
+  public save(data: any): Observable<any> {
+    let requestOptions = HttpUtils.buildRequestOptions(data);
     return this.http.post('/rest/status', null, requestOptions).map(res => {
         return res.json();
     })
   }
 
-  public updateStatus(data) {
+  public remove(data: any): Observable<any> {
     let requestOptions = HttpUtils.buildRequestOptions(data);
-    return this.http.put('/rest/status', null, requestOptions).map(res => {
-        return res.json();
-    })
-  }
-
-  public deleteStatus(data) {
-  	let requestOptions = HttpUtils.buildRequestOptions(data);
     return this.http.delete("/rest/status", requestOptions).map(res => {
         return res.json();
     })
   }
+
+  // public getStatuses () {
+  //   return this.http.get("/rest/status", null).map((res) => res.json());
+  // }
+
+  // public createStatus(data) {
+  // 	let requestOptions = HttpUtils.buildRequestOptions(data);
+  //   return this.http.post('/rest/status', null, requestOptions).map(res => {
+  //       return res.json();
+  //   })
+  // }
+
+  // public updateStatus(data) {
+  //   let requestOptions = HttpUtils.buildRequestOptions(data);
+  //   return this.http.put('/rest/status', null, requestOptions).map(res => {
+  //       return res.json();
+  //   })
+  // }
+
+  // public deleteStatus(data) {
+  // 	let requestOptions = HttpUtils.buildRequestOptions(data);
+  //   return this.http.delete("/rest/status", requestOptions).map(res => {
+  //       return res.json();
+  //   })
+  // }
 
   public reorderStatus(data) {
   	let requestOptions = HttpUtils.buildRequestOptions(data);
