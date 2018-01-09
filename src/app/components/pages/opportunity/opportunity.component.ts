@@ -711,7 +711,7 @@ export class OpportunityComponent implements OnInit {
     this.o_contact = '';
     this.o_value = 0;
     this.o_currency = 'USD';
-    this.o_status = 1;
+    this.o_status = this.containers[0].id;
     this.o_description = '';
     this.o_rating = 3;
     this.o_isActive = true;
