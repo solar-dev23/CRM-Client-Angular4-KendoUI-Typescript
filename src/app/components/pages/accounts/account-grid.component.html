@@ -1,0 +1,18 @@
+<object-grid [grid]="grid" [dataSource]="accountService"></object-grid>
+<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
+    <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
+        <editor-field [fieldName]="'companyName'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'account_type'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'contacts_id'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'social_networks_id'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'address_id'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'prefered_payment_method'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'prefered_delivery_method'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'terms'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'number_of_employees'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'annual_revenue'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'lead_source'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'lead_rating'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'notes'" [formGroup]="formGroup"></editor-field>
+    </form>
+</edit-object-dialog>

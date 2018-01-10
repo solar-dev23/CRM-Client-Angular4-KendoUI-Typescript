@@ -8,7 +8,9 @@ export const ROUTE = {
   users: "users",
   opportunity: "opportunity",
   report: "report",
-  reportPage: "report/:page"
+  reportPage: "report/:page",
+  contacts: "contacts",
+  accounts: "accounts"
 };
 
 export const ENV_TYPE = {
@@ -18,7 +20,9 @@ export const ENV_TYPE = {
 
 export const ENTITY_NAME = {
   user: "users",
-  opportunity: "opportunity"
+  opportunity: "opportunity",
+  contact: "contact",
+  account: "account"
 };
 
 export const REQUEST_URL = {

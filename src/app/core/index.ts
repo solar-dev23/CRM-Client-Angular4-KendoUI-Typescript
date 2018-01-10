@@ -8,6 +8,8 @@ export { StatusService } from "./service/status.service";
 export { ReminderService } from "./service/reminder.service";
 export { EventEmitterService } from "./service/event-emitter.service";
 export { ImageUploadService } from "./service/image-upload.service";
+export { ContactService } from "./service/contact.service";
+export { AccountService } from "./service/account.service";
 export { RouteController } from "./service/route-controller.service";
 export { HttpController } from "./service/http-controller";
 export { CoreModule } from "./core.module";

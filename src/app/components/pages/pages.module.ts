@@ -47,6 +47,10 @@ import { ReportChartLegendComponent } from './report/chart-legend/chart-legend.c
 import { ReportChartTwoComponent } from './report/chart-two/chart-two.component';
 import { ImageCropperDialogComponent } from './image-cropper/image-cropper.component';
 import { ControlMessages } from '../shared/control-messages';
+import { ContactsComponent } from "./contacts/contacts.component";
+import { ContactGridComponent } from "./contacts/contact-grid.component";
+import { AccountsComponent } from "./accounts/accounts.component";
+import { AccountGridComponent } from "./accounts/account-grid.component";
 
 import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-grid/dist/es/main';
 
@@ -111,7 +115,11 @@ import { SharedService } from './report/shared.service';
     ReportChartLegendComponent,
     ReportChartTwoComponent,
     ImageCropperDialogComponent,
-    ControlMessages
+    ControlMessages,
+    ContactsComponent,
+    ContactGridComponent,
+    AccountsComponent,
+    AccountGridComponent
   ],
   providers: [SharedService, DatePipe]
 })

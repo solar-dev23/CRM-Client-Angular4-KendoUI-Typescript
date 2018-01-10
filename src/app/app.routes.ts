@@ -11,6 +11,8 @@ import { DashboardComponent } from "./components/pages/dashboard/dashboard.compo
 import { UsersComponent } from "./components/pages/users/users.component";
 import { OpportunityComponent } from "./components/pages/opportunity/opportunity.component";
 import { ReportComponent } from "./components/pages/report/report.component";
+import { ContactsComponent } from "./components/pages/contacts/contacts.component";
+import { AccountsComponent } from "./components/pages/accounts/accounts.component";
 
 
 const appRoutes: Routes = [
@@ -28,6 +30,8 @@ const appRoutes: Routes = [
       { path: ROUTE.opportunity, component: OpportunityComponent, canActivate: [RouteController] },
       { path: ROUTE.report, component: ReportComponent, canActivate: [RouteController] },
       { path: ROUTE.reportPage, component: ReportComponent, canActivate: [RouteController] },
+      { path: ROUTE.contacts, component: ContactsComponent, canActivate: [RouteController] },
+      { path: ROUTE.accounts, component: AccountsComponent, canActivate: [RouteController] },
       { path: "**", redirectTo: ROUTE.users, pathMatch: 'full' }
     ]
   },

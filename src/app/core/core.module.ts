@@ -11,7 +11,8 @@ import { StatusService } from "./service/status.service";
 import { ReminderService } from "./service/reminder.service";
 import { EventEmitterService } from "./service/event-emitter.service";
 import { ImageUploadService } from "./service/image-upload.service";
-
+import { ContactService } from "./service/contact.service";
+import { AccountService } from "./service/account.service";
 
 @NgModule({
   imports: [
@@ -32,6 +33,8 @@ import { ImageUploadService } from "./service/image-upload.service";
     ReminderService,
     EventEmitterService,
     ImageUploadService,
+    ContactService,
+    AccountService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

@@ -1,0 +1,16 @@
+<object-grid [grid]="grid" [dataSource]="contactService"></object-grid>
+<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
+    <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
+        <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'lastName'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'jobTitle'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'email'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'phone'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'extension'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'fax'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'mobile'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'account_id'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'social_networks_id'" [formGroup]="formGroup"></editor-field>
+        <editor-field [fieldName]="'address_id'" [formGroup]="formGroup"></editor-field>
+    </form>
+</edit-object-dialog>
