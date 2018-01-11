@@ -1,7 +1,7 @@
 import { Component, ViewChild } from "@angular/core";
 import { Http } from "@angular/http";
-import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
-import { ContactService } from "../../../core";
+import { Grid, ObjectFormGroup, ObjectGridComponent, ObjectGrid2Component } from "crm-platform";
+import { ContactService, AccountService } from "../../../core";
 
 @Component({
   selector: "contact-grid",
@@ -12,9 +12,11 @@ export class ContactGridComponent {
 
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
+  protected accountGrid: Grid;
 
-  public constructor(protected contactService: ContactService, protected http: Http) {
+  public constructor(protected http: Http, protected contactService: ContactService, protected accountService: AccountService) {
     this.grid = contactService.getContactGrid();
+    this.accountGrid = accountService.getAccountGrid();
   }
 
   protected edit(object): void {
