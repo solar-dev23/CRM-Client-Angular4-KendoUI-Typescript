@@ -5,6 +5,18 @@ import * as _ from "lodash";
 
 export class AccountGridFactory {
 
+  public static DISPLAY_NAME_FIELD_TEMPLATE: FieldTemplate = {
+    name: "displayName",
+    type: FIELD_TYPE.text,
+    title: "Display Name",
+    validators: [
+      {
+        type: VALIDATOR_TYPE.required,
+        errorMessage: "Display name is required"
+      }
+    ]
+  };
+
   public static COMPANY_NAME_FIELD_TEMPLATE: FieldTemplate = {
     name: "companyName",
     type: FIELD_TYPE.text,
@@ -92,6 +104,7 @@ export class AccountGridFactory {
   public static ACCOUNT_GRID_TEMPLATE: GridTemplate = {
     id: ENTITY_NAME.account,
     columns: [
+      {field: AccountGridFactory.DISPLAY_NAME_FIELD_TEMPLATE},
       {field: AccountGridFactory.COMPANY_NAME_FIELD_TEMPLATE},
       {field: AccountGridFactory.ACCOUNT_TYPE_FIELD_TEMPLATE},
       {field: AccountGridFactory.CONTACT_FIELD_TEMPLATE},

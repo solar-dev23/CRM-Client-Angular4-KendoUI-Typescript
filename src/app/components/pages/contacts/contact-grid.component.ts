@@ -13,13 +13,15 @@ export class ContactGridComponent {
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
   protected accountGrid: Grid;
+  protected accounts: any = [];
 
   public constructor(protected http: Http, protected contactService: ContactService, protected accountService: AccountService) {
     this.grid = contactService.getContactGrid();
-    this.accountGrid = accountService.getAccountGrid();
+    this.accountGrid = accountService.getAccountGrid();    
   }
 
   protected edit(object): void {
     this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;
+    this.accounts = object.accounts;
   }
 }

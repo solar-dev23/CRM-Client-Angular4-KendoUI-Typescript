@@ -1,5 +1,6 @@
 import { FIELD_TYPE, FieldTemplate, Grid, GridColumn, GridTemplate, VALIDATOR_TYPE, ERROR_MESSAGES } from "crm-platform";
 import { ENTITY_NAME, REQUEST_URL } from "../constants";
+import { DisplayNameField } from "../domain/display-name-field";
 
 import * as _ from "lodash";
 
@@ -112,6 +113,7 @@ export class ContactGridFactory {
 
   public static newGridInstance(): Grid {
     let grid = Grid.newInstance(ContactGridFactory.CONTACT_GRID_TEMPLATE);
+    grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
     // grid.addColumn(GridColumn.newInstanceByField(new RevenueField()), 3);
     // let statusField = StatusField.newStatusFieldInstance(OpportunityGridFactory.STATUS_FIELD_TEMPLATE, statuses);
     // grid.addColumn(GridColumn.newInstanceByField(statusField), grid.columns.length - 1);
