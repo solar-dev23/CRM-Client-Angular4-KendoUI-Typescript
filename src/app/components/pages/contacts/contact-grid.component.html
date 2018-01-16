@@ -1,5 +1,5 @@
 <object-grid [grid]="grid" [dataSource]="contactService"></object-grid>
-<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
+<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [dialogGridData]="dialogGridData" [width]="550" (edit)="edit($event)">
     <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
         <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
         <editor-field [fieldName]="'lastName'" [formGroup]="formGroup"></editor-field>
@@ -13,5 +13,5 @@
         <editor-field [fieldName]="'address_id'" [formGroup]="formGroup"></editor-field>
     </form>
     
-    <object-grid2 [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts"></object-grid2>
+    <object-grid2 [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
 </edit-object-dialog>

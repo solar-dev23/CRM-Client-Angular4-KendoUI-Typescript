@@ -14,6 +14,7 @@ export class ContactGridComponent {
   protected formGroup: ObjectFormGroup;
   protected accountGrid: Grid;
   protected accounts: any = [];
+  protected dialogGridData: any = {};
 
   public constructor(protected http: Http, protected contactService: ContactService, protected accountService: AccountService) {
     this.grid = contactService.getContactGrid();
@@ -21,7 +22,14 @@ export class ContactGridComponent {
   }
 
   protected edit(object): void {
-    this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;
-    this.accounts = object.accounts;
+    this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;   
+    if(object)
+      this.accounts = object.accounts;
+  }
+
+  protected updateDialogGridData(data): void {
+    this.dialogGridData = {
+      accounts: data
+    };
   }
 }
