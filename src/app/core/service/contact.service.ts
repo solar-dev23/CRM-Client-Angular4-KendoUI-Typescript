@@ -18,7 +18,7 @@ export class ContactService extends DataSourceAdapter<any> {
   }
 
   public save(data: any): Observable<any> {
-    let requestOptions = HttpUtils.buildRequestOptions(data);
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
     return this.http.post("/rest/contact/save", null, requestOptions).map((res) => {
       return res.json();
     });

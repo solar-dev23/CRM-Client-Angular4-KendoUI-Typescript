@@ -18,7 +18,7 @@ export class AccountService extends DataSourceAdapter<any> {
   }
 
   public save(data: any): Observable<any> {
-    let requestOptions = HttpUtils.buildRequestOptions(data);
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
     return this.http.post("/rest/account/save", null, requestOptions).map((res) => {
       return res.json();
     });

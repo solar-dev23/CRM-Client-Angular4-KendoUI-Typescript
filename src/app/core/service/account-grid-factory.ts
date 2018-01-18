@@ -1,5 +1,6 @@
 import { FIELD_TYPE, FieldTemplate, Grid, GridColumn, GridTemplate, VALIDATOR_TYPE, ERROR_MESSAGES } from "crm-platform";
 import { ENTITY_NAME, REQUEST_URL } from "../constants";
+import { ContactField } from "../domain/contact-field";
 
 import * as _ from "lodash";
 
@@ -33,12 +34,6 @@ export class AccountGridFactory {
     name: "account_type",
     type: FIELD_TYPE.text,
     title: "Account Type"
-  };
-
-  public static CONTACT_FIELD_TEMPLATE: FieldTemplate = {
-    name: "contacts_id",
-    type: FIELD_TYPE.text,
-    title: "Contact"
   };
 
   public static SOCIAL_NETWORK_FIELD_TEMPLATE: FieldTemplate = {
@@ -107,7 +102,6 @@ export class AccountGridFactory {
       {field: AccountGridFactory.DISPLAY_NAME_FIELD_TEMPLATE},
       {field: AccountGridFactory.COMPANY_NAME_FIELD_TEMPLATE},
       {field: AccountGridFactory.ACCOUNT_TYPE_FIELD_TEMPLATE},
-      {field: AccountGridFactory.CONTACT_FIELD_TEMPLATE},
       {field: AccountGridFactory.SOCIAL_NETWORK_FIELD_TEMPLATE},
       {field: AccountGridFactory.ADDRESS_FIELD_TEMPLATE},
       {field: AccountGridFactory.PREFERED_PAYMENT_METHOD_FIELD_TEMPLATE},
@@ -127,9 +121,7 @@ export class AccountGridFactory {
 
   public static newGridInstance(): Grid {
     let grid = Grid.newInstance(AccountGridFactory.ACCOUNT_GRID_TEMPLATE);
-    // grid.addColumn(GridColumn.newInstanceByField(new RevenueField()), 3);
-    // let statusField = StatusField.newStatusFieldInstance(OpportunityGridFactory.STATUS_FIELD_TEMPLATE, statuses);
-    // grid.addColumn(GridColumn.newInstanceByField(statusField), grid.columns.length - 1);
+    grid.addColumn(GridColumn.newInstanceByField(new ContactField()), 4);
 
     return grid;
   }

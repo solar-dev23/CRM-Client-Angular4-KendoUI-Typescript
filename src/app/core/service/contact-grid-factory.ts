@@ -1,6 +1,7 @@
 import { FIELD_TYPE, FieldTemplate, Grid, GridColumn, GridTemplate, VALIDATOR_TYPE, ERROR_MESSAGES } from "crm-platform";
 import { ENTITY_NAME, REQUEST_URL } from "../constants";
 import { DisplayNameField } from "../domain/display-name-field";
+import { AccountField } from "../domain/Account-field";
 
 import * as _ from "lodash";
 
@@ -72,12 +73,6 @@ export class ContactGridFactory {
     title: "Mobile"
   };
 
-  public static ACCOUNT_FIELD_TEMPLATE: FieldTemplate = {
-    name: "account_id",
-    type: FIELD_TYPE.text,
-    title: "Account"
-  };
-
   public static SOCIAL_NETWORK_FIELD_TEMPLATE: FieldTemplate = {
     name: "social_networks_id",
     type: FIELD_TYPE.text,
@@ -101,7 +96,6 @@ export class ContactGridFactory {
       {field: ContactGridFactory.EXTENSION_FIELD_TEMPLATE},
       {field: ContactGridFactory.FAX_FIELD_TEMPLATE},
       {field: ContactGridFactory.MOBILE_FIELD_TEMPLATE},
-      {field: ContactGridFactory.ACCOUNT_FIELD_TEMPLATE},
       {field: ContactGridFactory.SOCIAL_NETWORK_FIELD_TEMPLATE},
       {field: ContactGridFactory.ADDRESS_FIELD_TEMPLATE}
     ]
@@ -114,10 +108,7 @@ export class ContactGridFactory {
   public static newGridInstance(): Grid {
     let grid = Grid.newInstance(ContactGridFactory.CONTACT_GRID_TEMPLATE);
     grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
-    // grid.addColumn(GridColumn.newInstanceByField(new RevenueField()), 3);
-    // let statusField = StatusField.newStatusFieldInstance(OpportunityGridFactory.STATUS_FIELD_TEMPLATE, statuses);
-    // grid.addColumn(GridColumn.newInstanceByField(statusField), grid.columns.length - 1);
-
+    grid.addColumn(GridColumn.newInstanceByField(new AccountField()), grid.columns.length - 2);
     return grid;
   }
 }

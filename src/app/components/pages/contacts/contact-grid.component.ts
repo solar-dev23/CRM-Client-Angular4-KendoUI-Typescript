@@ -18,7 +18,7 @@ export class ContactGridComponent {
 
   public constructor(protected http: Http, protected contactService: ContactService, protected accountService: AccountService) {
     this.grid = contactService.getContactGrid();
-    this.accountGrid = accountService.getAccountGrid();    
+    this.accountGrid = accountService.getAccountGrid();
   }
 
   protected edit(object): void {
