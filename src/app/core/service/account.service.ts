@@ -29,7 +29,7 @@ export class AccountService extends DataSourceAdapter<any> {
     return this.http.delete("/rest/account/remove", requestOptions);
   }
 
-  public getAccountGrid(): Grid {
-    return AccountGridFactory.newGridInstance();
+  public getAccountGrid(contacts): Grid {
+    return AccountGridFactory.newGridInstance(contacts);
   }
 }

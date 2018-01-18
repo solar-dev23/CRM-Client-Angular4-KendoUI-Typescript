@@ -6,10 +6,11 @@ import { DataSourceAdapter, Grid } from "crm-platform";
 import { HttpUtils } from "../http-utils";
 import { LoginService } from "./login.service";
 import { ContactGridFactory } from "./contact-grid-factory";
+import { AccountService } from "./account.service";
 
 @Injectable()
 export class ContactService extends DataSourceAdapter<any> {
-  public constructor(private http: Http, private loginService: LoginService) {
+  public constructor(private http: Http, private loginService: LoginService, private accountService: AccountService) {
     super();
   };
 
@@ -29,7 +30,7 @@ export class ContactService extends DataSourceAdapter<any> {
     return this.http.delete("/rest/contact/remove", requestOptions);
   }
 
-  public getContactGrid(): Grid {
-    return ContactGridFactory.newGridInstance();
+  public getContactGrid(accounts): Grid {
+    return ContactGridFactory.newGridInstance(accounts);
   }
 }

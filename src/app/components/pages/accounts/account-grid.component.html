@@ -15,5 +15,5 @@
         <editor-field [fieldName]="'notes'" [formGroup]="formGroup"></editor-field>
     </form>
     
-    <object-grid2 [grid]="contactGrid" [dataSource]="contactService" [initialData]="contacts" (updateData)="updateDialogGridData($event)"></object-grid2>    
+    <object-grid2 *ngIf="contactGrid" [grid]="contactGrid" [dataSource]="contactService" [initialData]="contacts" (updateData)="updateDialogGridData($event)"></object-grid2>    
 </edit-object-dialog>

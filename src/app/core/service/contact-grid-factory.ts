@@ -105,10 +105,10 @@ export class ContactGridFactory {
     // do nothing;
   }
 
-  public static newGridInstance(): Grid {
+  public static newGridInstance(accounts): Grid {
     let grid = Grid.newInstance(ContactGridFactory.CONTACT_GRID_TEMPLATE);
     grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
-    grid.addColumn(GridColumn.newInstanceByField(new AccountField()), grid.columns.length - 2);
+    grid.addColumn(GridColumn.newInstanceByField(new AccountField(accounts)), grid.columns.length - 2);
     return grid;
   }
 }

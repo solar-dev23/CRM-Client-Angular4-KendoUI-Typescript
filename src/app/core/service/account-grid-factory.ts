@@ -119,9 +119,9 @@ export class AccountGridFactory {
     // do nothing;
   }
 
-  public static newGridInstance(): Grid {
+  public static newGridInstance(contacts): Grid {
     let grid = Grid.newInstance(AccountGridFactory.ACCOUNT_GRID_TEMPLATE);
-    grid.addColumn(GridColumn.newInstanceByField(new ContactField()), 4);
+    grid.addColumn(GridColumn.newInstanceByField(new ContactField(contacts)), 4);
 
     return grid;
   }

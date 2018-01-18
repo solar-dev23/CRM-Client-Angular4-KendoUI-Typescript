@@ -13,5 +13,5 @@
         <editor-field [fieldName]="'address_id'" [formGroup]="formGroup"></editor-field>
     </form>
     
-    <object-grid2 [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
+    <object-grid2 *ngIf="accountGrid" [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
 </edit-object-dialog>
