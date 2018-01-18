@@ -1,7 +1,7 @@
 import { FIELD_TYPE, FieldTemplate, Grid, GridColumn, GridTemplate, VALIDATOR_TYPE, ERROR_MESSAGES } from "crm-platform";
 import { ENTITY_NAME, REQUEST_URL } from "../constants";
 import { DisplayNameField } from "../domain/display-name-field";
-import { AccountField } from "../domain/Account-field";
+import { AccountField } from "../domain/account-field";
 
 import * as _ from "lodash";
 

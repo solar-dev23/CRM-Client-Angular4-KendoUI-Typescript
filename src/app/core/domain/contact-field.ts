@@ -11,6 +11,9 @@ export class ContactField extends Field {
   }
 
   public valueToString(object: any): any {
-    return object.contacts[0].id;
+    if(object.contacts && object.contacts.length > 0)
+      return object.contacts[0].id;
+    else
+      return '';
   }
 }

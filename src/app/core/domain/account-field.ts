@@ -11,6 +11,9 @@ export class AccountField extends Field {
   }
 
   public valueToString(object: any): any {
-    return object.accounts[0].id;
+    if(object.accounts && object.accounts.length > 0)
+      return object.accounts[0].id;
+    else
+      return '';
   }
 }
