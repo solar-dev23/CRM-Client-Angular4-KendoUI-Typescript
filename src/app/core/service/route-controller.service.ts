@@ -24,6 +24,13 @@ export class RouteController implements CanActivate, CanActivateChild {
       this.router.navigate([ROUTE.login]);
       canNavigate = false;
     }
+
+    let currentRoute = state.url.split('/')[1];
+    if (currentRoute === ROUTE.users && !this.loginService.hasAdministrationPermission()) {
+      this.router.navigate([ROUTE.dashboard]);
+      canNavigate = true;
+    }
+
     return canNavigate;
   }
 }

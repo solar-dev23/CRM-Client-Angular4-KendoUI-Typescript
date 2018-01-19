@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener, ViewEncapsulation, ElementRef, Renderer2, NgZone, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import * as _ from "lodash";
-import { OpportunityService, StatusService, ReminderService, EventEmitterService, LoginService } from "../../../core";
+import { OpportunityService, StatusService, ReminderService, EventEmitterService, LoginService, ContactService, AccountService } from "../../../core";
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { State, SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
@@ -119,6 +119,8 @@ export class OpportunityComponent implements OnInit {
   public columnPadding: number = 15;
   public defaultCriteriaHeight: number = 30;
   public cardViewStyle: any;
+  public contactList: any = [];
+  public accountList: any = [];
 
   constructor(
     private opportunityService: OpportunityService,
@@ -126,6 +128,8 @@ export class OpportunityComponent implements OnInit {
     private reminderService: ReminderService,
     private _eventEmitter: EventEmitterService,
     private loginService: LoginService,
+    private contactService: ContactService,
+    private accountSerivce: AccountService,
     private renderer: Renderer2, 
     private el: ElementRef, 
     private _ngZone: NgZone) 
@@ -143,16 +147,18 @@ export class OpportunityComponent implements OnInit {
         });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loggedUser = this.loginService.getUserData();
     if(this.loggedUser.wide_menu)
       this.menuWidth = 250;
     else
       this.menuWidth = 58;
 
+    this.contactList = await this.contactService.read().toPromise();
+    this.accountList = await this.accountSerivce.read().toPromise();
+
     this._fixColumnHeader();
     this._getContainer();
-
     this.card_quick_filter_options = [
         { id: 1, name: 'My Opportunities' },
         { id: 2, name: 'More than 30 days old' },
@@ -176,61 +182,65 @@ export class OpportunityComponent implements OnInit {
   _getContainer() {
     let that = this;
     this.statusService.read().subscribe (
-          res => {
-              that.containers = that.grid_quick_filter_options = _.toArray(res);
+        res => {
+            that.containers = that.grid_quick_filter_options = _.toArray(res);
 
-              that.containers = that.containers.filter(function(container){
-                if(container.is_active)
-                  return container;
-              })
+            that.containers = that.containers.filter(function(container){
+              if(container.is_active)
+                return container;
+            })
 
-              that.opportunityService.read().subscribe(
-                    res => {
-                        that.opportunities = _.toArray(res);
+            that.opportunityService.read().subscribe(
+              res => {
+                  that.opportunities = _.toArray(res);
 
-                        // Set notify value to opportunities for current user.
-                        _.forEach(that.opportunities, function(oppo){
-                          oppo.notify = false;
+                  _.forEach(that.opportunities, function(opportunity){
+                    // Set notify value to opportunities for current user.
+                    opportunity.notify = false;
 
-                          if(oppo.notify_users && oppo.notify_users.length > 0){
-                            let notify_list = oppo.notify_users.split(',');
-                            if(notify_list.indexOf(that.loggedUser.id) !== -1){
-                              oppo.notify = true;
-                            }
-                          }
-                        });
+                    if(opportunity.notify_users && opportunity.notify_users.length > 0){
+                      let notify_list = opportunity.notify_users.split(',');
+                      if(notify_list.indexOf(that.loggedUser.id) !== -1){
+                        opportunity.notify = true;
+                      }
+                    }
 
-                        _.forEach(that.containers, function(val) {
-                            val.widgets = that.opportunities.filter(function(opp){
-                              if(val.id == opp.status_id)
-                                return opp;
-                            });
+                    // Set contact/company to opportunities.
+                    opportunity.contact = that._buildContactObject(opportunity.contact_id, that.contactList);
+                    opportunity.company = that._buildCompanyObject(opportunity.company_id, that.accountList);
+                  });
 
-                            val.widgets = _.orderBy(val.widgets, 'order');
-                        })
+                  _.forEach(that.containers, function(val) {
+                      val.widgets = that.opportunities.filter(function(opp){
+                        if(val.id == opp.status_id)
+                          return opp;
+                      });
 
-                        // Filter container with active opportunities
-                        that.temp_opportunities = that.opportunities.filter(function(oppo){
-                          if(oppo.is_active)
-                            return oppo;
-                        })
-                        that._getContainerByOppo(that.temp_opportunities);
+                      val.widgets = _.orderBy(val.widgets, 'order');
+                  })
 
-                        _.forEach(that.temp_opportunities, function(opportunity) {
-                          _.forEach(that.containers, function(container) {
-                            if(opportunity.status_id == container.id){
-                              opportunity.status_name = container.name;
-                            }
-                          })
-                        });
+                  // Filter container with active opportunities
+                  that.temp_opportunities = that.opportunities.filter(function(oppo){
+                    if(oppo.is_active)
+                      return oppo;
+                  })
+                  that._getContainerByOppo(that.temp_opportunities);
 
-                        that._getGridOpportunities();
-                    },
-                    err => console.log(err, 'getting opportunities error')
-                )
-          },
-          err => console.log(err, 'getting statuses error')
-      )
+                  _.forEach(that.temp_opportunities, function(opportunity) {
+                    _.forEach(that.containers, function(container) {
+                      if(opportunity.status_id == container.id){
+                        opportunity.status_name = container.name;
+                      }
+                    })
+                  });
+
+                  that._getGridOpportunities();
+              },
+              err => console.log(err, 'getting opportunities error')
+          )
+        },
+        err => console.log(err, 'getting statuses error')
+    )
   }
 
   _getGridOpportunities() {
@@ -520,8 +530,8 @@ export class OpportunityComponent implements OnInit {
     if(this.isNewOpportunity){
         let params = {
           name: opportunityForm.controls['name'].value,
-          company: opportunityForm.controls['company'].value,
-          contact: opportunityForm.controls['contact'] .value,
+          company_id: opportunityForm.controls['company'].value,
+          contact_id: opportunityForm.controls['contact'] .value,
           value: opportunityForm.controls['value'].value,
           currency: opportunityForm.controls['currency'].value,
           description: opportunityForm.controls['description'].value,
@@ -557,8 +567,8 @@ export class OpportunityComponent implements OnInit {
           params = {
             id: this.o_id,
             name: opportunityForm.controls['name'].value,
-            company: opportunityForm.controls['company'].value,
-            contact: opportunityForm.controls['contact'] .value,
+            company_id: opportunityForm.controls['company'].value,
+            contact_id: opportunityForm.controls['contact'] .value,
             value: opportunityForm.controls['value'].value,
             currency: opportunityForm.controls['currency'].value,
             description: opportunityForm.controls['description'].value,
@@ -611,6 +621,8 @@ export class OpportunityComponent implements OnInit {
                 }
 
                 // Update containers for card view.
+                res.contact = that._buildContactObject(res.contact_id, that.contactList);
+                res.company = that._buildCompanyObject(res.company_id, that.accountList);
                 _.forEach(that.containers, function(container){
                     if(container.id == res.status_id){
                       var i = container.widgets.findIndex(widget => widget.id === res.id);
@@ -726,8 +738,8 @@ export class OpportunityComponent implements OnInit {
     this.widgetId = '';
     this.o_id = opportunity.id;
     this.o_name = opportunity.name;
-    this.o_company = opportunity.company;
-    this.o_contact = opportunity.contact;
+    this.o_company = opportunity.company.id;
+    this.o_contact = opportunity.contact.id;
     this.o_value = opportunity.value;
     this.o_currency = opportunity.currency;
     this.o_status = this.o_old_status = opportunity.status_id;
@@ -1371,7 +1383,34 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  onTest(event) {
+  _buildContactObject(id, contactList) {
+    let contactName;
+    if (id && id !== '') {
+      let contact = contactList.find(contact => contact.id === id);
+      contactName = contact.firstName + ' ' + contact.lastName;
+    } else {      
+      contactName = '';
+    }
+
+    return {
+      id: id,
+      name: contactName 
+    }
+  }
+
+  _buildCompanyObject(id, companyList) {
+    let companyName;
+    if (id && id !== '') {
+      let company = companyList.find(company => company.id === id);
+      companyName = company.companyName;
+    } else {
+      companyName = '';
+    }
+
+    return {
+      id: id,
+      name: companyName
+    }
   }
 
   onPrint(event) {

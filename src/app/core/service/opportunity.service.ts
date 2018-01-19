@@ -12,49 +12,22 @@ export class OpportunityService extends DataSourceAdapter<any>  {
   public constructor(private http: Http, private statusService: StatusService) {
     super();
   };
-  
+ 
   public read(): Observable<any[]> {
-    return this.http.get("/rest/opportunity", null).map((res) => res.json());
+    return this.http.get("/rest/opportunity/all", null).map((res) => res.json());
   }
 
   public save(data: any): Observable<any> {
-    let requestOptions = HttpUtils.buildRequestOptions(data);
-    return this.http.post('/rest/opportunity', null, requestOptions).map(res => {
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
+    return this.http.post('/rest/opportunity/save', null, requestOptions).map(res => {
         return res.json();
     })
   }
 
   public remove(data: any): Observable<any> {
-    let requestOptions = HttpUtils.buildRequestOptions(data);
-    return this.http.delete("/rest/opportunity", requestOptions).map(res => {
-        return res.json();
-    })
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferId(data.id);
+    return this.http.delete("/rest/opportunity/remove", requestOptions);
   }
-
-  // public getOpportunities () {
-  //   return this.http.get("/rest/opportunity", null).map((res) => res.json());
-  // }
-
-  // public createOpportunity(data) {
-  //   let requestOptions = HttpUtils.buildRequestOptions(data);
-  //   return this.http.post('/rest/opportunity', null, requestOptions).map(res => {
-  //       return res.json();
-  //   })
-  // }
-
-  // public updateOpportunity(data) {
-  //   let requestOptions = HttpUtils.buildRequestOptions(data);
-  //   return this.http.put('/rest/opportunity', null, requestOptions).map(res => {
-  //       return res.json();
-  //   })
-  // }
-
-  // public deleteOpportunity(data) {
-  //   let requestOptions = HttpUtils.buildRequestOptions(data);
-  //   return this.http.delete("/rest/opportunity", requestOptions).map(res => {
-  //       return res.json();
-  //   })
-  // }
 
   public reorderOpportunity(data) {
     let requestOptions = HttpUtils.buildRequestOptions(data);

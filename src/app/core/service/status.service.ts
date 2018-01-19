@@ -16,47 +16,22 @@ export class StatusService {
   };
 
   public read(): Observable<any[]> {
-    return this.http.get("/rest/status", null).map((res) => res.json());
+    return this.http.get("/rest/status/all", null).map((res) => res.json());
   }
 
   public save(data: any): Observable<any> {
-    let requestOptions = HttpUtils.buildRequestOptions(data);
-    return this.http.post('/rest/status', null, requestOptions).map(res => {
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
+    return this.http.post('/rest/status/save', null, requestOptions).map(res => {
         return res.json();
     })
   }
 
   public remove(data: any): Observable<any> {
     let requestOptions = HttpUtils.buildRequestOptions(data);
-    return this.http.delete("/rest/status", requestOptions).map(res => {
+    return this.http.delete("/rest/status/remove", requestOptions).map(res => {
         return res.json();
     })
   }
-
-  // public getStatuses () {
-  //   return this.http.get("/rest/status", null).map((res) => res.json());
-  // }
-
-  // public createStatus(data) {
-  // 	let requestOptions = HttpUtils.buildRequestOptions(data);
-  //   return this.http.post('/rest/status', null, requestOptions).map(res => {
-  //       return res.json();
-  //   })
-  // }
-
-  // public updateStatus(data) {
-  //   let requestOptions = HttpUtils.buildRequestOptions(data);
-  //   return this.http.put('/rest/status', null, requestOptions).map(res => {
-  //       return res.json();
-  //   })
-  // }
-
-  // public deleteStatus(data) {
-  // 	let requestOptions = HttpUtils.buildRequestOptions(data);
-  //   return this.http.delete("/rest/status", requestOptions).map(res => {
-  //       return res.json();
-  //   })
-  // }
 
   public reorderStatus(data) {
   	let requestOptions = HttpUtils.buildRequestOptions(data);

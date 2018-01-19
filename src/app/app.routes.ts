@@ -16,7 +16,7 @@ import { AccountsComponent } from "./components/pages/accounts/accounts.componen
 
 
 const appRoutes: Routes = [
-  { path: "", redirectTo: ROUTE.users, pathMatch: 'full' },
+  { path: "", redirectTo: ROUTE.dashboard, pathMatch: 'full' },
   { path: ROUTE.login, component: LoginComponent, canActivate: [RouteController] },
   { path: ROUTE.sign_up, component: RegistrationComponent, canActivate: [RouteController] },
   { path: ROUTE.activate_user, component: ActivationComponent, canActivate: [RouteController] },
@@ -25,14 +25,14 @@ const appRoutes: Routes = [
     component: HomeComponent, 
     canActivate: [RouteController],
     children: [
-      { path: ROUTE.dashboard, component: DashboardComponent, canActivate: [RouteController] },
-      { path: ROUTE.users, component: UsersComponent, canActivate: [RouteController] },
-      { path: ROUTE.opportunity, component: OpportunityComponent, canActivate: [RouteController] },
-      { path: ROUTE.report, component: ReportComponent, canActivate: [RouteController] },
-      { path: ROUTE.reportPage, component: ReportComponent, canActivate: [RouteController] },
-      { path: ROUTE.contacts, component: ContactsComponent, canActivate: [RouteController] },
-      { path: ROUTE.accounts, component: AccountsComponent, canActivate: [RouteController] },
-      { path: "**", redirectTo: ROUTE.users, pathMatch: 'full' }
+      { path: ROUTE.dashboard, component: DashboardComponent, canActivateChild: [RouteController] },
+      { path: ROUTE.users, component: UsersComponent, canActivateChild: [RouteController] },
+      { path: ROUTE.opportunity, component: OpportunityComponent, canActivateChild: [RouteController] },
+      { path: ROUTE.report, component: ReportComponent, canActivateChild: [RouteController] },
+      { path: ROUTE.reportPage, component: ReportComponent, canActivateChild: [RouteController] },
+      { path: ROUTE.contacts, component: ContactsComponent, canActivateChild: [RouteController] },
+      { path: ROUTE.accounts, component: AccountsComponent, canActivateChild: [RouteController] },
+      { path: "**", redirectTo: ROUTE.dashboard, pathMatch: 'full' }
     ]
   },
 ];

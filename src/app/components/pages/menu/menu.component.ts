@@ -32,7 +32,7 @@ export class MenuComponent implements OnInit {
     this.dragging = this.unboundDragging.bind(this);
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loggedUser = this.loginService.getUserData();
     if(this.loggedUser.wide_menu){
       this.menuToggled = true;
@@ -51,7 +51,12 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  toggleMenu() {
+  protected get hasAdministrationPermission(): boolean {
+    return this.loginService.hasAdministrationPermission();
+  }
+
+
+  protected toggleMenu() {
     this.menuToggled = !this.menuToggled;
     let updatedUserParams = {}
 
@@ -95,10 +100,7 @@ export class MenuComponent implements OnInit {
       )
   }
 
-  onEdgeHover(event) {
-  }
-
-  mousedown(event: any) {
+  protected mousedown(event: any) {
     if(event.target != event.currentTarget)
       return;
 
@@ -139,8 +141,8 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  mouseup: (event: any) => void;
-  unboundMouseup(event: any) {
+  protected mouseup: (event: any) => void;
+  protected unboundMouseup(event: any) {
     let updatedUserParams = {}
 
     if( (this.expandedWidth * 2)/3 < event.clientX )
@@ -200,8 +202,8 @@ export class MenuComponent implements OnInit {
     this.mouseupEvent();
   }
 
-  dragging: (event: any) => void;
-  unboundDragging(event: any) {
+  protected dragging: (event: any) => void;
+  protected unboundDragging(event: any) {
     this.width = event.clientX;
   }
 }

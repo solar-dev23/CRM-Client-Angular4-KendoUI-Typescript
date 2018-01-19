@@ -24,7 +24,6 @@
           <label class="">
               <span>Filter: &nbsp;</span>
               <ss-multiselect-dropdown [options]="card_quick_filter_options" [texts]="card_quick_filter_texts" [settings]="card_quick_filter_settings" [(ngModel)]="cardQuickFilterModel" (ngModelChange)="onChangeCardQuickFilter($event)"></ss-multiselect-dropdown>
-              <!-- <input type="text" name="search" class="filter-search" [hidden]="!isShowFilterSearch"> -->
           </label>
         </div>
         <div class="views pull-left">
@@ -61,7 +60,6 @@
                       <span class="column-name" *ngIf="activeColumnId != container.id" (click)="activeColumnId=container.id; newColumnName=container.name">{{container.name}}</span>
                       <input type="text" [autofocus]="true" name="column_name" class="column-name-input" [(ngModel)]="newColumnName" *ngIf="activeColumnId == container.id" (keyup.enter)="onUpdateColumn()">
                       <div class="panel-heading-ops">
-                        <!-- <a (click)="onCollapse(i, $event)"><i class="fa fa-chevron-left"></i></a> -->
                         <a (click)="onPopupColumnSetting(i, $event)"><i class="column-popup fa fa-cog"></i></a>
                         <div class="popup_container" *ngIf="sColumnId == i">
                             <ul class="popup_links">
@@ -99,7 +97,6 @@
                                           <a (click)="onEdit(widget, $event)">Edit</a>
                                           <a id="oArchive" (click)="onOpenArchiveDlg(widget, $event)">Archive</a>
                                           <a id="oRemove" (click)="onOpenRemoveDlg(widget, $event)">Remove</a>
-                                          <!-- <a>Schedule Activity</a> -->
                                         </li>
                                       </ul>
                                       <ul class="color-buttons">
@@ -113,8 +110,8 @@
                                   </div>
                               </div>
                               <span (click)="onEdit(widget, $event)" class="card-name">{{ (widget.name.length>140)? (widget.name | slice:0:140)+'...':(widget.name) }}</span><br>
-                              <span (click)="onEdit(widget, $event)">{{widget.company}}</span><br>
-                              <span (click)="onEdit(widget, $event)">{{widget.contact}}</span><br>
+                              <span (click)="onEdit(widget, $event)">{{widget.company.name}}</span><br>
+                              <span (click)="onEdit(widget, $event)">{{widget.contact.name}}</span><br>
                               <span (click)="onEdit(widget, $event)" [hidden]="!widget.value">{{(widget.currency=='EUR')?'€':'$'}}{{widget.value| number:'1.2-2'}}</span><br>
                               <div class="star-ratings-css">
                                 <div class="star-ratings-css-top" [ngClass]="'rate-'+widget.rating">
@@ -264,7 +261,6 @@
 </div>
 
 <kendo-dialog id="addCardDlg"  [width]="500" title="Add/Edit Opportunity" *ngIf="isOpened" (close)="isOpened=false">
-
     <form class="k-form" #opportunityForm="ngForm" (ngSubmit)="onFormSubmit(opportunityForm)">
       <label class="k-form-field col-sm-12">
           <span>Name<span class="k-required">*</span></span>
@@ -272,11 +268,32 @@
       </label>
       <label class="k-form-field col-sm-12">
           <span>Company<span class="k-required">*</span></span>
-          <input class="k-textbox" name="company" [(ngModel)]="o_company" required #company="ngModel" />
+          <kendo-dropdownlist
+              [data]="accountList"
+              [textField]="'companyName'"
+              [valueField]="'id'"
+              [valuePrimitive]="true"
+              name="company"
+              [(ngModel)]="o_company"
+              required
+              #company="ngModel">
+          </kendo-dropdownlist>
       </label>
       <label class="k-form-field col-sm-12">
           <span>Contact<span class="k-required">*</span></span>
-          <input class="k-textbox" name="contact" [(ngModel)]="o_contact" required #contact="ngModel" />
+          <kendo-dropdownlist
+              [data]="contactList"
+              [textField]="'firstName'"
+              [valueField]="'id'"
+              [valuePrimitive]="true"
+              name="contact"
+              [(ngModel)]="o_contact"
+              required
+              #contact="ngModel">
+            <ng-template kendoDropDownListItemTemplate let-dataItem>
+              <span class="template">{{ dataItem.firstName }} {{ dataItem.lastName }}</span> 
+            </ng-template>
+          </kendo-dropdownlist>
       </label>
       <label class="k-form-field col-sm-6">
           <span>Deal revenue <span>(Optional)</span></span>

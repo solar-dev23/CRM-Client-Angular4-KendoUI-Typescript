@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { LoginService } from "../../../core";
 
 @Component({
   selector: "users",
@@ -7,14 +6,10 @@ import { LoginService } from "../../../core";
   styleUrls: ["./users.component.scss"]
 })
 export class UsersComponent {
-	public viewOpt: string = 'card';
+	public viewOpt: string = 'grid';
 
-  public constructor(private loginService: LoginService) {
+  public constructor() {
   };
-
-  protected get hasAdministrationPermission(): boolean {
-    return this.loginService.hasAdministrationPermission()
-  }
 
   onChangeView(val) {
     this.viewOpt = val;

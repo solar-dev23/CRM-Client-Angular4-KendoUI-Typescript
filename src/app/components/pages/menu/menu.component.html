@@ -8,7 +8,7 @@
         <a routerLink="/dashboard">
           <i class="fa fa-tachometer"></i>Dashboard</a>
       </li>
-      <li>
+      <li *ngIf="hasAdministrationPermission">
         <a routerLink="/users">
           <i class="fa fa-tachometer"></i>Users</a>
       </li>
@@ -30,7 +30,7 @@
       </li>
     </ul>
   </div>
-  <div class="sidebar-edge" [style.left.px]="width" (mouseover)="onEdgeHover($event)" (mousedown)="mousedown($event)">
+  <div class="sidebar-edge" [style.left.px]="width" (mousedown)="mousedown($event)">
     <div id="bar"></div>
     <a href="javascript: void(0)" id="menu-toggle-icon" (click)="toggleMenu()">
       <i class="fa fa-chevron-left"></i>
