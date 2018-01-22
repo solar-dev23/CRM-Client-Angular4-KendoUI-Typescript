@@ -1,0 +1,32 @@
+.ma-popup-search {
+  ul {
+    position: absolute;
+    width: calc(100% - 30px);
+    list-style: none;
+    background: #f6f6f6;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    border-top: none;
+    padding: 0;
+
+    li {
+      padding: 0 1em;
+      line-height: 2;
+      cursor: pointer;
+      color: #ff6358;
+
+      &.disable {
+        color: #a9a9a9;
+      }
+
+      &.add-new {
+        font-style: italic;
+        padding-left: 2em;
+      }
+
+      &:hover {
+        background: #ededed;
+      }
+    }
+  }
+}

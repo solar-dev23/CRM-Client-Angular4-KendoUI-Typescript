@@ -134,7 +134,7 @@
   </div>
 
   <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
-    <opportunity-grid></opportunity-grid>
+    <opportunity-grid *ngIf="isShowGrid" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList"></opportunity-grid>
   </div>
   <!-- <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
       <kendo-grid
@@ -260,112 +260,7 @@
 
 </div>
 
-<kendo-dialog id="addCardDlg"  [width]="500" title="Add/Edit Opportunity" *ngIf="isOpened" (close)="isOpened=false">
-    <form class="k-form" #opportunityForm="ngForm" (ngSubmit)="onFormSubmit(opportunityForm)">
-      <label class="k-form-field col-sm-12">
-          <span>Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="name" [(ngModel)]="o_name" required #name="ngModel" />
-      </label>
-      <label class="k-form-field col-sm-12">
-          <span>Company<span class="k-required">*</span></span>
-          <kendo-dropdownlist
-              [data]="accountList"
-              [textField]="'companyName'"
-              [valueField]="'id'"
-              [valuePrimitive]="true"
-              name="company"
-              [(ngModel)]="o_company"
-              required
-              #company="ngModel">
-          </kendo-dropdownlist>
-      </label>
-      <label class="k-form-field col-sm-12">
-          <span>Contact<span class="k-required">*</span></span>
-          <kendo-dropdownlist
-              [data]="contactList"
-              [textField]="'firstName'"
-              [valueField]="'id'"
-              [valuePrimitive]="true"
-              name="contact"
-              [(ngModel)]="o_contact"
-              required
-              #contact="ngModel">
-            <ng-template kendoDropDownListItemTemplate let-dataItem>
-              <span class="template">{{ dataItem.firstName }} {{ dataItem.lastName }}</span> 
-            </ng-template>
-          </kendo-dropdownlist>
-      </label>
-      <label class="k-form-field col-sm-6">
-          <span>Deal revenue <span>(Optional)</span></span>
-          <kendo-numerictextbox
-              name="value" [(ngModel)]="o_value" #value="ngModel">
-          </kendo-numerictextbox>
-      </label>
-      <label class="k-form-field col-sm-6">
-          <span>Currency <span>(Optional)</span></span>
-          <kendo-dropdownlist
-              [data]="currencies"
-              name="currency"
-              [(ngModel)]="o_currency"
-              #currency="ngModel">
-          </kendo-dropdownlist>
-      </label>
-      <label class="k-form-field col-sm-12">
-          <span>Description <span>(Optional)</span></span>
-          <textarea class="k-textarea col-sm-12" name="description" [(ngModel)]="o_description" #description="ngModel">
-          </textarea>
-      </label>
-      <label class="k-form-field col-sm-12">
-          <span>Opportunity Status<span class="k-required">*</span></span>
-          <kendo-dropdownlist
-              [data]="containers"
-              [textField]="'name'"
-              [valueField]="'id'"
-              [valuePrimitive]="true"
-              name="status"
-              [(ngModel)]="o_status"
-              required
-              #status="ngModel">
-          </kendo-dropdownlist>
-      </label>
-      <label class="k-form-field col-sm-12">
-          <span>Rating</span>
-          <div class="star-ratings-css">
-            <div class="star-ratings-css-top" [ngClass]="'rate-'+o_rating">
-              <span (click)="o_rating=1">★</span><span (click)="o_rating=2">★</span><span (click)="o_rating=3">★</span><span (click)="o_rating=4">★</span><span (click)="o_rating=5">★</span>
-            </div>
-            <div class="star-ratings-css-bottom">
-              <span (click)="o_rating=1">☆</span><span (click)="o_rating=2">☆</span><span (click)="o_rating=3">☆</span><span (click)="o_rating=4">☆</span><span (click)="o_rating=5">☆</span>
-            </div>
-          </div>
-      </label>
-      <div class="remind-wrapper col-sm-12">
-        <div class="notify">
-          <input type="checkbox" id="notify_me" class="k-checkbox" [(ngModel)]="o_notify" name="notify" #notify="ngModel">
-          <label class="k-checkbox-label" for="notify_me">Notify me</label>
-        </div>
-        <label class="k-form-field reminder">
-          <span class="reminder-label">Remind me after</span>
-          <kendo-dropdownlist
-              [data]="reminder_list"
-              [textField]="'name'"
-              [valueField]="'id'"
-              [(ngModel)]="o_reminder"
-              name="reminder"
-              #reminder="ngModel">
-          </kendo-dropdownlist>
-        </label>
-        <label class="k-form-field pull-right" *ngIf="o_reminder['id']=='sd'">
-          <kendo-datepicker [(value)]="specific_date"></kendo-datepicker>
-        </label>
-      </div>
-      <div class="buttons col-sm-12">
-          <button kendoButton class="col-sm-6" (click)="isOpened=false">Cancel</button>
-          <button *ngIf="o_isActive" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Save</button>
-          <button *ngIf="!o_isActive" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Restore</button>
-      </div>
-    </form>
-</kendo-dialog>
+<opportunity-dialog *ngIf="isShowDialog" [opportunity]="opportunity" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList" (closeDialog)="closeDialog($event)"></opportunity-dialog>
 
 <kendo-dialog title="Please confirm" *ngIf="isRemoved" (close)="isRemoved=false">
     <p style="margin: 30px; text-align: center;">Are you sure you want to remove this opportunity?</p>

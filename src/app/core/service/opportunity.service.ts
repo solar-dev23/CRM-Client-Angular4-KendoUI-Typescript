@@ -3,16 +3,18 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs";
 import { HttpUtils } from "../http-utils";
-import { DataSourceAdapter, Grid } from "crm-platform";
+import { DataSourceAdapter, Grid, Dropdown } from "crm-platform";
 import { OpportunityGridFactory } from "./opportunity-grid-factory";
-import { StatusService } from "./status.service";
+
 
 @Injectable()
 export class OpportunityService extends DataSourceAdapter<any>  {
-  public constructor(private http: Http, private statusService: StatusService) {
+  public constructor(
+    private http: Http
+  ) {
     super();
   };
- 
+
   public read(): Observable<any[]> {
     return this.http.get("/rest/opportunity/all", null).map((res) => res.json());
   }
@@ -43,8 +45,7 @@ export class OpportunityService extends DataSourceAdapter<any>  {
     })
   }
 
-  public getOpportunityGrid(): Grid {
-    let statuses = _.toArray(this.statusService.getAllStatuses());
-    return OpportunityGridFactory.newGridInstance(statuses);
+  public getOpportunityGrid(contacts, accounts, statuses): Grid {
+    return OpportunityGridFactory.newGridInstance(contacts, accounts, statuses);
   }
 }

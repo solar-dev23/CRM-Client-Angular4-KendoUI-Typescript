@@ -30,7 +30,7 @@ export class OpportunityComponent implements OnInit {
   public opportunities: any = [];
   public temp_opportunities: any = [];
   public currencies: any = ['USD', 'EUR'];
-  public isOpened: boolean = false;
+  public isShowDialog: boolean = false;
   public newOpportunityName: string = '';
   public qColumnId: number = -1;
   public isNewOpportunity: boolean = false;
@@ -119,8 +119,11 @@ export class OpportunityComponent implements OnInit {
   public columnPadding: number = 15;
   public defaultCriteriaHeight: number = 30;
   public cardViewStyle: any;
+  public isShowGrid: boolean = false;
   public contactList: any = [];
   public accountList: any = [];
+  public statusList: any = [];
+  public opportunity: any;
 
   constructor(
     private opportunityService: OpportunityService,
@@ -156,6 +159,29 @@ export class OpportunityComponent implements OnInit {
 
     this.contactList = await this.contactService.read().toPromise();
     this.accountList = await this.accountSerivce.read().toPromise();
+    this.statusList = await this.statusService.read().toPromise();
+
+    this.accountList.forEach(account => {
+      if (account.companyName)
+        account.name = account.companyName
+      else
+        account.name = ''
+    });
+
+    this.contactList.forEach(contact => {
+      if (contact.firstName && contact.lastName) {
+        contact.name = contact.firstName + ' ' + contact.lastName;
+      } else {
+        if (contact.firstName) {
+          contact.name = contact.firstName;
+        }else if (contact.lastName) {
+          contact.name = contact.lastName;
+        }else {
+          contact.name = '';
+        }
+      }
+    });
+    this.isShowGrid = true;
 
     this._fixColumnHeader();
     this._getContainer();
@@ -514,171 +540,7 @@ export class OpportunityComponent implements OnInit {
             )
       }
   }
-
-  onFormSubmit(opportunityForm: NgForm) {
-    let that = this;
-    if(!opportunityForm.valid)
-       return;
-
-    let status;
-    _.forEach(this.containers, function(container){
-        if(container.id == opportunityForm.controls['status'].value){
-          status = container;
-        }
-    })
-
-    if(this.isNewOpportunity){
-        let params = {
-          name: opportunityForm.controls['name'].value,
-          company_id: opportunityForm.controls['company'].value,
-          contact_id: opportunityForm.controls['contact'] .value,
-          value: opportunityForm.controls['value'].value,
-          currency: opportunityForm.controls['currency'].value,
-          description: opportunityForm.controls['description'].value,
-          status_id: opportunityForm.controls['status'].value,
-          order: 1,
-          rating: this.o_rating,
-          user_id: this.loggedUser.id
-        }
-
-        this.opportunityService.save(params).subscribe(
-            res => {
-              that.isOpened = false;
-              _.forEach(that.containers, function(container){
-                  if(container.id == res.status_id){
-                    container.widgets.unshift(res);
-                  }
-              })
-              that._reorder('opportunity');
-            },
-            err => {
-              if(JSON.parse(err._body).errors[0].message){
-                this.alert_message = "Card name already exists.";
-                this.isShowAlert = true;
-              }
-            }
-          )
-    }else {
-        let params = {};
-        if(opportunityForm.controls['status'].value == 100) {
-          this.alert_message = "Please choose the opportunity status.";
-          this.isShowAlert = true;
-        }else {
-          params = {
-            id: this.o_id,
-            name: opportunityForm.controls['name'].value,
-            company_id: opportunityForm.controls['company'].value,
-            contact_id: opportunityForm.controls['contact'] .value,
-            value: opportunityForm.controls['value'].value,
-            currency: opportunityForm.controls['currency'].value,
-            description: opportunityForm.controls['description'].value,
-            status_id: opportunityForm.controls['status'].value,
-            rating: this.o_rating,
-            is_active: true
-          }
-
-          if(this.o_old_status == opportunityForm.controls['status'].value){
-            params['order'] = this.o_order;
-          }else {
-            params['order'] = 1;
-          }
-
-          if(opportunityForm.controls['notify'].value != undefined){
-            params['notify'] = {
-              id: this.loggedUser.id,
-              value: opportunityForm.controls['notify'].value
-            }
-          }
-
-          this.opportunityService.save(params).subscribe(
-              res => {
-                that.isOpened = false;
-
-                // Update reminder if exist.
-                if(that.o_reminder['id']){
-                  let reminder_date = that._getReminderDate(that.o_reminder['id']);
-                  let params = {
-                    user_id: that.loggedUser.id,
-                    opportunity_id: res.id,
-                    reminder_id: that.o_reminder['id'],
-                    reminder_date: reminder_date
-                  }
-
-                  that.reminderService.updateReminder(params).subscribe(
-                      res => {
-                        console.log(res);
-                      }, err => console.log(err, 'reminder update error')
-                    )
-                }
-
-                // Update notify value for container and opportunities
-                res.notify = false;
-                if(res.notify_users && res.notify_users.length > 0){
-                  let notify_list = res.notify_users.split(',');
-                  if(notify_list.indexOf(that.loggedUser.id) !== -1){
-                    res.notify = true;
-                  }
-                }
-
-                // Update containers for card view.
-                res.contact = that._buildContactObject(res.contact_id, that.contactList);
-                res.company = that._buildCompanyObject(res.company_id, that.accountList);
-                _.forEach(that.containers, function(container){
-                    if(container.id == res.status_id){
-                      var i = container.widgets.findIndex(widget => widget.id === res.id);
-                      if (container.widgets[i]) {
-                        container.widgets[i] = res;
-                      }else {
-                        container.widgets.unshift(res);
-                      }
-                    }else {
-                      var j = container.widgets.findIndex(widget => widget.id === res.id);
-                      if (container.widgets[j]) {
-                        container.widgets.splice(j, 1);
-                      }
-                    }
-                });
-
-                that._reorder('opportunity');
-
-                // Update temp opportunites for grid view.
-                var k = that.temp_opportunities.findIndex(opportunity => opportunity.id === res.id);
-
-                if (that.temp_opportunities[k] && that.o_isActive) {
-                  that.temp_opportunities[k] = res;
-                  _.forEach(that.containers, function(container) {
-                    if(that.temp_opportunities[k].status_id == container.id){
-                      that.temp_opportunities[k].status_name = container.name;
-                    }
-                  })
-
-                  that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-                      return obj.is_active;
-                  });
-                }else if (that.temp_opportunities[k] && !that.o_isActive) {
-                  that.temp_opportunities[k].is_active = true;
-                  that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-                      return !obj.is_active;
-                  });
-                }
-
-                // Update opportunites for grid view.
-                var o_index = that.opportunities.findIndex(opportunity => opportunity.id === res.id);
-
-                if (that.opportunities[o_index] && that.o_isActive) {
-                  that.opportunities[o_index] = res;
-                }else if (that.opportunities[o_index] && !that.o_isActive) {
-                  that.opportunities[o_index] = res;
-                  that.opportunities[o_index].is_active = true;
-                }
-
-                that._getGridOpportunities();
-              },
-              err => console.log(err, 'opportunity update error')
-            )
-        }
-    }
-  }
+  
 
   _getReminderDate(id){
       let reminder_date = new Date();
@@ -716,52 +578,56 @@ export class OpportunityComponent implements OnInit {
   }
 
   onCreate() {
-    this.isNewOpportunity = true;
-    this.isOpened = true;
-    this.o_name = '';
-    this.o_company = '';
-    this.o_contact = '';
-    this.o_value = 0;
-    this.o_currency = 'USD';
-    this.o_status = this.containers[0].id;
-    this.o_description = '';
-    this.o_rating = 3;
-    this.o_isActive = true;
+    this.opportunity = undefined;
+    this.isShowDialog = true;
+
+    // this.isNewOpportunity = true;
+    // this.o_name = '';
+    // this.o_company = '';
+    // this.o_contact = '';
+    // this.o_value = 0;
+    // this.o_currency = 'USD';
+    // this.o_status = this.containers[0].id;
+    // this.o_description = '';
+    // this.o_rating = 3;
+    // this.o_isActive = true;
   }
 
   onEdit(opportunity, event) {
-    if(event.target != event.currentTarget)
-      return;
+    this.opportunity = opportunity;
+    this.isShowDialog = true;
+    // if(event.target != event.currentTarget)
+    //   return;
 
-    this.isNewOpportunity = false;
-    this.isOpened = true;
-    this.widgetId = '';
-    this.o_id = opportunity.id;
-    this.o_name = opportunity.name;
-    this.o_company = opportunity.company.id;
-    this.o_contact = opportunity.contact.id;
-    this.o_value = opportunity.value;
-    this.o_currency = opportunity.currency;
-    this.o_status = this.o_old_status = opportunity.status_id;
-    this.o_description = opportunity.description;
-    this.o_rating = opportunity.rating;
-    this.o_order = opportunity.order;
-    this.o_isActive = opportunity.is_active;
-    this.o_notify = opportunity.notify;
-    this.o_reminder = {}
+    // this.isNewOpportunity = false;
+    // this.isShowDialog = true;
+    // this.widgetId = '';
+    // this.o_id = opportunity.id;
+    // this.o_name = opportunity.name;
+    // this.o_company = opportunity.company.id;
+    // this.o_contact = opportunity.contact.id;
+    // this.o_value = opportunity.value;
+    // this.o_currency = opportunity.currency;
+    // this.o_status = this.o_old_status = opportunity.status_id;
+    // this.o_description = opportunity.description;
+    // this.o_rating = opportunity.rating;
+    // this.o_order = opportunity.order;
+    // this.o_isActive = opportunity.is_active;
+    // this.o_notify = opportunity.notify;
+    // this.o_reminder = {}
 
-    this.reminderService.getReminder({user_id: this.loggedUser.id, opportunity_id: opportunity.id}).subscribe(
-        res => {
-          this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
+    // this.reminderService.getReminder({user_id: this.loggedUser.id, opportunity_id: opportunity.id}).subscribe(
+    //     res => {
+    //       this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
 
-          if(res.reminder_id == 'sd')
-            this.specific_date = new Date(res.reminder_date);
-        },
-        err => {
-          console.log(err._body);
-          this.o_reminder = this.reminder_list[0];
-        }
-      )
+    //       if(res.reminder_id == 'sd')
+    //         this.specific_date = new Date(res.reminder_date);
+    //     },
+    //     err => {
+    //       console.log(err._body);
+    //       this.o_reminder = this.reminder_list[0];
+    //     }
+    //   )
   }
 
   onQuickAddOpportunity(status) {
@@ -1411,6 +1277,10 @@ export class OpportunityComponent implements OnInit {
       id: id,
       name: companyName
     }
+  }
+
+  closeDialog() {
+    this.isShowDialog = false;
   }
 
   onPrint(event) {

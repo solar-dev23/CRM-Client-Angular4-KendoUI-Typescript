@@ -36,6 +36,7 @@ import { HeaderComponent } from './header/header.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OpportunityComponent } from './opportunity/opportunity.component';
 import { OpportunityGridComponent } from './opportunity/opportunity-grid.component';
+import { OpportunityDialogComponent } from './opportunity/opportunity-dialog.component';
 import { ChartComponent } from './dashboard/chart/chart.component';
 import { ChartLegendComponent } from './dashboard/chart-legend/chart-legend.component';
 import { ChartTwoComponent } from './dashboard/chart-two/chart-two.component';
@@ -108,6 +109,7 @@ import { SharedService } from './report/shared.service';
     ChartTwoComponent,
     OpportunityComponent,
     OpportunityGridComponent,
+    OpportunityDialogComponent,
     ReportComponent,
     ReportPrintComponent,
     ReportGridComponent,

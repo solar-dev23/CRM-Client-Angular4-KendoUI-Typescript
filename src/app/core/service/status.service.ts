@@ -3,16 +3,12 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import { Observable } from "rxjs";
 import { HttpUtils } from "../http-utils";
-import { LocalStorageService } from "angular-2-local-storage";
 
 @Injectable()
 export class StatusService {
   private static STATUS_DATA_KEY: string = "statusData";
 
-  public constructor(private http: Http, private localStorage: LocalStorageService) {
-    this.read().subscribe(res => {
-      this.localStorage.set(StatusService.STATUS_DATA_KEY, res);
-    });
+  public constructor(private http: Http) {
   };
 
   public read(): Observable<any[]> {
@@ -38,9 +34,5 @@ export class StatusService {
     return this.http.post('/rest/status/reorder', null, requestOptions).map(res => {
         return res.json();
     })
-  }
-
-  public getAllStatuses() {
-    return this.localStorage.get(StatusService.STATUS_DATA_KEY);
   }
 }

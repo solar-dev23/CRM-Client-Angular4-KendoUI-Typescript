@@ -1,23 +1,13 @@
 import * as _ from "lodash";
-import { Field, FieldTemplate, FIELD_TYPE } from "crm-platform";
-import { Statuses } from "./statuses";
+import { Field, FieldTemplate, FIELD_TYPE, Dropdown } from "crm-platform";
 import { Observable } from "rxjs";
 
 export class StatusField extends Field {
-  public constructor(object: any, private statuses: Statuses[]) {
+  public constructor(object: any, private statuses: Dropdown[]) {
     super(object);
   }
 
-  // public getStatus(opportunity: any) {
-  //   let statusById = {};
-  //   _.forEach(this.statuses, status => statusById[status.id] = status);
-  //   let opportunityStatus = _.find(this.statuses, (status) => {
-  //     return status.id === opportunity.id;
-  //   });
-  //   return opportunityStatus ? opportunityStatus : '';
-  // }
-
-  public getAllStatuses(): Statuses[] {
+  public getList(): Dropdown[] {
     return this.statuses;
   }
 
@@ -29,7 +19,7 @@ export class StatusField extends Field {
     return status? status.name:"";
   }
 
-  public static newStatusFieldInstance(fieldTemplate: FieldTemplate, statuses: Statuses[]): StatusField {
+  public static newStatusFieldInstance(fieldTemplate: FieldTemplate, statuses: Dropdown[]): StatusField {
     return new StatusField(fieldTemplate, statuses);
   }
 }

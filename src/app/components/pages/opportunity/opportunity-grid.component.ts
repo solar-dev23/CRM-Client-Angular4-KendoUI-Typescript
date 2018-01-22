@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, Input } from "@angular/core";
 import { Http } from "@angular/http";
 import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
 import { OpportunityService } from "../../../core";
@@ -9,12 +9,21 @@ import { OpportunityService } from "../../../core";
 })
 export class OpportunityGridComponent {
   @ViewChild(ObjectGridComponent) gridComponent: ObjectGridComponent;
+  @Input() contactList: any = [];
+  @Input() accountList: any = [];
+  @Input() statusList: any = [];
 
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
 
-  public constructor(protected opportunityService: OpportunityService, protected http: Http) {
-    this.grid = opportunityService.getOpportunityGrid();
+  public constructor(
+    protected opportunityService: OpportunityService,
+    protected http: Http
+  ) {
+  }
+
+  public ngOnInit() {
+    this.grid = this.opportunityService.getOpportunityGrid(this.contactList, this.accountList, this.statusList);
   }
 
   protected edit(object): void {

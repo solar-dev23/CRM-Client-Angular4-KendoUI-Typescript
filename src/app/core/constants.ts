@@ -33,3 +33,17 @@ export const REQUEST_URL = {
 export const PERMISSIONS = {
   administration: "administration"
 };
+
+export const REMINDERS = [
+  { id: 'no',   name: 'Don\'t remind me' },
+  { id: '1h',   name: '1 hour' },
+  { id: '12h',  name: '12 hours' },
+  { id: '1d',   name: '1 day' },
+  { id: '1w',   name: '1 week' },
+  { id: '2w',   name: '2 weeks' },
+  { id: '3w',   name: '3 weeks' },
+  { id: '1m',   name: '1 month' },
+  { id: 'sd',   name: 'Specific Date' }
+]
+
+export const CURRENCIES = ['USD', 'EUR'];
