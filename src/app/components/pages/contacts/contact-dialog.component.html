@@ -1,0 +1,48 @@
+<kendo-dialog id="contactDlg"  [width]="500" title="Add Contact" (close)="onClose()">
+  <form class="k-form" #contactForm="ngForm" (ngSubmit)="onFormSubmit(contactForm.value)">
+    <div class="k-form-field col-sm-12">
+        <span>First Name<span class="k-required">*</span></span>
+        <input class="k-textbox" name="firstName" required ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Last Name<span class="k-required">*</span></span>
+        <input class="k-textbox" name="lastName" required ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Job Title</span>
+        <input class="k-textbox" name="jobTitle" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Email</span>
+        <input class="k-textbox" name="email" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Phone</span>
+        <input class="k-textbox" name="phone" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Extension</span>
+        <input class="k-textbox" name="extension" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Fax</span>
+        <input class="k-textbox" name="fax" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Mobile</span>
+        <input class="k-textbox" name="mobile" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Social Network</span>
+        <input class="k-textbox" name="social_network" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Address</span>
+        <input class="k-textbox" name="address" ngModel>
+    </div>
+    <div class="buttons col-sm-12">
+        <button kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
+        <button kendoButton class="col-sm-6" primary="true" [disabled]="!contactForm.valid">Save</button>
+    </div>
+  </form>
+</kendo-dialog>

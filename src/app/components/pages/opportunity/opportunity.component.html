@@ -1,12 +1,12 @@
-<div id="homepage">
+<div id="opportunity-page">
   <div class="home-header">
     <app-header title="Opportunity"></app-header>
     <div class="add-column col-sm-12">
       <button kendoButton class="pull-left add-opportunity" [primary]="true" (click)="onCreate()">Add Opportunity</button>
-      <a class="add-column-button" (click)="addColumn = !addColumn" [hidden]="viewOpt=='grid'"><i class="add-column-button-icon fa fa-plus-square"></i></a>
+      <a class="add-column-button" (click)="addColumn = !addColumn" [hidden]="viewMode=='grid'"><i class="add-column-button-icon fa fa-plus-square"></i></a>
       <input type="text" [autofocus]="true" name="column" class="add-column-text" [(ngModel)]="newColumn" kendoTextBox *ngIf="addColumn" (keyup.enter)="onAddNewColumn()">
       <div class="pull-right">
-        <div class="filter pull-left" [hidden]="viewOpt=='card'">
+        <div class="filter pull-left" [hidden]="viewMode=='card'">
           <label class="">
               <span>Filter: &nbsp;</span>
               <kendo-dropdownlist
@@ -20,15 +20,15 @@
               </kendo-dropdownlist>
           </label>
         </div>
-        <div class="filter pull-left" [hidden]="viewOpt=='grid'">
+        <div class="filter pull-left" [hidden]="viewMode=='grid'">
           <label class="">
               <span>Filter: &nbsp;</span>
               <ss-multiselect-dropdown [options]="card_quick_filter_options" [texts]="card_quick_filter_texts" [settings]="card_quick_filter_settings" [(ngModel)]="cardQuickFilterModel" (ngModelChange)="onChangeCardQuickFilter($event)"></ss-multiselect-dropdown>
           </label>
         </div>
         <div class="views pull-left">
-          <a class="view-option" (click)="onChangeView('card')" [class.active]="viewOpt=='card'"><i class="fa fa-th"></i></a>
-          <a class="view-option" (click)="onChangeView('grid')" [class.active]="viewOpt=='grid'"><i class="fa fa-list"></i></a>
+          <a class="view-option" (click)="onChangeView('card')" [class.active]="viewMode=='card'"><i class="fa fa-th"></i></a>
+          <a class="view-option" (click)="onChangeView('grid')" [class.active]="viewMode=='grid'"><i class="fa fa-list"></i></a>
         </div>
         <div class="search pull-left">
           <div class="criterias" #criteria>
@@ -47,16 +47,16 @@
       </div>
     </div>
   </div>
-  <div class="card-view columns col-sm-12" [hidden]="viewOpt=='grid'" [ngStyle]="cardViewStyle">
+  <div class="card-view columns col-sm-12" [hidden]="viewMode=='grid'" [ngStyle]="cardViewStyle">
       <div class="column-grid" dnd-sortable-container [sortableData]="containers" [dropZones]="['container-dropZone']" (scroll)="onScroll($event)">
           <div class="column"
                   *ngFor="let container of containers; let i = index"
                   [attr.id]="'column'+i"
                   [ngClass]="container.isCollapse?'collapsed':'expanded'"
-                  dnd-sortable [sortableIndex]="i" [dragEnabled]="dragColumn" (dragstart)="onDragStart($event)" (dragend)="onDragEnd('status', $event)">
+                  dnd-sortable [sortableIndex]="i" [dragEnabled]="isColumnDraggable" (dragstart)="onDragStart($event)" (dragend)="onDragEnd('status', $event)">
               <div class="panel panel-warning expanded-panel"
                   dnd-sortable-container [sortableData]="container.widgets" [dropZones]="['widget-dropZone']">
-                  <div class="panel-heading" [class.fixed]="navIsFixed" (click)="onCollapse(i, $event)" [ngStyle]="navFixed[i]">
+                  <div class="panel-heading" [class.fixed]="isFixedNav" (click)="onCollapse(i, $event)" [ngStyle]="fixedNavStyles[i]">
                       <span class="column-name" *ngIf="activeColumnId != container.id" (click)="activeColumnId=container.id; newColumnName=container.name">{{container.name}}</span>
                       <input type="text" [autofocus]="true" name="column_name" class="column-name-input" [(ngModel)]="newColumnName" *ngIf="activeColumnId == container.id" (keyup.enter)="onUpdateColumn()">
                       <div class="panel-heading-ops">
@@ -84,14 +84,14 @@
                               class="list-group-item"
                               [style.background] = "widget.bgColor"
                               dnd-sortable [sortableIndex]="x"
-                              [dragEnabled]="dragWidget"
+                              [dragEnabled]="isCardDraggable"
                               [dragData]="widget"
                               (dragstart)="onDragStart($event)"
                               (onDropSuccess)="onDragEnd('opportunity', $event)"
                               (click)="onEdit(widget, $event)">
                               <div class="popup">
                                   <a (click)="onPopup(i, x);"><i class="card-popup fa fa-cog"></i></a>
-                                  <div class="popup_container" *ngIf="'widget_'+i+'_'+x == widgetId">
+                                  <div class="popup_container" *ngIf="'widget_'+i+'_'+x == cardId">
                                       <ul class="popup_links">
                                         <li>
                                           <a (click)="onEdit(widget, $event)">Edit</a>
@@ -133,180 +133,58 @@
       </div>
   </div>
 
-  <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
+  <div class="grid-view pull-left" [hidden]="viewMode=='card'">
     <opportunity-grid *ngIf="isShowGrid" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList"></opportunity-grid>
   </div>
-  <!-- <div class="grid-view pull-left" [hidden]="viewOpt=='card'">
-      <kendo-grid
-          [data]="gridView"
-          [pageSize]="state.take"
-          [pageable]="true"
-          [skip]="state.skip"
-          [sortable]="{
-            allowUnsort: true,
-            mode: 'multiple'
-          }"
-          [sort]="sort"
-          (sortChange)="sortChange($event)"
-          (pageChange)="pageChange($event)"
-      >
-          <ng-template kendoGridToolbarTemplate>
-              <button kendoButton (click)="onPrint($event)"><span class="k-icon k-i-print"></span>Print</button>
-              <button kendoGridPDFCommand><span class="k-icon k-i-file-pdf"></span>Export to PDF</button>
-              <button kendoGridExcelCommand><span class="k-icon k-i-file-excel"></span>Export to Excel</button>
-          </ng-template>
-          <kendo-grid-column field="name" title="Name" width="250">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span (click)="onEdit(dataItem, $event)">{{dataItem.name}}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="company" title="Company" width="80">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span (click)="onEdit(dataItem, $event)">{{dataItem.company}}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="contact" title="Contact" width="80">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span (click)="onEdit(dataItem, $event)">{{dataItem.contact}}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="value" title="Revenue" width="80">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span [hidden]="!dataItem.value" (click)="onEdit(dataItem, $event)">{{(dataItem.currency=='EUR')?'€':'$'}}{{dataItem.value| number:'1.2-2'}}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="status_name" title="Status" width="80">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span (click)="onEdit(dataItem, $event)">{{dataItem.status_name}}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="rating" title="Rating" width="80">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <div class="star-ratings-css" (click)="onEdit(dataItem, $event)">
-                <div class="star-ratings-css-top" [ngClass]="'rate-'+dataItem.rating">
-                  <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                </div>
-                <div class="star-ratings-css-bottom">
-                  <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                </div>
-              </div>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="createdAt" title="Date created" width="90">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span (click)="onEdit(dataItem, $event)">{{dataItem.createdAt | date: 'MM/dd/yyyy'}}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column field="description" title="Description" width="250">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span (click)="onEdit(dataItem, $event)">{{ (dataItem.description && dataItem.description.length>140)? (dataItem.description | slice:0:140)+'...':(dataItem.description) }}</span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column class="grid-edit-opt" width="40">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <a class="remove" (click)="onOpenRemoveDlg(dataItem, $event)"><i class="fa fa-times"></i></a>
-              <i class="update fa fa-gear" (click)="onEdit(dataItem, $event)"></i>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-pdf fileName="Opportunities.pdf" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true" [scale]="0.6">
-              <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
-              <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
-               <div class="page-template">
-                  <div class="header">
-                    <div style="float: right">Page {{ pageNum }} of {{ totalPages }}</div>
-                    Multi-page grid with automatic page breaking
-                  </div>
-                  <div class="footer">
-                    Page {{ pageNum }} of {{ totalPages }}
-                  </div>
-                </div>
-              </ng-template>
-
-              <kendo-grid-column field="name" title="Name"></kendo-grid-column>
-              <kendo-grid-column field="company" title="Company"></kendo-grid-column>
-              <kendo-grid-column field="contact" title="Contact"></kendo-grid-column>
-              <kendo-grid-column field="value" title="Revenue">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                  <span [hidden]="!dataItem.value">{{(dataItem.currency=='EUR')?'€':'$'}}{{dataItem.value| number:'1.2-2'}}</span>
-                </ng-template>
-              </kendo-grid-column>
-              <kendo-grid-column field="status_name" title="Status"></kendo-grid-column>
-              <kendo-grid-column field="rating" title="Rating">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                  <div class="star-ratings-css">
-                    <div class="star-ratings-css-top" [ngClass]="'rate-'+dataItem.rating">
-                      <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                    </div>
-                    <div class="star-ratings-css-bottom">
-                      <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                    </div>
-                  </div>
-                </ng-template>
-              </kendo-grid-column>
-              <kendo-grid-column field="createdAt" title="Date created">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                  <span>{{dataItem.createdAt | date: 'MM/dd/yyyy'}}</span>
-                </ng-template>
-              </kendo-grid-column>
-              <kendo-grid-column field="description" title="Description" width="250">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                  <span>{{ (dataItem.description && dataItem.description.length>140)? (dataItem.description | slice:0:140)+'...':(dataItem.description) }}</span>
-                </ng-template>
-              </kendo-grid-column>
-          </kendo-grid-pdf>
-          <kendo-grid-excel fileName="Opportunities.xlsx" [fetchData]="allData"></kendo-grid-excel>
-      </kendo-grid>
-  </div> -->
-
 </div>
 
-<opportunity-dialog *ngIf="isShowDialog" [opportunity]="opportunity" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList" (closeDialog)="closeDialog($event)"></opportunity-dialog>
+<opportunity-dialog *ngIf="isShowDialog" [opportunity]="opportunity" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList" (save)="updateOpportunity($event)" (close)="closeDialog($event)"></opportunity-dialog>
 
-<kendo-dialog title="Please confirm" *ngIf="isRemoved" (close)="isRemoved=false">
+<kendo-dialog title="Please confirm" *ngIf="isShowRemoveDlg" (close)="isShowRemoveDlg=false">
     <p style="margin: 30px; text-align: center;">Are you sure you want to remove this opportunity?</p>
     <kendo-dialog-actions>
-        <button kendoButton (click)="isRemoved=false">No</button>
+        <button kendoButton (click)="isShowRemoveDlg=false">No</button>
         <button kendoButton (click)="onRemove()" primary="true">Yes</button>
     </kendo-dialog-actions>
 </kendo-dialog>
 
-<kendo-dialog title="Please confirm" *ngIf="isArchived" (close)="isArchived=false">
+<kendo-dialog title="Please confirm" *ngIf="isShowArchiveDlg" (close)="isShowArchiveDlg=false">
     <p style="margin: 30px; text-align: center;">Are you sure you want to archive this opportunity?</p>
     <kendo-dialog-actions>
-        <button kendoButton (click)="isArchived=false">No</button>
+        <button kendoButton (click)="isShowArchiveDlg=false">No</button>
         <button kendoButton (click)="onArchive()" primary="true">Yes</button>
     </kendo-dialog-actions>
 </kendo-dialog>
 
-<kendo-dialog title="Please confirm" *ngIf="isArchivedAll" (close)="isArchivedAll=false">
+<kendo-dialog title="Please confirm" *ngIf="isShowArchiveAllDlg" (close)="isShowArchiveAllDlg=false">
     <p style="margin: 30px; text-align: center;">Are you sure you want to archive all opportunities in this column?</p>
     <kendo-dialog-actions>
-        <button kendoButton (click)="isArchivedAll=false">No</button>
+        <button kendoButton (click)="isShowArchiveAllDlg=false">No</button>
         <button kendoButton (click)="onArchiveAll($event)" primary="true">Yes</button>
     </kendo-dialog-actions>
 </kendo-dialog>
 
-<kendo-dialog title="Please confirm" *ngIf="isArchivedAll2" (close)="isArchivedAll2=false">
+<kendo-dialog title="Please confirm" *ngIf="isShowArchiveAllDlg2" (close)="isShowArchiveAllDlg2=false">
     <p style="margin: 30px; text-align: center;">Do you like to archive all cards first?</p>
     <kendo-dialog-actions>
         <button kendoButton (click)="onArchiveAll2($event)" primary="true">Yes</button>
-        <button kendoButton (click)="isArchivedAll2=false;isRemoveAll=true;">No</button>
-        <button kendoButton (click)="isArchivedAll2=false">Cancel</button>
+        <button kendoButton (click)="isShowArchiveAllDlg2=false;isShowRemoveAllDlg=true;">No</button>
+        <button kendoButton (click)="isShowArchiveAllDlg2=false">Cancel</button>
     </kendo-dialog-actions>
 </kendo-dialog>
 
-<kendo-dialog title="Please confirm" *ngIf="isRemoveAll" (close)="isRemoveAll=false">
+<kendo-dialog title="Please confirm" *ngIf="isShowRemoveAllDlg" (close)="isShowRemoveAllDlg=false">
     <p style="margin: 30px; text-align: center;">Are you sure you want to delete "{{removeColumnName}}"?</p>
     <kendo-dialog-actions>
-        <button kendoButton (click)="isRemoveAll=false">No</button>
+        <button kendoButton (click)="isShowRemoveAllDlg=false">No</button>
         <button kendoButton (click)="onRemoveAll($event)" primary="true">Yes</button>
     </kendo-dialog-actions>
 </kendo-dialog>
 
-<kendo-dialog title="Alert!" *ngIf="isShowAlert" (close)="isShowAlert=false">
+<kendo-dialog title="Alert!" *ngIf="isShowAlertDlg" (close)="isShowAlertDlg=false">
   <p style="margin: 30px; text-align: center;">{{alert_message}}</p>
 
   <kendo-dialog-actions>
-      <button kendoButton (click)="isShowAlert=false;" [primary]="true">Close</button>
+      <button kendoButton (click)="isShowAlertDlg=false;" [primary]="true">Close</button>
   </kendo-dialog-actions>
 </kendo-dialog>

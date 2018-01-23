@@ -1,97 +1,79 @@
-import { Component, OnInit, HostListener, ViewEncapsulation, ElementRef, Renderer2, NgZone, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit, HostListener, ViewEncapsulation, ElementRef, ViewChild } from '@angular/core';
 import * as _ from "lodash";
-import { OpportunityService, StatusService, ReminderService, EventEmitterService, LoginService, ContactService, AccountService } from "../../../core";
-import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { State, SortDescriptor, orderBy } from '@progress/kendo-data-query';
-import { ExcelExportData } from '@progress/kendo-angular-excel-export';
+import { 
+  OpportunityService, 
+  StatusService, 
+  ReminderService, 
+  EventEmitterService, 
+  LoginService, 
+  ContactService, 
+  AccountService,
+  CARD_QUICK_FILTER_OPTIONS,
+  REMINDERS
+} from "../../../core";
 import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
-
-var gridSize: number = 0;
 
 @Component({
   selector: 'opportunity',
   templateUrl: './opportunity.component.html',
-  styleUrls: ['./opportunity.component.scss', './pdf-styles.scss'],
+  styleUrls: ['./opportunity.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class OpportunityComponent implements OnInit {
-  @ViewChild('opportunityGrid') opportunityGridComponent: any;
   @ViewChild('criteria') criteriaView: ElementRef;
 
-  public dragColumn: boolean = true;
-  public dragWidget: boolean = true;
-  public containers: any = [];
-  public activeColumnId: number = -1;
-  public widgetId: string = '';
-  public newColumn: string = '';
-  public addColumn: boolean = false;
-  public newColumnName: string = '';
-  public opportunities: any = [];
-  public temp_opportunities: any = [];
-  public currencies: any = ['USD', 'EUR'];
-  public isShowDialog: boolean = false;
-  public newOpportunityName: string = '';
-  public qColumnId: number = -1;
-  public isNewOpportunity: boolean = false;
-  public isRemoved: boolean = false;
-  public isArchived: boolean = false;
-  public isArchivedAll: boolean = false;
-  public isRemoveAll: boolean = false;
-  public isShowAlert: boolean = false;
-  public isArchivedAll2: boolean = false;
-
-  public o_name: string = '';
-  public o_company: string = '';
-  public o_contact: string = '';
-  public o_value: number = 0;
-  public o_currency: string = 'USD';
-  public o_description: string = '';
-  public o_status: number = 0;
-  public o_old_status: number = 0;
-  public o_rating: number = 3;
-  public o_id: string = '';
-  public o_order: number = 0;
-  public o_isActive: boolean = true;
-  public o_notify: boolean = false;
-  public o_reminder: Object = {id: '', name: ''};
-  public removeObj: Object = {id:'', status_id:''};
-  public archiveObj: Object;
-
-  public viewOpt: string = 'card';
-  public gridView: GridDataResult;
-  public state: State = {
-    skip: 0,
-    take: 10
-  };
-  public searchStr: string = '';
-  public filter: string = '';
-  public filter_default: Object={id: 0, name:"All"};
-  public criterias: any = [];
-  public grid_criterias: any = [];
-  public card_criterias: any = [];
-  public sort: SortDescriptor[] = [];
-  public enablePop: boolean = false;  
-  public loggedUser: any;
-
-  public grid_quick_filter_options: any = [];
-  // public card_quick_filter_options: any = ['My Opportunities', 'More than 30 days old'];
-  public sColumnId: number = -1;
-  public archiveColumnId: number = 0;
-  public alert_message: string = '';
-  public removeColumnName: string = '';
+  protected isColumnDraggable: boolean = true;
+  protected isCardDraggable: boolean = true;
+  protected containers: any = [];
+  protected activeColumnId: number = -1;
+  protected cardId: string = '';
+  protected newColumn: string = '';
+  protected addColumn: boolean = false;
+  protected newColumnName: string = '';
+  protected opportunities: any = [];
+  protected temp_opportunities: any = [];  
+  protected isShowDialog: boolean = false;
+  protected newOpportunityName: string = '';
+  protected qColumnId: number = -1;
+  protected isShowRemoveDlg: boolean = false;
+  protected isShowArchiveDlg: boolean = false;
+  protected isShowArchiveAllDlg: boolean = false;
+  protected isShowArchiveAllDlg2: boolean = false;
+  protected isShowRemoveAllDlg: boolean = false;
+  protected isShowAlertDlg: boolean = false;
+  protected removeObj: Object = {id:'', status_id:''};
+  protected archiveObj: Object;
+  protected viewMode: string = 'card';
+  protected searchStr: string = '';
+  protected filter: string = '';
+  protected filter_default: Object={id: 0, name:"All"};
+  protected criterias: any = [];
+  protected grid_criterias: any = [];
+  protected card_criterias: any = [];
+  protected enablePop: boolean = false;  
+  protected loggedUser: any;
+  protected grid_quick_filter_options: any = [];
+  protected sColumnId: number = -1;
+  protected archiveColumnId: number = 0;
+  protected alert_message: string = '';
+  protected removeColumnName: string = '';
+  protected isShowGrid: boolean = false;
+  protected contactList: any = [];
+  protected accountList: any = [];
+  protected statusList: any = [];
+  protected opportunity: any;
 
   // Multi-check list in card view.
-  public cardQuickFilterModel: any = [];
-  public card_quick_filter_options: IMultiSelectOption[];
-  public card_quick_filter_settings: IMultiSelectSettings = {
+  protected cardQuickFilterModel: any = [];
+  protected card_quick_filter_options: IMultiSelectOption[] = CARD_QUICK_FILTER_OPTIONS;
+  protected card_quick_filter_settings: IMultiSelectSettings = {
       enableSearch: false,
       checkedStyle: 'fontawesome',
       buttonClasses: 'btn btn-default btn-block',
       dynamicTitleMaxItems: 3,
       displayAllSelectedText: true
   };
-  public card_quick_filter_texts: IMultiSelectTexts = {
+  protected card_quick_filter_texts: IMultiSelectTexts = {
       checkAll: 'Select all',
       uncheckAll: 'Unselect all',
       checked: 'item selected',
@@ -102,28 +84,17 @@ export class OpportunityComponent implements OnInit {
       defaultTitle: 'Select',
       allSelected: 'All selected',
   };
-  public isShowFilterSearch = false;
 
-  // Notify and Reminder variables
-  public reminder_list: any = [];
-  public reminder: string = '';
-  public specific_date: Date = new Date();
-
-  public navIsFixed: boolean = false;
-  public navFixed: any = [];
-  public scrollTop: number = 0;
-  public scrollLeft: number = 0;
-  public menuWidth: number = 0;
-
-  public headerHeight: number = 100;
-  public columnPadding: number = 15;
-  public defaultCriteriaHeight: number = 30;
-  public cardViewStyle: any;
-  public isShowGrid: boolean = false;
-  public contactList: any = [];
-  public accountList: any = [];
-  public statusList: any = [];
-  public opportunity: any;
+  protected reminder_list: Array<object> = REMINDERS;
+  protected isFixedNav: boolean = false;
+  protected fixedNavStyles: any = [];
+  protected scrollTop: number = 0;
+  protected scrollLeft: number = 0;
+  protected menuWidth: number = 0;
+  protected headerHeight: number = 100;
+  protected columnPadding: number = 15;
+  protected defaultCriteriaHeight: number = 30;
+  protected cardViewStyle: any;
 
   constructor(
     private opportunityService: OpportunityService,
@@ -132,13 +103,8 @@ export class OpportunityComponent implements OnInit {
     private _eventEmitter: EventEmitterService,
     private loginService: LoginService,
     private contactService: ContactService,
-    private accountSerivce: AccountService,
-    private renderer: Renderer2, 
-    private el: ElementRef, 
-    private _ngZone: NgZone) 
+    private accountSerivce: AccountService) 
   {
-      this.allData = this.allData.bind(this);
-
       this._eventEmitter.changeEmitted$.subscribe(
         data => {
             if(data == 'expanded')
@@ -152,6 +118,7 @@ export class OpportunityComponent implements OnInit {
 
   async ngOnInit() {
     this.loggedUser = this.loginService.getUserData();
+
     if(this.loggedUser.wide_menu)
       this.menuWidth = 250;
     else
@@ -160,6 +127,7 @@ export class OpportunityComponent implements OnInit {
     this.contactList = await this.contactService.read().toPromise();
     this.accountList = await this.accountSerivce.read().toPromise();
     this.statusList = await this.statusService.read().toPromise();
+    this.opportunities = await this.opportunityService.read().toPromise();
 
     this.accountList.forEach(account => {
       if (account.companyName)
@@ -181,131 +149,13 @@ export class OpportunityComponent implements OnInit {
         }
       }
     });
+
     this.isShowGrid = true;
 
     this._fixColumnHeader();
     this._getContainer();
-    this.card_quick_filter_options = [
-        { id: 1, name: 'My Opportunities' },
-        { id: 2, name: 'More than 30 days old' },
-    ];
 
-    this.reminder_list = [
-      { id: 'no',   name: 'Don\'t remind me' },
-      { id: '1h',   name: '1 hour' },
-      { id: '12h',  name: '12 hours' },
-      { id: '1d',   name: '1 day' },
-      { id: '1w',   name: '1 week' },
-      { id: '2w',   name: '2 weeks' },
-      { id: '3w',   name: '3 weeks' },
-      { id: '1m',   name: '1 month' },
-      { id: 'sd',   name: 'Specific Date' }
-    ];
-
-    this.o_reminder = this.reminder_list[0];
-  }
-
-  _getContainer() {
-    let that = this;
-    this.statusService.read().subscribe (
-        res => {
-            that.containers = that.grid_quick_filter_options = _.toArray(res);
-
-            that.containers = that.containers.filter(function(container){
-              if(container.is_active)
-                return container;
-            })
-
-            that.opportunityService.read().subscribe(
-              res => {
-                  that.opportunities = _.toArray(res);
-
-                  _.forEach(that.opportunities, function(opportunity){
-                    // Set notify value to opportunities for current user.
-                    opportunity.notify = false;
-
-                    if(opportunity.notify_users && opportunity.notify_users.length > 0){
-                      let notify_list = opportunity.notify_users.split(',');
-                      if(notify_list.indexOf(that.loggedUser.id) !== -1){
-                        opportunity.notify = true;
-                      }
-                    }
-
-                    // Set contact/company to opportunities.
-                    opportunity.contact = that._buildContactObject(opportunity.contact_id, that.contactList);
-                    opportunity.company = that._buildCompanyObject(opportunity.company_id, that.accountList);
-                  });
-
-                  _.forEach(that.containers, function(val) {
-                      val.widgets = that.opportunities.filter(function(opp){
-                        if(val.id == opp.status_id)
-                          return opp;
-                      });
-
-                      val.widgets = _.orderBy(val.widgets, 'order');
-                  })
-
-                  // Filter container with active opportunities
-                  that.temp_opportunities = that.opportunities.filter(function(oppo){
-                    if(oppo.is_active)
-                      return oppo;
-                  })
-                  that._getContainerByOppo(that.temp_opportunities);
-
-                  _.forEach(that.temp_opportunities, function(opportunity) {
-                    _.forEach(that.containers, function(container) {
-                      if(opportunity.status_id == container.id){
-                        opportunity.status_name = container.name;
-                      }
-                    })
-                  });
-
-                  that._getGridOpportunities();
-              },
-              err => console.log(err, 'getting opportunities error')
-          )
-        },
-        err => console.log(err, 'getting statuses error')
-    )
-  }
-
-  _getGridOpportunities() {
-      let that = this;
-      gridSize = this.temp_opportunities.length;
-      this.gridView = {
-          data: this.temp_opportunities.slice(this.state.skip, this.state.skip + this.state.take),
-          total: this.temp_opportunities.length
-      };
-  }
-
-  _getContainerByOppo(opportunities) {
-    _.forEach(this.containers, function(val) {
-        val.widgets = opportunities.filter(function(opp){
-          if(val.id == opp.status_id)
-            return opp;
-        });
-
-        val.widgets = _.orderBy(val.widgets, 'order');
-    })
-  }
-
-  pageChange(event: PageChangeEvent) {
-      this.state = event;
-      this._getGridOpportunities();
-  }
-
-  sortChange(sort: SortDescriptor[]): void {
-      this.sort = sort;
-      this.temp_opportunities = orderBy(this.temp_opportunities, this.sort);
-      this._getGridOpportunities();
-  }
-
-  allData(): ExcelExportData {
-    const result: ExcelExportData =  {
-        data: this.temp_opportunities
-    };
-
-    return result;
+    // this.o_reminder = this.reminder_list[0];
   }
 
   @HostListener('document:click', ['$event'])
@@ -327,15 +177,72 @@ export class OpportunityComponent implements OnInit {
     }
 
     if(!_.includes(event.target.classList, 'card-popup')){
-      this.widgetId = '';
-    }
-
-    if(_.includes(event.target.classList, 'dropdown-toggle')){
-      this.isShowFilterSearch = !this.isShowFilterSearch;
+      this.cardId = '';
     }
   }
 
-  onScroll(event) {
+  private _getContainer() {
+    let that = this;
+    this.containers = this.grid_quick_filter_options = this.statusList;
+    this.containers = this.containers.filter(function(container){
+      if(container.is_active)
+        return container;
+    });
+
+    // Add opportunities to containers
+    _.forEach(this.containers, function(val) {
+        val.widgets = that.opportunities.filter(function(opp){
+          if(val.id == opp.status_id)
+            return opp;
+        });
+
+        val.widgets = _.orderBy(val.widgets, 'order');
+    });
+
+    // Filter container with active opportunities
+    this.temp_opportunities = this.opportunities.filter(function(oppo){
+      if(oppo.is_active)
+        return oppo;
+    });
+    this._getContainerByOppo(this.temp_opportunities);
+
+    _.forEach(this.temp_opportunities, function(opportunity) {
+      _.forEach(that.containers, function(container) {
+        if(opportunity.status_id == container.id){
+          opportunity.status_name = container.name;
+        }
+      })
+    });
+
+    // Set Opportunity notify and contact/company values.
+    _.forEach(this.opportunities, function(opportunity){
+      // Set notify value to opportunities for current user.
+      opportunity.notify = false;
+      if(opportunity.notify_users && opportunity.notify_users.length > 0){
+        let notify_list = opportunity.notify_users.split(',');
+        if(notify_list.indexOf(that.loggedUser.id) !== -1){
+          opportunity.notify = true;
+        }
+      }
+
+      // Set contact/company to opportunities.
+      opportunity.contact = that._buildContactObject(opportunity.contact_id, that.contactList);
+      opportunity.company = that._buildCompanyObject(opportunity.company_id, that.accountList);
+    });
+  }
+  
+  private _getContainerByOppo(opportunities) {
+    _.forEach(this.containers, function(val) {
+        val.widgets = opportunities.filter(function(opp){
+          if(val.id == opp.status_id)
+            return opp;
+        });
+
+        val.widgets = _.orderBy(val.widgets, 'order');
+    })
+  }
+
+  protected onScroll(event) {
     if(!_.includes(event.target.classList, 'column-grid'))
       return;
 
@@ -345,40 +252,40 @@ export class OpportunityComponent implements OnInit {
     this._fixColumnHeader();
   }
 
-  _fixColumnHeader() {
+  private _fixColumnHeader(): void {
     let that = this;
 
     if(this.scrollTop > 60){
-      this.navIsFixed = true;
+      this.isFixedNav = true;
 
       _.forEach(this.containers, function(container, index) {
-        that.navFixed[index] = {
+        that.fixedNavStyles[index] = {
           left: (that.menuWidth + that.columnPadding + 300 * parseInt(index) - that.scrollLeft) + 'px'
         }
       })
     }
     else
-      this.navIsFixed = false;
+      this.isFixedNav = false;
   }
 
-  onDragStart(event) {
+  protected onDragStart(event) {
     if(_.includes(event.target.classList, 'column')){
-      this.dragColumn = true;
-      this.dragWidget = false;
+      this.isColumnDraggable = true;
+      this.isCardDraggable = false;
     }
     else{
-      this.dragColumn = false;
-      this.dragWidget = true;
+      this.isColumnDraggable = false;
+      this.isCardDraggable = true;
     }
   }
 
-  onDragEnd(val, event) {
+  protected onDragEnd(val, event) {
     let that = this;
-    this.dragColumn = true;
-    this.dragWidget = true;
+    this.isColumnDraggable = true;
+    this.isCardDraggable = true;
 
     if(val == 'opportunity'){
-      // Because of checking notify
+      // For checking notify
       this.opportunityService.save(event).subscribe(
           res => {
             this._reorder(val);
@@ -398,15 +305,15 @@ export class OpportunityComponent implements OnInit {
           that.temp_opportunities[i].status_id = container.id;
           that.temp_opportunities[i].status_name = container.name;
 
-          if(that.o_isActive){
-            that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-                return obj.is_active;
-            });
-          }else {
-            that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-                return !obj.is_active;
-            });
-          }
+          // if(that.o_isActive){
+          //   that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+          //       return obj.is_active;
+          //   });
+          // }else {
+          //   that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+          //       return !obj.is_active;
+          //   });
+          // }
         }
 
         var j = that.opportunities.findIndex(opportunity => opportunity.id === widget.id);
@@ -418,14 +325,14 @@ export class OpportunityComponent implements OnInit {
     })
   }
 
-  onPopup(columnIndex, widgetIndex) {
-    if(this.widgetId == 'widget_'+columnIndex+'_'+widgetIndex)
-      this.widgetId = '';
+  protected onPopup(columnIndex, widgetIndex) {
+    if(this.cardId == 'widget_'+columnIndex+'_'+widgetIndex)
+      this.cardId = '';
     else
-      this.widgetId = 'widget_'+columnIndex+'_'+widgetIndex;
+      this.cardId = 'widget_'+columnIndex+'_'+widgetIndex;
   }
 
-  onChangeBg(opportunity, bgColor) {
+  protected onChangeBg(opportunity, bgColor) {
     let params={
       id: opportunity.id,
       status_id: opportunity.status_id,
@@ -436,30 +343,30 @@ export class OpportunityComponent implements OnInit {
     this.opportunityService.save(params).subscribe(
         res => {
             opportunity.bgColor = bgColor;
-            this.widgetId = '';
+            this.cardId = '';
         },
         err => console.log(err, 'opportunity update error')
       )
   }
 
-  onCollapse(columnIndex, event) {
+  protected onCollapse(columnIndex, event) {
     if(event.target == event.currentTarget) {
       this.containers[columnIndex].isCollapse = true;
     }
   }
 
-  onExpand(columnIndex, event) {
+  protected onExpand(columnIndex, event) {
     // if(event.target == event.currentTarget) {
       this.containers[columnIndex].isCollapse = false;
     // }
   }
 
-  onClear() {
+  protected onClear() {
     // this.containers = containers;
     // this.addColumn = false;
   }
 
-  onAddNewColumn() {
+  protected onAddNewColumn() {
     if(!this.newColumn.length){
       return;
     }
@@ -496,14 +403,14 @@ export class OpportunityComponent implements OnInit {
         err => {
           if(JSON.parse(err._body).errors[0].message){
             this.alert_message = "Column name already exists.";
-            this.isShowAlert = true;
+            this.isShowAlertDlg = true;
             this.newColumn = '';
           }
         }
       )
   }
 
-  onUpdateColumn() {
+  protected onUpdateColumn() {
     if(this.activeColumnId == -1 || !this.newColumnName.length)
       return;
 
@@ -523,26 +430,25 @@ export class OpportunityComponent implements OnInit {
       )
   }
 
-  _reorder(type) {
-      if(type == 'status'){
-          this.statusService.reorderStatus(this.containers).subscribe(
-              res => {
-                console.log(res);
-              },
-              err => console.log(err, 'status reorder error')
-            )
-      }else if (type == 'opportunity') {
-          this.opportunityService.reorderOpportunity(this.containers).subscribe(
-              res => {
-                console.log(res);
-              },
-              err => console.log(err, 'opportunity reorder error')
-            )
-      }
-  }
-  
+  private _reorder(type) {
+    if(type == 'status'){
+        this.statusService.reorderStatus(this.containers).subscribe(
+            res => {
+              console.log(res);
+            },
+            err => console.log(err, 'status reorder error')
+          )
+    }else if (type == 'opportunity') {
+        this.opportunityService.reorderOpportunity(this.containers).subscribe(
+            res => {
+              console.log(res);
+            },
+            err => console.log(err, 'opportunity reorder error')
+          )
+    }
+  }  
 
-  _getReminderDate(id){
+  private _getReminderDate(id){
       let reminder_date = new Date();
       switch (id) {
         case "no":
@@ -570,58 +476,25 @@ export class OpportunityComponent implements OnInit {
           reminder_date = new Date(reminder_date.getFullYear(), reminder_date.getMonth()+1, reminder_date.getDate());
           break;
         default:
-          reminder_date = this.specific_date;
           break;
       }
 
       return reminder_date;
   }
 
-  onCreate() {
+  protected onCreate() {
     this.opportunity = undefined;
     this.isShowDialog = true;
-
-    // this.isNewOpportunity = true;
-    // this.o_name = '';
-    // this.o_company = '';
-    // this.o_contact = '';
-    // this.o_value = 0;
-    // this.o_currency = 'USD';
-    // this.o_status = this.containers[0].id;
-    // this.o_description = '';
-    // this.o_rating = 3;
-    // this.o_isActive = true;
   }
 
-  onEdit(opportunity, event) {
+  protected onEdit(opportunity, event) {
     this.opportunity = opportunity;
     this.isShowDialog = true;
-    // if(event.target != event.currentTarget)
-    //   return;
-
-    // this.isNewOpportunity = false;
-    // this.isShowDialog = true;
-    // this.widgetId = '';
-    // this.o_id = opportunity.id;
-    // this.o_name = opportunity.name;
-    // this.o_company = opportunity.company.id;
-    // this.o_contact = opportunity.contact.id;
-    // this.o_value = opportunity.value;
-    // this.o_currency = opportunity.currency;
-    // this.o_status = this.o_old_status = opportunity.status_id;
-    // this.o_description = opportunity.description;
-    // this.o_rating = opportunity.rating;
-    // this.o_order = opportunity.order;
-    // this.o_isActive = opportunity.is_active;
-    // this.o_notify = opportunity.notify;
-    // this.o_reminder = {}
 
     // this.reminderService.getReminder({user_id: this.loggedUser.id, opportunity_id: opportunity.id}).subscribe(
     //     res => {
     //       this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
 
-    //       if(res.reminder_id == 'sd')
-    //         this.specific_date = new Date(res.reminder_date);
     //     },
     //     err => {
     //       console.log(err._body);
@@ -630,7 +503,7 @@ export class OpportunityComponent implements OnInit {
     //   )
   }
 
-  onQuickAddOpportunity(status) {
+  protected onQuickAddOpportunity(status) {
     let that = this;
 
     if(!this.newOpportunityName.length)
@@ -662,22 +535,22 @@ export class OpportunityComponent implements OnInit {
         err => {
           if(JSON.parse(err._body).errors[0].message){
             this.alert_message = "Card name already exists.";
-            this.isShowAlert = true;
+            this.isShowAlertDlg = true;
           }
         }
       )
   }
 
-  onOpenRemoveDlg(opportunity, event) {
+  protected onOpenRemoveDlg(opportunity, event) {
     this.removeObj = {
       id: opportunity.id,
       status_id: opportunity.status_id
     }
-    this.isRemoved = true;
-    this.widgetId = '';
+    this.isShowRemoveDlg = true;
+    this.cardId = '';
   }
 
-  onRemove() {
+  protected onRemove() {
     let that = this;
     let params = {
       id: this.removeObj['id']
@@ -694,20 +567,19 @@ export class OpportunityComponent implements OnInit {
 
             var j = that.temp_opportunities.findIndex(opportunity => opportunity.id === that.removeObj['id']);
             that.temp_opportunities.splice(j, 1);
-            that._getGridOpportunities();
 
             that.removeObj = {};
-            that.isRemoved = false;
+            that.isShowRemoveDlg = false;
         },
         err => console.log(err, 'opportunity delete error')
       )
   }
 
-  onSearch(event) {
+  protected onSearch(event) {
     let that = this;
     that.searchStr = that.searchStr.toLowerCase();
 
-    if(this.viewOpt == 'grid'){
+    if(this.viewMode == 'grid'){
         this.temp_opportunities = this.opportunities;
         this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
             return (obj.is_active) && (
@@ -719,7 +591,6 @@ export class OpportunityComponent implements OnInit {
             );
         });
 
-        this._getGridOpportunities();
     }else {
         _.forEach(that.containers, function(val) {
             val.widgets = that.opportunities.filter(function(opp){
@@ -746,10 +617,10 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  onFilter(event) {
+  protected onFilter(event) {
     let that = this;
 
-    if(this.viewOpt == 'grid'){
+    if(this.viewMode == 'grid'){
       this.temp_opportunities = this.opportunities;
 
       if(this.filter != '0' && this.filter != '100'){
@@ -774,8 +645,6 @@ export class OpportunityComponent implements OnInit {
         })
       });
 
-      this.state.skip = 0;
-      this._getGridOpportunities();
     }else {
       if(this.filter == 'Archive'){
         this.statusService.read().subscribe (
@@ -811,10 +680,10 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  onAddCriteria() {
+  protected onAddCriteria() {
     if(this.searchStr.length > 0){
       this.criterias.push(this.searchStr);
-      if(this.viewOpt == 'grid'){
+      if(this.viewMode == 'grid'){
         this.grid_criterias = this.criterias;
       }else{
         this.card_criterias = this.criterias;
@@ -826,9 +695,9 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  onDeleteCriteria(i) {
+  protected onDeleteCriteria(i) {
     this.criterias.splice(i, 1);
-    if(this.viewOpt == 'grid')
+    if(this.viewMode == 'grid')
       this.grid_criterias = this.criterias;
     else{
       this.card_criterias = this.criterias;
@@ -837,13 +706,13 @@ export class OpportunityComponent implements OnInit {
     this._customFilter();
   }
 
-  onDeleteLastCriteria() {
+  protected onDeleteLastCriteria() {
     if(this.searchStr.length > 0)
       this.enablePop = false;
 
     if(this.criterias.length > 0 && this.enablePop){
       this.criterias.pop();
-      if(this.viewOpt == 'grid')
+      if(this.viewMode == 'grid')
         this.grid_criterias = this.criterias;
       else{
         this.card_criterias = this.criterias;
@@ -859,7 +728,7 @@ export class OpportunityComponent implements OnInit {
       this.enablePop = false;
   }
 
-  _fixCardViewHeight() {
+  private _fixCardViewHeight() {
     let that = this;
     setTimeout(function() {
       let height;
@@ -877,10 +746,10 @@ export class OpportunityComponent implements OnInit {
     }, 100);
   }
 
-  _customFilter() {
+  private _customFilter() {
     let that = this;
 
-    if(this.viewOpt == 'grid'){
+    if(this.viewMode == 'grid'){
         this.temp_opportunities = [];
         let active_opportunities = this.opportunities.filter(function(oppo){
           if(oppo.is_active)
@@ -920,9 +789,6 @@ export class OpportunityComponent implements OnInit {
         }else {
           this.temp_opportunities = active_opportunities;
         }
-
-        this.state.skip = 0;
-        this._getGridOpportunities();
     }else {
       // Init container before filter
       _.forEach(that.containers, function(val) {
@@ -977,15 +843,15 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  onChangeView(val) {
-    this.viewOpt = val;
-    if(this.viewOpt == 'grid')
+  protected onChangeView(val) {
+    this.viewMode = val;
+    if(this.viewMode == 'grid')
       this.criterias = this.grid_criterias;
     else
       this.criterias = this.card_criterias;
   }
 
-  _combineString(obj) {
+  private _combineString(obj) {
     let combined_str = '';
     if(obj.name)
       combined_str += obj.name.toLowerCase() + '+';
@@ -1005,20 +871,20 @@ export class OpportunityComponent implements OnInit {
     return combined_str;
   }
 
-  onPopupColumnSetting(index, event) {
+  protected onPopupColumnSetting(index, event) {
     if(this.sColumnId == index)
       this.sColumnId = -1;
     else
       this.sColumnId = index;
   }
 
-  onOpenArchiveDlg(opportunity, event) {
+  protected onOpenArchiveDlg(opportunity, event) {
     this.archiveObj = opportunity;
-    this.isArchived = true;
-    this.widgetId = '';
+    this.isShowArchiveDlg = true;
+    this.cardId = '';
   }
 
-  onArchive(event){
+  protected onArchive(event){
     let that = this;
 
     let params={
@@ -1042,13 +908,13 @@ export class OpportunityComponent implements OnInit {
             that._getContainerByOppo(active_opportunities);
 
             that._reorder('opportunity');
-            that.isArchived = false;
+            that.isShowArchiveDlg = false;
         },
         err => console.log(err, 'opportunity update error')
       )
   }
 
-  onOpenArchiveAllDlg(columnId, event) {
+  protected onOpenArchiveAllDlg(columnId, event) {
     let that = this;
     this.archiveColumnId = columnId;
 
@@ -1061,9 +927,9 @@ export class OpportunityComponent implements OnInit {
         })
 
         if(active_opportunities.length > 0){
-          that.isArchivedAll = true;
+          that.isShowArchiveAllDlg = true;
         }else{
-          that.isShowAlert = true;
+          that.isShowAlertDlg = true;
           that.alert_message = "There isn't any active card in this column.";
         }
       }
@@ -1071,7 +937,7 @@ export class OpportunityComponent implements OnInit {
     this.sColumnId = -1;
   }
 
-  onArchiveAll(event){
+  protected onArchiveAll(event){
     let that = this;
 
     let opportunities = this.opportunities.filter(function(oppo){
@@ -1096,12 +962,12 @@ export class OpportunityComponent implements OnInit {
           that._getContainerByOppo(active_opportunities);
 
           that._reorder('opportunity');
-          that.isArchivedAll = false;
+          that.isShowArchiveAllDlg = false;
         }, err => console.log(err)
     )
   }
 
-  onOpenRemoveAllDlg(columnId, columnName, event) {
+  protected onOpenRemoveAllDlg(columnId, columnName, event) {
     let that = this;
     this.archiveColumnId = columnId;
     this.removeColumnName = columnName;
@@ -1115,16 +981,16 @@ export class OpportunityComponent implements OnInit {
         })
 
         if(active_opportunities.length > 0){
-          that.isArchivedAll2 = true;
+          that.isShowArchiveAllDlg2 = true;
         }else{
-          that.isRemoveAll = true;
+          that.isShowRemoveAllDlg = true;
         }
       }
     })
     this.sColumnId = -1;
   }
 
-  onArchiveAll2(event){
+  protected onArchiveAll2(event){
     let that = this;
 
     let opportunities = this.opportunities.filter(function(oppo){
@@ -1149,13 +1015,13 @@ export class OpportunityComponent implements OnInit {
           that._getContainerByOppo(active_opportunities);
 
           that._reorder('opportunity');
-          that.isArchivedAll2 = false;
-          that.isRemoveAll = true;
+          that.isShowArchiveAllDlg2 = false;
+          that.isShowRemoveAllDlg = true;
         }, err => console.log(err)
     )
   }
 
-  onRemoveAll(event){
+  protected onRemoveAll(event){
     let that = this;
 
     let opportunities = this.opportunities.filter(function(oppo){
@@ -1189,13 +1055,12 @@ export class OpportunityComponent implements OnInit {
               }
             });
 
-            that._getGridOpportunities();
-            that.isRemoveAll = false;
+            that.isShowRemoveAllDlg = false;
         }, err => console.log(err)
     )
   }
 
-  onChangeCardQuickFilter(event) {
+  protected onChangeCardQuickFilter(event) {
     let that = this;
     if(this.cardQuickFilterModel.length == 0){
       _.forEach(that.containers, function(val) {
@@ -1249,7 +1114,7 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  _buildContactObject(id, contactList) {
+  private _buildContactObject(id, contactList) {
     let contactName;
     if (id && id !== '') {
       let contact = contactList.find(contact => contact.id === id);
@@ -1264,7 +1129,7 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  _buildCompanyObject(id, companyList) {
+  private _buildCompanyObject(id, companyList) {
     let companyName;
     if (id && id !== '') {
       let company = companyList.find(company => company.id === id);
@@ -1279,82 +1144,17 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  closeDialog() {
+  protected updateOpportunity(opportunity) {
     this.isShowDialog = false;
+    
+    let index = this.opportunities.findIndex(oppo => oppo.id === opportunity.id);
+    if (index === -1)
+      this.opportunities.unshift(opportunity);
+    
+    this._getContainer();
   }
 
-  onPrint(event) {
-    let that = this;
-    var gridContent = '',
-        win = window.open('', '', 'resizable=1, scrollbars=1');
-
-    var htmlStart =
-            '<!DOCTYPE html>' +
-            '<html>' +
-            '<head>' +
-            '<meta charset="utf-8" />' +
-            '<title>Opportinuity Grid</title>' +
-            // '<link href="http://kendo.cdn.telerik.com/2017.3.913/styles/kendo.common.min.css" rel="stylesheet" media="print" /> ' +
-            '<style>' +
-              'html { font: 11pt sans-serif; }' +
-              '.k-grid table {border-collapse: collapse;}' +
-              '.k-grid table, .k-grid th, .k-grid td {border: 1px solid black; text-align: center}' +
-            '</style>' +
-            '</head>' +
-            '<body>';
-
-    var htmlEnd =
-            '</body>' +
-            '</html>';
-
-    gridContent += '<kendo-grid dir="ltr" class="k-widget k-grid">' +
-                      '<kendo-grid-list class="k-grid-container">' +
-                        '<div class="k-grid-content k-virtual-content">' +
-                          '<table class="k-grid-table" style="transform: translateY(0px);">' +
-                            '<thead><tr>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Name</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Company</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Contact</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Revenue</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Status</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Rating</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Date created</a></th>' +
-                              '<th class="k-header" rowspan="1" colspan="1"><a class="k-link">Description</a></th>' +
-                            '</tr></thead>'+
-                            '<tbody>';
-                              that.temp_opportunities.forEach(function(opportunity, index){
-                                  if((index%2) != 1)
-                                    gridContent += '<tr class="k-alt">';
-                                  else
-                                    gridContent += '<tr>';
-
-                     gridContent += '<td colspan="1"><span>'+opportunity.name+'</span></td>' +
-                                    '<td colspan="1"><span>'+opportunity.company+'</span></td>' +
-                                    '<td colspan="1"><span>'+opportunity.contact+'</span></td>';
-
-                                    if(opportunity.value && opportunity.currency == 'EUR')
-                                      gridContent += '<td colspan="1"><span>€'+opportunity.value.toFixed(2)+'</span></td>';
-                                    else if (opportunity.value && opportunity.currency == 'USD')
-                                      gridContent += '<td colspan="1"><span>$'+opportunity.value.toFixed(2)+'</span></td>';
-                                    else
-                                      gridContent += '<td colspan="1"><span></span></td>';
-
-                     gridContent += '<td colspan="1"><span>'+opportunity.status_name+'</span></td>' +
-                                    '<td colspan="1"><span>'+opportunity.rating+'</span></td>' +
-                                    '<td colspan="1"><span>'+opportunity.createdAt.split('-')[1]+'/'+opportunity.createdAt.split('-')[2].slice(0,2)+'/'+opportunity.createdAt.split('-')[0]+'</span></td>' +
-                                    '<td colspan="1"><span>'+opportunity.description+'</span></td>' +
-                                  '</tr>';
-                              });
-             gridContent += '</tbody>' +
-                          '</table>' +
-                        '</div>' +
-                      '</kendo-grid-list>' +
-                    '</kendo-grid>';
-
-    win.document.write(htmlStart + gridContent + htmlEnd);
-    win.document.close();
-    win.focus();
-    win.print();
-    win.close();
+  protected closeDialog() {
+    this.isShowDialog = false;
   }
 }

@@ -1,0 +1,56 @@
+<kendo-dialog id="accountDlg"  [width]="500" title="Add Account" (close)="onClose()">
+  <form class="k-form" #accountForm="ngForm" (ngSubmit)="onFormSubmit(accountForm.value)">
+    <div class="k-form-field col-sm-12">
+        <span>Company Name<span class="k-required">*</span></span>
+        <input class="k-textbox" name="companyName" required ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Account Type</span>
+        <input class="k-textbox" name="account_type" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Social Network</span>
+        <input class="k-textbox" name="social_network" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Address</span>
+        <input class="k-textbox" name="address" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Prefered Payment Method</span>
+        <input class="k-textbox" name="prefered_payment_method" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Prefered Delivery Method</span>
+        <input class="k-textbox" name="prefered_delivery_method" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Terms</span>
+        <input class="k-textbox" name="terms" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Number of Employees</span>
+        <input class="k-textbox" name="number_of_employees" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Annual Revenue</span>
+        <input class="k-textbox" name="annual_revenue" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Lead Source</span>
+        <input class="k-textbox" name="lead_source" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Lead Rating</span>
+        <input class="k-textbox" name="lead_rating" ngModel>
+    </div>
+    <div class="k-form-field col-sm-12">
+        <span>Notes</span>
+        <input class="k-textbox" name="notes" ngModel>
+    </div>
+    <div class="buttons col-sm-12">
+        <button kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
+        <button kendoButton class="col-sm-6" primary="true" [disabled]="!accountForm.valid">Save</button>
+    </div>
+  </form>
+</kendo-dialog>

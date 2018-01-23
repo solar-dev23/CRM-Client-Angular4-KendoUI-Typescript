@@ -1,10 +1,10 @@
-<kendo-dialog id="addCardDlg"  [width]="500" title="Add/Edit Opportunity" (close)="close()">
-    <form class="k-form" #opportunityForm="ngForm" (ngSubmit)="onFormSubmit(opportunityForm)">
-      <label class="k-form-field col-sm-12">
+<kendo-dialog id="addCardDlg"  [width]="500" title="Add/Edit Opportunity" (close)="onClose()">
+    <form class="k-form" #opportunityForm="ngForm" (ngSubmit)="onFormSubmit(opportunityForm.value)">
+      <div class="k-form-field col-sm-12">
           <span>Name<span class="k-required">*</span></span>
           <input class="k-textbox" name="name" [(ngModel)]="opportunity.name" required #name="ngModel" />
-      </label>
-      <label class="k-form-field col-sm-12 ma-popup-search">
+      </div>
+      <div class="k-form-field col-sm-12 ma-popup-search">
           <span>Company<span class="k-required">*</span></span>
           <input class="k-textbox filter-search" 
                  type="text"
@@ -15,15 +15,15 @@
                  (ngModelChange)="filterCompany()"
                  required 
                  autocomplete="off"
-                 #company="ngModel" />
+                 #company="ngModel">
           <ul *ngIf="isFilterCompany">
               <li class="company" *ngFor="let company of companies" [ngClass]="company.isDisable?'disable':'active'" (click)="updateCompany(company)">{{company.companyName}}</li>
               <li class="company add-new" (click)="createCompany()">Add New...</li>
-          </ul>                 
-      </label>
-      <label class="k-form-field col-sm-12 ma-popup-search">
+          </ul>
+      </div>
+      <div class="k-form-field col-sm-12 ma-popup-search">
           <span>Contact<span class="k-required">*</span></span>
-          <input class="k-textbox" 
+          <input class="k-textbox filter-search" 
                  type="text"
                  placeholder="Search Contact"
                  name="contact" 
@@ -37,14 +37,14 @@
               <li class="contact" *ngFor="let contact of contacts" [ngClass]="contact.isDisable?'disable':'active'" (click)="updateContact(contact)">{{contact.firstName}} {{contact.lastName}}</li>
               <li class="contact add-new" (click)="createContact()">Add New...</li>
           </ul> 
-      </label>
-      <label class="k-form-field col-sm-6">
+      </div>
+      <div class="k-form-field col-sm-6">
           <span>Deal revenue <span>(Optional)</span></span>
           <kendo-numerictextbox
               name="value" [(ngModel)]="opportunity.value" #value="ngModel">
           </kendo-numerictextbox>
-      </label>
-      <label class="k-form-field col-sm-6">
+      </div>
+      <div class="k-form-field col-sm-6">
           <span>Currency <span>(Optional)</span></span>
           <kendo-dropdownlist
               [data]="currencies"
@@ -52,13 +52,13 @@
               [(ngModel)]="opportunity.currency"
               #currency="ngModel">
           </kendo-dropdownlist>
-      </label>
-      <label class="k-form-field col-sm-12">
+      </div>
+      <div class="k-form-field col-sm-12">
           <span>Description <span>(Optional)</span></span>
           <textarea class="k-textarea col-sm-12" name="description" [(ngModel)]="opportunity.description" #description="ngModel">
           </textarea>
-      </label>
-      <label class="k-form-field col-sm-12">
+      </div>
+      <div class="k-form-field col-sm-12">
           <span>Opportunity Status<span class="k-required">*</span></span>
           <kendo-dropdownlist
               [data]="statusList"
@@ -70,8 +70,8 @@
               required
               #status="ngModel">
           </kendo-dropdownlist>
-      </label>
-      <label class="k-form-field col-sm-12">
+      </div>
+      <div class="k-form-field col-sm-12">
           <span>Rating</span>
           <div class="star-ratings-css">
             <div class="star-ratings-css-top" [ngClass]="'rate-'+opportunity.rating">
@@ -81,13 +81,13 @@
               <span (click)="opportunity.rating=1">☆</span><span (click)="opportunity.rating=2">☆</span><span (click)="opportunity.rating=3">☆</span><span (click)="opportunity.rating=4">☆</span><span (click)="opportunity.rating=5">☆</span>
             </div>
           </div>
-      </label>
+      </div>
       <div class="remind-wrapper col-sm-12">
         <div class="notify">
           <input type="checkbox" id="notify_me" class="k-checkbox" [(ngModel)]="opportunity.notify" name="notify" #notify="ngModel">
           <label class="k-checkbox-label" for="notify_me">Notify me</label>
         </div>
-        <label class="k-form-field reminder">
+        <div class="k-form-field reminder">
           <span class="reminder-label">Remind me after</span>
           <kendo-dropdownlist
               [data]="reminders"
@@ -97,15 +97,18 @@
               name="reminder"
               #reminder="ngModel">
           </kendo-dropdownlist>
-        </label>
+        </div>
         <!-- <label class="k-form-field pull-right" *ngIf="o_reminder['id']=='sd'">
           <kendo-datepicker [(value)]="specific_date"></kendo-datepicker>
         </label> -->
       </div>
       <div class="buttons col-sm-12">
-          <button kendoButton class="col-sm-6" (click)="close()">Cancel</button>
+          <button kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
           <button *ngIf="opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Save</button>
           <button *ngIf="!opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Restore</button>
       </div>
     </form>
 </kendo-dialog>
+
+<account-dialog *ngIf="isCreateCompany" (save)="addAccount($event)" (cancel)="closeAccountDialog()"></account-dialog>
+<contact-dialog *ngIf="isCreateContact" (save)="addContact($event)" (cancel)="closeContactDialog()"></contact-dialog>

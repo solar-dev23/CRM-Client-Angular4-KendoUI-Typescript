@@ -50,8 +50,10 @@ import { ImageCropperDialogComponent } from './image-cropper/image-cropper.compo
 import { ControlMessages } from '../shared/control-messages';
 import { ContactsComponent } from "./contacts/contacts.component";
 import { ContactGridComponent } from "./contacts/contact-grid.component";
+import { ContactDialogComponent } from "./contacts/contact-dialog.component";
 import { AccountsComponent } from "./accounts/accounts.component";
 import { AccountGridComponent } from "./accounts/account-grid.component";
+import { AccountDialogComponent } from "./accounts/account-dialog.component";
 
 import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-grid/dist/es/main';
 
@@ -120,8 +122,10 @@ import { SharedService } from './report/shared.service';
     ControlMessages,
     ContactsComponent,
     ContactGridComponent,
+    ContactDialogComponent,
     AccountsComponent,
-    AccountGridComponent
+    AccountGridComponent,
+    AccountDialogComponent
   ],
   providers: [SharedService, DatePipe]
 })

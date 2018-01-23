@@ -2,7 +2,7 @@ import { Component, ViewChild, EventEmitter, Input, Output, HostListener } from 
 import { Http } from "@angular/http";
 import { NgForm } from '@angular/forms';
 import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
-import { OpportunityService, REMINDERS, CURRENCIES } from "../../../core";
+import { OpportunityService, LoginService, REMINDERS, CURRENCIES } from "../../../core";
 import * as _ from "lodash";
 
 @Component({
@@ -17,19 +17,25 @@ export class OpportunityDialogComponent {
   @Input() accountList: any[];
   @Input() statusList: any[];
   
-  @Output() closeDialog: EventEmitter<any> = new EventEmitter();
+  @Output() close: EventEmitter<any> = new EventEmitter();
+  @Output() save: EventEmitter<{object: any}> = new EventEmitter();
 
   protected reminders: any[] = REMINDERS;
   protected currencies: any[] = CURRENCIES;
   protected isFilterCompany: boolean;
-  protected isFilterContact: boolean = false;
+  protected isFilterContact: boolean;
   protected contacts: any[];
   protected companies: any[];
+  protected isCreateCompany: boolean;
+  protected isCreateContact: boolean;
+  protected loggedUser: any;
 
-  constructor(private opportunityService: OpportunityService) {
+  constructor(private opportunityService: OpportunityService, private loginService: LoginService) {
   }
 
   public ngOnInit() {
+    this.loggedUser = this.loginService.getUserData();
+
     if (!this.opportunity) {
       this.opportunity = {
         name: '',
@@ -64,9 +70,9 @@ export class OpportunityDialogComponent {
     }
   }
 
-
-  protected filterCompany() {   
+  protected filterCompany(): void {
     this.isFilterCompany = true;
+    this.isFilterContact = false;
     this.companies = this.accountList;
 
     let that = this;
@@ -80,21 +86,37 @@ export class OpportunityDialogComponent {
     }
   }
 
-  protected updateCompany(company) {
-    this.isFilterCompany = false;
+  protected updateCompany(company): void {
     this.opportunity.company = {
       id: company.id,
       name: company.companyName
     };
     this.opportunity.company_id = company.id;
+    this.isFilterCompany = false;
   }
 
-  protected createCompany() {
-
+  protected createCompany(): void {
+    this.isFilterCompany = false;
+    this.isCreateCompany = true;
   }
 
-  protected filterContact() {   
+  protected addAccount(account): void {
+    this.isCreateCompany = false;
+    this.accountList.push(account);
+    this.opportunity.company = {
+      id: account.id, 
+      name: account.companyName
+    }
+    this.opportunity.company_id = account.id;
+  }
+
+  protected closeAccountDialog(): void {
+    this.isCreateCompany = false;
+  }
+
+  protected filterContact(): void {
     this.isFilterContact = true;
+    this.isFilterCompany = false;
     this.contacts = this.contactList;
 
     let that = this;
@@ -109,32 +131,48 @@ export class OpportunityDialogComponent {
     }
   }
 
-  protected updateContact(contact) {
-    this.isFilterContact = false;
+  protected updateContact(contact): void {
     this.opportunity.contact = {
       id: contact.id,
       name: contact.firstName + ' ' + contact.lastName
     };
     this.opportunity.contact_id = contact.id;
+    this.isFilterContact = false;
   }
 
-  protected createContact() {
-
+  protected createContact(): void {
+    this.isFilterContact = false;
+    this.isCreateContact = true;
   }
 
-  protected close() {
-    this.closeDialog.emit(true);
-  }
-
-  protected onFormSubmit(opportunityForm: NgForm) {
-    let that = this;
-    if(!opportunityForm.valid){
-      return;      
+  protected addContact(contact): void {
+    this.isCreateContact = false;
+    this.contactList.push(contact);
+    this.opportunity.contact = {
+      id: contact.id, 
+      name: contact.firstName + ' ' + contact.lastName
     }
+    this.opportunity.contact_id = contact.id;
+  }
 
-    this.opportunityService.save(opportunityForm).subscribe(
+  protected closeContactDialog(): void {
+    this.isCreateContact = false;
+  }
+
+  protected onClose() {
+    this.close.emit();
+  }
+
+  protected onFormSubmit(opportunityForm: any) {
+    if(!this.opportunity.user_id)
+      this.opportunity.user_id = this.loggedUser.id;
+
+    if(!this.opportunity.order)
+      this.opportunity.order = 0;
+
+    this.opportunityService.save(this.opportunity).subscribe(
       res => {
-        console.log(res);
+        this.save.emit(res);     
       }
     )
 

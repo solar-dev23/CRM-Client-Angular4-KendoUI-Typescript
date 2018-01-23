@@ -47,3 +47,8 @@ export const REMINDERS = [
 ]
 
 export const CURRENCIES = ['USD', 'EUR'];
+
+export const CARD_QUICK_FILTER_OPTIONS = [
+  { id: 1, name: 'My Opportunities' },
+  { id: 2, name: 'More than 30 days old' }
+]
