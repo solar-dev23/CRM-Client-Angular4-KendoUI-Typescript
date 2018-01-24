@@ -446,40 +446,6 @@ export class OpportunityComponent implements OnInit {
             err => console.log(err, 'opportunity reorder error')
           )
     }
-  }  
-
-  private _getReminderDate(id){
-      let reminder_date = new Date();
-      switch (id) {
-        case "no":
-          reminder_date = new Date(reminder_date.getTime() - 10 * 60 * 1000);
-          break;
-        case "1h":
-          reminder_date.setHours(reminder_date.getHours() + 1);
-          break;
-        case "12h":
-          reminder_date.setHours(reminder_date.getHours() + 12);
-          break;
-        case "1d":
-          reminder_date.setDate(reminder_date.getDate() + 1);
-          break;
-        case "1w":
-          reminder_date = new Date(reminder_date.getTime() + 7 * 24 * 60 * 60 * 1000);
-          break;
-        case "2w":
-          reminder_date = new Date(reminder_date.getTime() + 2 * 7 * 24 * 60 * 60 * 1000);
-          break;
-        case "3w":
-          reminder_date = new Date(reminder_date.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
-          break;
-        case "1m":
-          reminder_date = new Date(reminder_date.getFullYear(), reminder_date.getMonth()+1, reminder_date.getDate());
-          break;
-        default:
-          break;
-      }
-
-      return reminder_date;
   }
 
   protected onCreate() {
@@ -490,17 +456,6 @@ export class OpportunityComponent implements OnInit {
   protected onEdit(opportunity, event) {
     this.opportunity = opportunity;
     this.isShowDialog = true;
-
-    // this.reminderService.getReminder({user_id: this.loggedUser.id, opportunity_id: opportunity.id}).subscribe(
-    //     res => {
-    //       this.o_reminder = _.find(this.reminder_list, {id: res.reminder_id});
-
-    //     },
-    //     err => {
-    //       console.log(err._body);
-    //       this.o_reminder = this.reminder_list[0];
-    //     }
-    //   )
   }
 
   protected onQuickAddOpportunity(status) {

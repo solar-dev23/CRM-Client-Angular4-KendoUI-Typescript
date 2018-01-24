@@ -2,7 +2,7 @@ import { Component, ViewChild, EventEmitter, Input, Output, HostListener } from 
 import { Http } from "@angular/http";
 import { NgForm } from '@angular/forms';
 import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
-import { OpportunityService, LoginService, REMINDERS, CURRENCIES } from "../../../core";
+import { OpportunityService, ReminderService, LoginService, REMINDERS, CURRENCIES } from "../../../core";
 import * as _ from "lodash";
 
 @Component({
@@ -29,13 +29,16 @@ export class OpportunityDialogComponent {
   protected isCreateCompany: boolean;
   protected isCreateContact: boolean;
   protected loggedUser: any;
+  protected specific_date: Date = new Date();
+  protected reminderList: any[];
 
-  constructor(private opportunityService: OpportunityService, private loginService: LoginService) {
+  constructor(
+    private opportunityService: OpportunityService, 
+    private reminderService: ReminderService,
+    private loginService: LoginService) {
   }
 
-  public ngOnInit() {
-    this.loggedUser = this.loginService.getUserData();
-
+  public async ngOnInit() {
     if (!this.opportunity) {
       this.opportunity = {
         name: '',
@@ -53,9 +56,20 @@ export class OpportunityDialogComponent {
         status_id: this.statusList[0].id,
         rating: 3,
         is_active: true,
-        notify: true,
-        reminder: this.reminders[0]
+        notify: true
       }
+    }
+
+    this.loggedUser = this.loginService.getUserData();
+    this.reminderList = await this.reminderService.read().toPromise();
+    if (this.opportunity.id) {
+      let reminder = this.reminderList.find(reminder => reminder.user_id === this.loggedUser.id && reminder.opportunity_id === this.opportunity.id);
+      if(reminder)
+        this.opportunity.reminder = this.reminders.find(rd => rd.id === reminder.reminder_id);
+      else
+        this.opportunity.reminder = this.reminders[0];
+    } else {
+      this.opportunity.reminder = this.reminders[0];
     }
   }
 
@@ -163,177 +177,72 @@ export class OpportunityDialogComponent {
     this.close.emit();
   }
 
-  protected onFormSubmit(opportunityForm: any) {
+  protected async onFormSubmit(opportunityForm: any) {
     if(!this.opportunity.user_id)
       this.opportunity.user_id = this.loggedUser.id;
 
     if(!this.opportunity.order)
       this.opportunity.order = 0;
 
+    this.opportunity.notify_user_id = this.loggedUser.id;       
     this.opportunityService.save(this.opportunity).subscribe(
       res => {
-        this.save.emit(res);     
+        // Update Reminder table.
+        let opportunity = res;
+
+        let reminder = this.reminderList.find(reminder => reminder.user_id === this.loggedUser.id && reminder.opportunity_id === opportunity.id);
+        if (reminder) {
+          reminder['reminder_id'] = this.opportunity.reminder.id;
+          reminder['reminder_date'] = this._getReminderDate(this.opportunity.reminder.id);
+        } else {
+          reminder = {
+            user_id: this.loggedUser.id,
+            opportunity_id: opportunity.id,
+            reminder_id: this.opportunity.reminder.id,
+            reminder_date: this._getReminderDate(this.opportunity.reminder.id)
+          }
+        }
+
+        this.reminderService.save(reminder).subscribe(
+          res => {
+            this.save.emit(opportunity);            
+          }
+        )
       }
     )
-
-    // let status;
-    // _.forEach(this.containers, function(container){
-    //     if(container.id == opportunityForm.controls['status'].value){
-    //       status = container;
-    //     }
-    // })
-
-    // if(this.isNewOpportunity){
-    //     let params = {
-    //       name: opportunityForm.controls['name'].value,
-    //       company_id: opportunityForm.controls['company'].value,
-    //       contact_id: opportunityForm.controls['contact'] .value,
-    //       value: opportunityForm.controls['value'].value,
-    //       currency: opportunityForm.controls['currency'].value,
-    //       description: opportunityForm.controls['description'].value,
-    //       status_id: opportunityForm.controls['status'].value,
-    //       order: 1,
-    //       rating: this.o_rating,
-    //       user_id: this.loggedUser.id
-    //     }
-
-    //     this.opportunityService.save(params).subscribe(
-    //         res => {
-    //           that.isShowDialog = false;
-    //           _.forEach(that.containers, function(container){
-    //               if(container.id == res.status_id){
-    //                 container.widgets.unshift(res);
-    //               }
-    //           })
-    //           that._reorder('opportunity');
-    //         },
-    //         err => {
-    //           if(JSON.parse(err._body).errors[0].message){
-    //             this.alert_message = "Card name already exists.";
-    //             this.isShowAlert = true;
-    //           }
-    //         }
-    //       )
-    // }else {
-    //     let params = {};
-    //     if(opportunityForm.controls['status'].value == 100) {
-    //       this.alert_message = "Please choose the opportunity status.";
-    //       this.isShowAlert = true;
-    //     }else {
-    //       params = {
-    //         id: this.o_id,
-    //         name: opportunityForm.controls['name'].value,
-    //         company_id: opportunityForm.controls['company'].value,
-    //         contact_id: opportunityForm.controls['contact'] .value,
-    //         value: opportunityForm.controls['value'].value,
-    //         currency: opportunityForm.controls['currency'].value,
-    //         description: opportunityForm.controls['description'].value,
-    //         status_id: opportunityForm.controls['status'].value,
-    //         rating: this.o_rating,
-    //         is_active: true
-    //       }
-
-    //       if(this.o_old_status == opportunityForm.controls['status'].value){
-    //         params['order'] = this.o_order;
-    //       }else {
-    //         params['order'] = 1;
-    //       }
-
-    //       if(opportunityForm.controls['notify'].value != undefined){
-    //         params['notify'] = {
-    //           id: this.loggedUser.id,
-    //           value: opportunityForm.controls['notify'].value
-    //         }
-    //       }
-
-    //       this.opportunityService.save(params).subscribe(
-    //           res => {
-    //             that.isShowDialog = false;
-
-    //             // Update reminder if exist.
-    //             if(that.o_reminder['id']){
-    //               let reminder_date = that._getReminderDate(that.o_reminder['id']);
-    //               let params = {
-    //                 user_id: that.loggedUser.id,
-    //                 opportunity_id: res.id,
-    //                 reminder_id: that.o_reminder['id'],
-    //                 reminder_date: reminder_date
-    //               }
-
-    //               that.reminderService.updateReminder(params).subscribe(
-    //                   res => {
-    //                     console.log(res);
-    //                   }, err => console.log(err, 'reminder update error')
-    //                 )
-    //             }
-
-    //             // Update notify value for container and opportunities
-    //             res.notify = false;
-    //             if(res.notify_users && res.notify_users.length > 0){
-    //               let notify_list = res.notify_users.split(',');
-    //               if(notify_list.indexOf(that.loggedUser.id) !== -1){
-    //                 res.notify = true;
-    //               }
-    //             }
-
-    //             // Update containers for card view.
-    //             res.contact = that._buildContactObject(res.contact_id, that.contactList);
-    //             res.company = that._buildCompanyObject(res.company_id, that.accountList);
-    //             _.forEach(that.containers, function(container){
-    //                 if(container.id == res.status_id){
-    //                   var i = container.widgets.findIndex(widget => widget.id === res.id);
-    //                   if (container.widgets[i]) {
-    //                     container.widgets[i] = res;
-    //                   }else {
-    //                     container.widgets.unshift(res);
-    //                   }
-    //                 }else {
-    //                   var j = container.widgets.findIndex(widget => widget.id === res.id);
-    //                   if (container.widgets[j]) {
-    //                     container.widgets.splice(j, 1);
-    //                   }
-    //                 }
-    //             });
-
-    //             that._reorder('opportunity');
-
-    //             // Update temp opportunites for grid view.
-    //             var k = that.temp_opportunities.findIndex(opportunity => opportunity.id === res.id);
-
-    //             if (that.temp_opportunities[k] && that.o_isActive) {
-    //               that.temp_opportunities[k] = res;
-    //               _.forEach(that.containers, function(container) {
-    //                 if(that.temp_opportunities[k].status_id == container.id){
-    //                   that.temp_opportunities[k].status_name = container.name;
-    //                 }
-    //               })
-
-    //               that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-    //                   return obj.is_active;
-    //               });
-    //             }else if (that.temp_opportunities[k] && !that.o_isActive) {
-    //               that.temp_opportunities[k].is_active = true;
-    //               that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-    //                   return !obj.is_active;
-    //               });
-    //             }
-
-    //             // Update opportunites for grid view.
-    //             var o_index = that.opportunities.findIndex(opportunity => opportunity.id === res.id);
-
-    //             if (that.opportunities[o_index] && that.o_isActive) {
-    //               that.opportunities[o_index] = res;
-    //             }else if (that.opportunities[o_index] && !that.o_isActive) {
-    //               that.opportunities[o_index] = res;
-    //               that.opportunities[o_index].is_active = true;
-    //             }
-
-    //             that._getGridOpportunities();
-    //           },
-    //           err => console.log(err, 'opportunity update error')
-    //         )
-    //     }
-    // }
   }
 
+  private _getReminderDate(id){
+    let reminder_date = new Date();
+    switch (id) {
+      case "no":
+        reminder_date = new Date(reminder_date.getTime() - 10 * 60 * 1000);
+        break;
+      case "1h":
+        reminder_date.setHours(reminder_date.getHours() + 1);
+        break;
+      case "12h":
+        reminder_date.setHours(reminder_date.getHours() + 12);
+        break;
+      case "1d":
+        reminder_date.setDate(reminder_date.getDate() + 1);
+        break;
+      case "1w":
+        reminder_date = new Date(reminder_date.getTime() + 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "2w":
+        reminder_date = new Date(reminder_date.getTime() + 2 * 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "3w":
+        reminder_date = new Date(reminder_date.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "1m":
+        reminder_date = new Date(reminder_date.getFullYear(), reminder_date.getMonth()+1, reminder_date.getDate());
+        break;
+      default:
+        break;
+    }
+
+    return reminder_date;
+  }
 }

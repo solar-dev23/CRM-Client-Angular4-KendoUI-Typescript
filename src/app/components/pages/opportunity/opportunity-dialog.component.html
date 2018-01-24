@@ -98,9 +98,9 @@
               #reminder="ngModel">
           </kendo-dropdownlist>
         </div>
-        <!-- <label class="k-form-field pull-right" *ngIf="o_reminder['id']=='sd'">
+        <label class="k-form-field pull-right" *ngIf="opportunity.reminder && opportunity.reminder['id']=='sd'">
           <kendo-datepicker [(value)]="specific_date"></kendo-datepicker>
-        </label> -->
+        </label>
       </div>
       <div class="buttons col-sm-12">
           <button kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
