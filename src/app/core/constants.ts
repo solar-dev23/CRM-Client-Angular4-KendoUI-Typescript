@@ -52,3 +52,12 @@ export const CARD_QUICK_FILTER_OPTIONS = [
   { id: 1, name: 'My Opportunities' },
   { id: 2, name: 'More than 30 days old' }
 ]
+
+export const CHART_TYPE = {
+  PIE: 'pie',
+  DONUT: 'donut',
+  BAR_VERTICAL: 'bar-vert',
+  BAR_HORIZONTAL: 'bar-horz',
+  LINE: 'line',
+  FUNNEL: 'funnel'
+}

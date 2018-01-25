@@ -26,7 +26,8 @@ label {
 }
 .chart {
     display: inline-block;
-    width: calc(100% - 170px);
+    // width: calc(100% - 170px);
+    width: 100%;
 }
 .legend {
     float: right;

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
-import { DashboardService } from '../../../../core';
+import { DashboardService, CHART_TYPE } from '../../../../core';
 
 @Component({
   selector: 'app-chart',
@@ -9,59 +9,43 @@ import { DashboardService } from '../../../../core';
 })
 
 export class ChartComponent implements OnInit {
-  Type = {
-    PIE: 'pie',
-    DONUT: 'donut',
-    BAR_VERTICAL: 'bar-vert',
-    BAR_HORIZONTAL: 'bar-horz',
-    LINE: 'line',
-    FUNNEL: 'funnel'
-  }
-
   @Input() type: string;
 
-  isLoading: boolean;
-
+  protected chartType = CHART_TYPE;
   // Pie Chart Data
-  dataFromServer: any[] = [];
-  pieData: any[] = [1];
-  valueMarks: any[] = [];
-  colors = ["#ff6358", "#ffd246", "#78d237", "#28b4c8", "#2d73f5", "#aa46be"];
+  protected dataFromServer: any[] = [];
+  protected pieData: any[] = [1];
+  protected pieData2: any = [1];
+  protected valueMarks: any[] = [];
 
   // Filters
-  filter: any = {
+  protected filter: any = {
     currency: 'USD',
     showBy: 'Status',
     value: 'Sum',
     date_from: new Date(2010, 0, 1),
     date_to: new Date()
   };
-  currencyList: Array<string> = ['USD', 'EUR', 'All'];
-  showByList: Array<string> = ['User', 'Company', 'Year', 'Month', 'Status', 'Currency'];
-  valueList: Array<string> = ['Sum', 'Count'];
-
-  min_date: Date = new Date(2010, 0, 1);
-  max_date: Date = new Date();
-
+  protected currencyList: Array<string> = ['USD', 'EUR', 'All'];
+  protected showByList: Array<string> = ['User', 'Company', 'Year', 'Month', 'Status', 'Currency'];
+  protected valueList: Array<string> = ['Sum', 'Count'];
+  protected min_date: Date = new Date(2010, 0, 1);
+  protected max_date: Date = new Date();
   // Axes setting
-  public valueAxisLabels: ValueAxisLabels = {
+  protected valueAxisLabels: ValueAxisLabels = {
     padding: 3,
     rotation: -45
   }
 
-  // constructor(private httpService: HttpService) {
-  constructor(private dashboardService: DashboardService) {
-
-  }
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit() {
-    if (this.type == undefined) this.type = this.Type.PIE;
+    if (this.type == undefined) this.type = this.chartType.PIE;
     this.onFilterChange();
   }
 
-  pieData2: any = [1];
   // Draw Pie Chart
-  updatePieChart() {  //Update Pie Chart following the filters
+  protected updatePieChart() {  //Update Pie Chart following the filters
     this.pieData = [];
     this.pieData2 = [];
     this.valueMarks = [];
@@ -90,7 +74,7 @@ export class ChartComponent implements OnInit {
       } else {
         let value = Math.round(dataPoint[fieldToShow] * 100) / 100
         this.pieData.push({ category: dataPoint.name, value: value });
-        console.log(value/sum, value, sum);
+        // console.log(value/sum, value, sum);
         if (value / sum > 0.02)
           this.pieData2.push({ category: dataPoint.name, value: value });
         let temp = {
@@ -109,24 +93,20 @@ export class ChartComponent implements OnInit {
     }
   }
 
-  getBackgroundColor(index) {
-    return this.colors[index % 6];
-  }
-  onFilterChange() {
+  protected onFilterChange() {
     this.valueList = ['Sum', 'Count'];
     if (this.filter.showBy == 'Currency') {
       this.filter.value = 'Count';
       this.valueList = ['Count'];
     }
-    this.isLoading = true;
+
     this.dashboardService.calculate(this.filter).subscribe(res => {
-      this.isLoading = false;
       this.dataFromServer = res.data;
-      console.log(res.data);
       this.updatePieChart();
     })
   }
-  public labelContent(e: any): string {
+
+  protected labelContent(e: any): string {
     return e.category;
   }
 }

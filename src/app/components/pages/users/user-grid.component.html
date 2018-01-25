@@ -1,12 +1,14 @@
 <object-grid [grid]="grid" [dataSource]="userService"></object-grid>
 <edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
-    <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
-        <editor-field [fieldName]="'displayName'" [formGroup]="formGroup"></editor-field>
-        <editor-field [fieldName]="'username'" [formGroup]="formGroup"></editor-field>
-        <editor-field [fieldName]="'email'" [formGroup]="formGroup"></editor-field>
-        <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
-        <editor-field [fieldName]="'lastName'" [formGroup]="formGroup"></editor-field>
-        <editor-field [fieldName]="'roles'" [formGroup]="formGroup"></editor-field>
-        <editor-field [fieldName]="'password'" [formGroup]="formGroup"></editor-field>
-    </form>
+  <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
+      <editor-field [fieldName]="'displayName'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'lastName'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'username'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'email'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'lastName'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'roles'" [formGroup]="formGroup"></editor-field>
+      <editor-field [fieldName]="'password'" [formGroup]="formGroup"></editor-field>
+  </form>
 </edit-object-dialog>

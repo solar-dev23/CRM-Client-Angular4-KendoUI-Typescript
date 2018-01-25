@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
-import { DashboardService } from '../../../../core';
+import { DashboardService, CHART_TYPE } from '../../../../core';
 
 @Component({
   selector: 'report-chart-two',
@@ -9,31 +9,21 @@ import { DashboardService } from '../../../../core';
 })
 
 export class ReportChartTwoComponent implements OnInit {
-  Type = {
-    BAR_VERTICAL: 'bar-vert',
-    BAR_HORIZONTAL: 'bar-horz',
-    LINE: 'line',
-  }
-
   @Input() type: string;
   @Input() filter: any;
   @Input() showFilters: boolean = false;
 
-  isLoading: boolean;
+  protected chartType = CHART_TYPE;
 
   // Pie Chart Data
-  dataFromServer: any[] = [];
-  pieData: any[] = [1];
-  valueMarks: any[] = [];
-  colors = ["#ff6358", "#ffd246", "#78d237", "#28b4c8", "#2d73f5", "#aa46be"];
-
-  currencyList: Array<string> = ['USD', 'EUR', 'All'];
-  showByList: Array<string> = ['User', 'Company', 'Year', 'Month', 'Status', 'Currency'];
-  valueList: Array<string> = ['Sum', 'Count'];
-
-  min_date: Date = new Date(2010, 0, 1);
-  max_date: Date = new Date();
-
+  protected dataFromServer: any[] = [];
+  protected pieData: any[] = [1];
+  protected valueMarks: any[] = [];
+  protected currencyList: Array<string> = ['USD', 'EUR', 'All'];
+  protected showByList: Array<string> = ['User', 'Company', 'Year', 'Month', 'Status', 'Currency'];
+  protected valueList: Array<string> = ['Sum', 'Count'];
+  protected min_date: Date = new Date(2010, 0, 1);
+  protected max_date: Date = new Date();
   // Axes setting
   public valueAxisLabels: ValueAxisLabels = {
     padding: 3,
@@ -41,16 +31,15 @@ export class ReportChartTwoComponent implements OnInit {
   }
 
   constructor(private dashboardService: DashboardService) {
-
   }
 
   ngOnInit() {
-    if (this.type == undefined) this.type = this.Type.LINE;
+    if (this.type == undefined) this.type = this.chartType.LINE;
     this.onFilterChange();
   }
 
   // Draw Pie Chart
-  updatePieChart() {  //Update Pie Chart following the filters
+  protected updatePieChart() {  //Update Pie Chart following the filters
     this.pieData = [];
     this.valueMarks = [];
 
@@ -89,19 +78,15 @@ export class ReportChartTwoComponent implements OnInit {
     }
   }
 
-  getBackgroundColor(index) {
-    return this.colors[index % 6];
-  }
-  onFilterChange() {
+  protected onFilterChange() {
     this.valueList = ['Sum', 'Count'];
     if (this.filter.by == 'Currency') {
       this.filter.value = 'Count';
       this.valueList = ['Count'];
       this.filter.currency = 'All';
     }
-    this.isLoading = true;
+
     this.dashboardService.calculate_v2(this.filter).subscribe(res => {
-      this.isLoading = false;
       this.dataFromServer = res.data;
       this.updatePieChart();
     })
@@ -112,7 +97,7 @@ export class ReportChartTwoComponent implements OnInit {
     this.onFilterChange();
   }
 
-  public labelContent(e: any): string {
+  protected labelContent(e: any): string {
     return e.category;
   }
 }

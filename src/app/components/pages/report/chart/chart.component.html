@@ -1,15 +1,3 @@
-<div id="theme-loader" *ngIf="isLoading">
-  <div class="loader">
-    <div class="loader-inner line-scale-pulse-out-rapid">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </div>
-</div>
-
 <!-- Filter on Top -->
 <div *ngIf="showFilters">
   <label class="big">Value : </label>
@@ -21,11 +9,11 @@
 
 <!-- Main Chart -->
 <div>
-  <div class="chart" *ngIf="type==Type.PIE">
+  <div class="chart" *ngIf="type==chartType.PIE">
     <!-- Pie Chart -->
-    <kendo-chart [seriesColors]="colors">
+    <kendo-chart>
       <kendo-chart-series>
-        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
+        <kendo-chart-legend position="right"></kendo-chart-legend>
         <kendo-chart-area background="transparent" [margin]="-30" [height]="300">
         </kendo-chart-area>
         <kendo-chart-series-item type="pie" [data]="pieData2" field="value" categoryField="category">
@@ -35,11 +23,11 @@
       </kendo-chart-series>
     </kendo-chart>
   </div>
-  <div class="chart" *ngIf="type==Type.DONUT">
+  <div class="chart" *ngIf="type==chartType.DONUT">
     <!-- Donut Chart -->
     <kendo-chart>
       <kendo-chart-series>
-        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
+        <kendo-chart-legend position="right"></kendo-chart-legend>
         <kendo-chart-area background="transparent" [margin]="-30" [height]="300">
         </kendo-chart-area>
         <kendo-chart-series-item type="donut" [data]="pieData2" field="value" categoryField="category">
@@ -53,7 +41,7 @@
   </div>
   <div class="chart" *ngIf="type==Type.FUNNEL">
     <!-- Funnel Chart -->
-    <kendo-chart [seriesColors]="colors">
+    <kendo-chart>
       <kendo-chart-area background="transparent" [margin]="30" [height]="300">
       </kendo-chart-area>
       <kendo-chart-series>
@@ -67,19 +55,16 @@
           {{ value }}
         </ng-template>
       </kendo-chart-tooltip>
-      <kendo-chart-legend [visible]="false"></kendo-chart-legend>
+      <kendo-chart-legend position="right"></kendo-chart-legend>
     </kendo-chart>
   </div>
   <div class="chart" style="width: 100%" *ngIf="type==Type.BAR_VERTICAL">
     <!-- Bar Vertical Chart -->
-    <kendo-chart [seriesColors]="colors">
+    <kendo-chart>
       <kendo-chart-series>
         <kendo-chart-legend [visible]="false"></kendo-chart-legend>
         <kendo-chart-category-axis>
           <kendo-chart-category-axis-item [labels]="valueAxisLabels">
-            <!--                       ^^^^^^^^
-                 It is also possible to bind all settings to a field.
-            -->
           </kendo-chart-category-axis-item>
         </kendo-chart-category-axis>
         <kendo-chart-series-item type="column" [data]="pieData" categoryField="category" colorField="blue">
@@ -92,14 +77,11 @@
 
   <div class="chart" style="width: 100%" *ngIf="type==Type.BAR_HORIZONTAL">
     <!-- Bar Horizontal Chart -->
-    <kendo-chart [seriesColors]="colors">
+    <kendo-chart>
       <kendo-chart-series>
         <kendo-chart-legend [visible]="false"></kendo-chart-legend>
         <kendo-chart-value-axis>
           <kendo-chart-value-axis-item [labels]="valueAxisLabels">
-            <!--                       ^^^^^^^^
-                 It is also possible to bind all settings to a field.
-            -->
           </kendo-chart-value-axis-item>
         </kendo-chart-value-axis>
         <kendo-chart-series-item type="bar" [data]="pieData" categoryField="category" colorField="blue">
@@ -111,14 +93,11 @@
   </div>
   <div class="chart" style="width: 100%" *ngIf="type==Type.LINE">
     <!-- Line Chart -->
-    <kendo-chart [seriesColors]="colors">
+    <kendo-chart>
       <kendo-chart-series>
         <kendo-chart-legend [visible]="false"></kendo-chart-legend>
         <kendo-chart-category-axis>
           <kendo-chart-category-axis-item [labels]="valueAxisLabels">
-            <!--                       ^^^^^^^^
-                 It is also possible to bind all settings to a field.
-            -->
           </kendo-chart-category-axis-item>
         </kendo-chart-category-axis>
         <kendo-chart-series-item type="line" [data]="pieData" categoryField="category" colorField="blue">
@@ -128,9 +107,9 @@
       </kendo-chart-series>
     </kendo-chart>
   </div>
-  <div class="legend" *ngIf="type==Type.PIE || type==Type.DONUT || type==Type.FUNNEL">
+  <!-- <div class="legend" *ngIf="type==Type.PIE || type==Type.DONUT || type==Type.FUNNEL">
     <app-chart-legend [data]="valueMarks" [title]="filter.showBy"></app-chart-legend>
-  </div>
+  </div> -->
 </div>
 <div class="clearfix" style="margin: 0"></div>
 <!-- Filter on Bottom -->
