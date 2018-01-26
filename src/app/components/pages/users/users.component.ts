@@ -6,12 +6,12 @@ import { Component } from "@angular/core";
   styleUrls: ["./users.component.scss"]
 })
 export class UsersComponent {
-	public viewOpt: string = 'grid';
+	public viewMode: string = 'card';
 
   public constructor() {
   };
 
   onChangeView(val) {
-    this.viewOpt = val;
+    this.viewMode = val;
   }
 }

@@ -50,14 +50,7 @@ export class UserService extends DataSourceAdapter<any> {
     return {active: true, roles: roles};
   }
 
-  public updateUser(data: any): Observable<any> {
-    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(data);
-    return this.http.put('/rest/user', null, requestOptions).map(res => {
-        return res.json();
-    })
-  }
-
-  public queryCards(state?: any, callback?:any): any{
+  public queryCards(state?: any, callback?:any): any {
     var skip=1, pagesize=10, isactive=``;
     if(state!=null){
         skip = state.skip * state.take;
@@ -76,5 +69,19 @@ export class UserService extends DataSourceAdapter<any> {
         .get(`/rest/user?skip=${skip}&pagesize=${pagesize}${isactive}`)
         .map(response=> response.json())
         .map(response=>{return {data:response.rows, count:response.count,skip:skip}});
+  }
+
+  public update(user: any): Observable<any> {
+    let requestOptions = HttpUtils.buildRequestOptionsForTransferObject(user);
+    return this.http.post("/rest/user/update", null, requestOptions).map((res) => {
+      return res.json();
+    });
+  }
+
+  public uploadImage(base64: string) {
+    let requestOptions = HttpUtils.buildRequestOptions({base64: base64});
+    return this.http.post('/rest/user/avatar', null, requestOptions).map(res => {
+        return res.json();
+    })
   }
 }

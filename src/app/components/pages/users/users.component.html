@@ -2,13 +2,13 @@
 <div class="ma-content">
 	<div class="row">
     <div class="col-md-2">
-      <button id="btnaddnewuser" kendoButton  [primary]="true"  (click)="open()"><span class="k-icon k-i-plus"></span> Add User</button>
+      <button id="btnaddnewuser" kendoButton  [primary]="true"  (click)="isAddNewUser=true"><span class="k-icon k-i-plus"></span> Add User</button>
     </div>
     <div class="search-container pull-right">
       <a class="k-button k-primary" (click)="onChangeView('card')"><span class="k-icon k-i-grid"></span></a>
       <a class="k-button k-primary" (click)="onChangeView('grid')"><span class="k-icon k-i-grid-layout"></span></a>
     </div>
   </div>
-  <user-grid *ngIf="viewOpt=='grid'"></user-grid>
-  <user-card *ngIf="viewOpt=='card'"></user-card>
+  <user-grid *ngIf="viewMode=='grid'"></user-grid>
+  <user-card *ngIf="viewMode=='card'" [isOpenedDialog]="isAddNewUser"></user-card>
 </div>

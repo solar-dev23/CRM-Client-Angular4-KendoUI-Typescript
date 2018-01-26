@@ -90,7 +90,7 @@ export class MenuComponent implements OnInit {
       this._eventEmitter.menuChange('collapsed');
     }
 
-    this.userService.updateUser(updatedUserParams).subscribe(
+    this.userService.update(updatedUserParams).subscribe(
         res => {
           let userData = this.loggedUser;
           userData.wide_menu = updatedUserParams['wide_menu'];
@@ -180,7 +180,7 @@ export class MenuComponent implements OnInit {
       this._eventEmitter.menuChange('collapsed');
     }
 
-    this.userService.updateUser(updatedUserParams).subscribe(
+    this.userService.update(updatedUserParams).subscribe(
         res => {
           let userData = this.loggedUser;
           userData.wide_menu = updatedUserParams['wide_menu'];
