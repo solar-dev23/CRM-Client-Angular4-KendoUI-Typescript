@@ -35,9 +35,11 @@ export class AccountGridComponent {
     if(object){
       this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;
       this.contacts = object.contacts;
-    }else {
-      this.isNewDialog = true;
     }
+  }
+
+  protected create(): void {
+    this.isNewDialog = true;
   }
 
   protected updateDialogGridData(data): void {
