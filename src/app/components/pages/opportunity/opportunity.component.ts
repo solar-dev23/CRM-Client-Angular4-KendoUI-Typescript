@@ -46,7 +46,7 @@ export class OpportunityComponent implements OnInit {
   protected viewMode: string = 'card';
   protected searchStr: string = '';
   protected filter: string = '';
-  protected filter_default: Object={id: 0, name:"All"};
+  protected filter_default: Object={id: '0', name:"All"};
   protected criterias: any = [];
   protected grid_criterias: any = [];
   protected card_criterias: any = [];
@@ -116,7 +116,11 @@ export class OpportunityComponent implements OnInit {
         });
   }
 
-  async ngOnInit() {
+  public ngOnInit() {
+    this._init();
+  }
+
+  private async _init() {
     this.loggedUser = this.loginService.getUserData();
 
     if(this.loggedUser.wide_menu)
@@ -128,6 +132,11 @@ export class OpportunityComponent implements OnInit {
     this.accountList = await this.accountSerivce.read().toPromise();
     this.statusList = await this.statusService.read().toPromise();
     this.opportunities = await this.opportunityService.read().toPromise();
+    // Filter container with active opportunities
+    this.temp_opportunities = await this.opportunities.filter(function(oppo){
+      if(oppo.is_active)
+        return oppo;
+    });
 
     this.accountList.forEach(account => {
       if (account.companyName)
@@ -150,11 +159,10 @@ export class OpportunityComponent implements OnInit {
       }
     });
 
-    this.isShowGrid = true;
-
     this._fixColumnHeader();
     this._getContainer();
 
+    this.isShowGrid = true;
     // this.o_reminder = this.reminder_list[0];
   }
 
@@ -199,11 +207,6 @@ export class OpportunityComponent implements OnInit {
         val.widgets = _.orderBy(val.widgets, 'order');
     });
 
-    // Filter container with active opportunities
-    this.temp_opportunities = this.opportunities.filter(function(oppo){
-      if(oppo.is_active)
-        return oppo;
-    });
     this._getContainerByOppo(this.temp_opportunities);
 
     _.forEach(this.temp_opportunities, function(opportunity) {
@@ -401,7 +404,7 @@ export class OpportunityComponent implements OnInit {
           this.newColumn = '';
         },
         err => {
-          if(JSON.parse(err._body).errors[0].message){
+          if(JSON.parse(err._body).error.errors[0].message){
             this.alert_message = "Column name already exists.";
             this.isShowAlertDlg = true;
             this.newColumn = '';
@@ -455,7 +458,11 @@ export class OpportunityComponent implements OnInit {
 
   protected onEdit(opportunity, event) {
     this.opportunity = opportunity;
-    this.isShowDialog = true;
+    if(_.includes(event.target.classList, 'card-popup') || _.includes(event.target.classList, 'popup_menu') || _.includes(event.target.classList, 'color')) {
+      this.isShowDialog = false;
+    } else {
+      this.isShowDialog = true;
+    }
   }
 
   protected onQuickAddOpportunity(status) {
@@ -476,6 +483,9 @@ export class OpportunityComponent implements OnInit {
 
     this.opportunityService.save(params).subscribe(
         res => {
+          res.contact = this._buildContactObject('', this.contactList);
+          res.company = this._buildCompanyObject('', this.accountList);
+
           that.newOpportunityName = '';
           that.qColumnId = -1;
 
@@ -488,7 +498,7 @@ export class OpportunityComponent implements OnInit {
           that._reorder('opportunity');
         },
         err => {
-          if(JSON.parse(err._body).errors[0].message){
+          if(JSON.parse(err._body).error.errors[0].message){
             this.alert_message = "Card name already exists.";
             this.isShowAlertDlg = true;
           }
@@ -530,109 +540,81 @@ export class OpportunityComponent implements OnInit {
       )
   }
 
-  protected onSearch(event) {
+  // protected onSearch(event) {
+  //   let that = this;
+  //   that.searchStr = that.searchStr.toLowerCase();
+
+  //   if(this.viewMode == 'grid'){
+  //       this.temp_opportunities = this.opportunities;
+  //       this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+  //           return (obj.is_active) && (
+  //             (obj.name && obj.name.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //             (obj.company && obj.company.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //             (obj.contact && obj.contact.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //             (obj.status_name && obj.status_name.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //             (obj.description && obj.description.toLowerCase().indexOf(that.searchStr) > -1)
+  //           );
+  //       });
+
+  //   }else {
+  //       _.forEach(that.containers, function(val) {
+  //           val.widgets = that.opportunities.filter(function(opp){
+  //             if(val.id == opp.status_id)
+  //               return opp;
+  //           });
+
+  //           val.widgets = _.orderBy(val.widgets, 'order');
+  //       })
+
+  //       this.containers = _.filter(that.containers, function(container) {
+  //           container.widgets = _.filter(container.widgets, function(obj) {
+  //               return (obj.is_active) && (
+  //                 (obj.name && obj.name.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //                 (obj.company && obj.company.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //                 (obj.contact && obj.contact.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //                 (obj.status_name && obj.status_name.toLowerCase().indexOf(that.searchStr) > -1) ||
+  //                 (obj.description && obj.description.toLowerCase().indexOf(that.searchStr) > -1)
+  //               );
+  //           })
+
+  //           return container;
+  //       });
+  //   }
+  // }
+
+  protected onChangeGridQuickFilter(event) {
     let that = this;
-    that.searchStr = that.searchStr.toLowerCase();
+    this.temp_opportunities = this.opportunities;
+    // let archivedColumn = this.statusList.find(function(status) {
+    //   if(status.name === 'Archived')
+    //     return status.id;
+    // });
 
-    if(this.viewMode == 'grid'){
-        this.temp_opportunities = this.opportunities;
-        this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-            return (obj.is_active) && (
-              (obj.name && obj.name.toLowerCase().indexOf(that.searchStr) > -1) ||
-              (obj.company && obj.company.toLowerCase().indexOf(that.searchStr) > -1) ||
-              (obj.contact && obj.contact.toLowerCase().indexOf(that.searchStr) > -1) ||
-              (obj.status_name && obj.status_name.toLowerCase().indexOf(that.searchStr) > -1) ||
-              (obj.description && obj.description.toLowerCase().indexOf(that.searchStr) > -1)
-            );
-        });
+    // if(this.filter != '0' && this.filter != archivedColumn.id){
+    //   this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+    //       return (obj.status_id && obj.status_id == that.filter && obj.is_active);
+    //   });
+    // }else if(this.filter != '0' && this.filter == archivedColumn.id){
+    //   this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+    //       return !obj.is_active;
+    //   });
+    // }else {
+    //   this.temp_opportunities = this.opportunities;
+    // }
 
-    }else {
-        _.forEach(that.containers, function(val) {
-            val.widgets = that.opportunities.filter(function(opp){
-              if(val.id == opp.status_id)
-                return opp;
-            });
-
-            val.widgets = _.orderBy(val.widgets, 'order');
-        })
-
-        this.containers = _.filter(that.containers, function(container) {
-            container.widgets = _.filter(container.widgets, function(obj) {
-                return (obj.is_active) && (
-                  (obj.name && obj.name.toLowerCase().indexOf(that.searchStr) > -1) ||
-                  (obj.company && obj.company.toLowerCase().indexOf(that.searchStr) > -1) ||
-                  (obj.contact && obj.contact.toLowerCase().indexOf(that.searchStr) > -1) ||
-                  (obj.status_name && obj.status_name.toLowerCase().indexOf(that.searchStr) > -1) ||
-                  (obj.description && obj.description.toLowerCase().indexOf(that.searchStr) > -1)
-                );
-            })
-
-            return container;
-        });
-    }
-  }
-
-  protected onFilter(event) {
-    let that = this;
-
-    if(this.viewMode == 'grid'){
-      this.temp_opportunities = this.opportunities;
-
-      if(this.filter != '0' && this.filter != '100'){
-        this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-            return (obj.status_id && obj.status_id == that.filter && obj.is_active);
-        });
-      }else if(this.filter != '0' && this.filter == '100'){
-        this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-            return !obj.is_active;
-        });
-      }else {
-        this.temp_opportunities = _.filter(that.opportunities, function(obj) {
-            return obj.is_active;
-        });
-      }
-
-      _.forEach(this.temp_opportunities, function(opportunity) {
-        _.forEach(that.containers, function(container) {
-          if(opportunity.status_id == container.id){
-            opportunity.status_name = container.name;
-          }
-        })
+    if(this.filter != '0'){
+      this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
+          return (obj.status_id && obj.status_id == that.filter);
       });
-
-    }else {
-      if(this.filter == 'Archive'){
-        this.statusService.read().subscribe (
-          res => {
-              that.containers = _.toArray(res);
-
-              let archive_opportunities = that.opportunities.filter(function(oppo){
-                if(!oppo.is_active)
-                  return oppo;
-              })
-              that._getContainerByOppo(archive_opportunities);
-          }, err => console.log(err)
-        )
-      }else {
-        this.statusService.read().subscribe (
-          res => {
-              that.containers = _.toArray(res);
-
-              that.containers = that.containers.filter(function(container) {
-                if(container.is_active)
-                  return container;
-              })
-
-              let active_opportunities = that.opportunities.filter(function(oppo){
-                if(oppo.is_active)
-                  return oppo;
-              })
-              that._getContainerByOppo(active_opportunities);
-          }, err => console.log(err)
-        )
-
-      }
     }
+
+    _.forEach(this.temp_opportunities, function(opportunity) {
+      _.forEach(that.containers, function(container) {
+        if(opportunity.status_id == container.id){
+          opportunity.status_name = container.name;
+        }
+      })
+    });
   }
 
   protected onAddCriteria() {
@@ -706,10 +688,12 @@ export class OpportunityComponent implements OnInit {
 
     if(this.viewMode == 'grid'){
         this.temp_opportunities = [];
-        let active_opportunities = this.opportunities.filter(function(oppo){
-          if(oppo.is_active)
-            return oppo;
-        });
+        // let active_opportunities = this.opportunities.filter(function(oppo){
+        //   if(oppo.is_active)
+        //     return oppo;
+        // });
+
+        let active_opportunities = this.opportunities;
 
         if(this.criterias.length > 0){
           _.forEach(active_opportunities, function(obj) {
@@ -748,7 +732,7 @@ export class OpportunityComponent implements OnInit {
       // Init container before filter
       _.forEach(that.containers, function(val) {
           val.widgets = that.opportunities.filter(function(opp){
-            if(val.id == opp.status_id)
+            if(val.id == opp.status_id && opp.is_active)
               return opp;
           });
 
@@ -761,35 +745,33 @@ export class OpportunityComponent implements OnInit {
           let temp_widgets = [];
 
           _.forEach(container.widgets, function(obj) {
-              if(obj.is_active) {
-                  _.forEach(that.criterias, function(criteria) {
-                      let criteria_ary = criteria.split(" ");
-                      let val;
-                      let combined_str = that._combineString(obj);
+              _.forEach(that.criterias, function(criteria) {
+                  let criteria_ary = criteria.split(" ");
+                  let val;
+                  let combined_str = that._combineString(obj);
 
-                      if(criteria_ary.length > 1){
-                        _.forEach(criteria_ary, function(substr) {
-                          if(combined_str.indexOf(substr.toLowerCase()) <= -1){
-                             val = -1;
-                          }
-                        })
-
-                        if(val != -1){
-                          val = 0;
-                        }
-
-                      }else{
-                        criteria = criteria.toLowerCase();
-                        val = combined_str.indexOf(criteria);
+                  if(criteria_ary.length > 1){
+                    _.forEach(criteria_ary, function(substr) {
+                      if(combined_str.indexOf(substr.toLowerCase()) <= -1){
+                         val = -1;
                       }
+                    })
 
-                      if(val > -1){
-                        if(!_.find(temp_widgets, {id: obj.id})) {
-                          temp_widgets.push(obj);
-                        }
-                      }
-                  });
-              }
+                    if(val != -1){
+                      val = 0;
+                    }
+
+                  }else{
+                    criteria = criteria.toLowerCase();
+                    val = combined_str.indexOf(criteria);
+                  }
+
+                  if(val > -1){
+                    if(!_.find(temp_widgets, {id: obj.id})) {
+                      temp_widgets.push(obj);
+                    }
+                  }
+              });
           });
 
           container.widgets = temp_widgets;
@@ -800,10 +782,14 @@ export class OpportunityComponent implements OnInit {
 
   protected onChangeView(val) {
     this.viewMode = val;
-    if(this.viewMode == 'grid')
+    if(this.viewMode == 'grid'){
+      this.filter = this.filter_default['id'];
       this.criterias = this.grid_criterias;
-    else
+    } else {
+      this.cardQuickFilterModel = [];
       this.criterias = this.card_criterias;
+      this._init();
+    }
   }
 
   private _combineString(obj) {
@@ -812,10 +798,10 @@ export class OpportunityComponent implements OnInit {
       combined_str += obj.name.toLowerCase() + '+';
 
     if(obj.company)
-      combined_str += obj.company.toLowerCase() + '+';
+      combined_str += obj.company.name.toLowerCase() + '+';
 
     if(obj.contact)
-      combined_str += obj.contact.toLowerCase() + '+';
+      combined_str += obj.contact.name.toLowerCase() + '+';
 
     if(obj.status_name)
       combined_str += obj.status_name.toLowerCase() + '+';
@@ -1100,13 +1086,8 @@ export class OpportunityComponent implements OnInit {
   }
 
   protected updateOpportunity(opportunity) {
-    this.isShowDialog = false;
-    
-    let index = this.opportunities.findIndex(oppo => oppo.id === opportunity.id);
-    if (index === -1)
-      this.opportunities.unshift(opportunity);
-    
-    this._getContainer();
+    this.isShowDialog = false;   
+    this._init();
   }
 
   protected closeDialog() {

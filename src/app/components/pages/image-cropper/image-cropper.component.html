@@ -3,7 +3,7 @@
   <img-cropper #cropper [image]="imageData" [settings]="imageCropSettings"></img-cropper>
   
   <kendo-dialog-actions>
-    <button kendoButton (click)="close('cancel')">Cancel</button>
-    <button kendoButton (click)="close('yes')" primary="true">Confirm</button>
+    <button type="button" kendoButton (click)="close('cancel')">Cancel</button>
+    <button type="button" kendoButton (click)="close('yes')" primary="true">Confirm</button>
   </kendo-dialog-actions>
 </kendo-dialog>

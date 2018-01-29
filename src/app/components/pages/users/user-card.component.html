@@ -67,7 +67,7 @@
   </div>
 </div>
 
-<kendo-dialog title="" *ngIf="isOpenedDialog" (close)="onCloseDialog()" [width]="600">
+<kendo-dialog title="" *ngIf="isOpenedDialog" (close)="onCloseDialog()" [width]="500">
   <form class="k-form" #userForm="ngForm" (ngSubmit)="onFormSubmit(userForm.value)">
     <div class="row">
       <div class="col-md-8">
@@ -132,7 +132,7 @@
     </div>
     <div class="buttons col-sm-12">
       <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isValidEmail" primary="true">Save</button>
-      <button kendoButton class="col-sm-6" (click)="onCloseDialog()">Cancel</button>
+      <button type="button" kendoButton class="col-sm-6" (click)="onCloseDialog()">Cancel</button>
     </div>
   </form>
 </kendo-dialog>

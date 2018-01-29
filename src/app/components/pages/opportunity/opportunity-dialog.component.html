@@ -103,7 +103,7 @@
         </label>
       </div>
       <div class="buttons col-sm-12">
-          <button kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
+          <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
           <button *ngIf="opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Save</button>
           <button *ngIf="!opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Restore</button>
       </div>
@@ -112,3 +112,11 @@
 
 <account-dialog *ngIf="isCreateCompany" (save)="addAccount($event)" (cancel)="closeAccountDialog()"></account-dialog>
 <contact-dialog *ngIf="isCreateContact" (save)="addContact($event)" (cancel)="closeContactDialog()"></contact-dialog>
+
+<kendo-dialog title="Alert!" *ngIf="isShowAlertDlg" (close)="isShowAlertDlg=false">
+  <p style="margin: 30px; text-align: center;">{{alert_message}}</p>
+
+  <kendo-dialog-actions>
+      <button kendoButton (click)="isShowAlertDlg=false;" [primary]="true">Close</button>
+  </kendo-dialog-actions>
+</kendo-dialog>

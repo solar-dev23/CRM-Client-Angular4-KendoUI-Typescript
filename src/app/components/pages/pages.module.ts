@@ -58,7 +58,7 @@ import { AccountDialogComponent } from "./accounts/account-dialog.component";
 import { GridModule, PDFModule, ExcelModule } from '../../libs/kendo-angular-grid/dist/es/main';
 
 import { SharedService } from './report/shared.service';
-
+import { Autofocus } from '../shared/autofocus';
 
 @NgModule({
   imports: [
@@ -125,7 +125,8 @@ import { SharedService } from './report/shared.service';
     ContactDialogComponent,
     AccountsComponent,
     AccountGridComponent,
-    AccountDialogComponent
+    AccountDialogComponent,
+    Autofocus
   ],
   providers: [SharedService, DatePipe]
 })

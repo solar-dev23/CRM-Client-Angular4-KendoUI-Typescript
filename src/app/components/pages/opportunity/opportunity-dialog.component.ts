@@ -31,6 +31,8 @@ export class OpportunityDialogComponent {
   protected loggedUser: any;
   protected specific_date: Date = new Date();
   protected reminderList: any[];
+  protected isShowAlertDlg: boolean;
+  protected alert_message: string = '';
 
   constructor(
     private opportunityService: OpportunityService, 
@@ -208,6 +210,11 @@ export class OpportunityDialogComponent {
             this.save.emit(opportunity);            
           }
         )
+      }, err => {          
+        if(JSON.parse(err._body).error.errors[0].message){
+          this.alert_message = "Opportunity already exists.";
+          this.isShowAlertDlg = true;
+        }
       }
     )
   }

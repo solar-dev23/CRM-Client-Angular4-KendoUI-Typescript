@@ -16,7 +16,7 @@
                   [valuePrimitive]="true"
                   [defaultItem]="filter_default"
                   [(ngModel)]="filter"
-                  (ngModelChange)="onFilter($event)">
+                  (ngModelChange)="onChangeGridQuickFilter($event)">
               </kendo-dropdownlist>
           </label>
         </div>
@@ -47,7 +47,7 @@
       </div>
     </div>
   </div>
-  <div class="card-view columns col-sm-12" [hidden]="viewMode=='grid'" [ngStyle]="cardViewStyle">
+  <div class="card-view columns col-sm-12" *ngIf="viewMode=='card'" [ngStyle]="cardViewStyle">
       <div class="column-grid" dnd-sortable-container [sortableData]="containers" [dropZones]="['container-dropZone']" (scroll)="onScroll($event)">
           <div class="column"
                   *ngFor="let container of containers; let i = index"
@@ -95,17 +95,17 @@
                                       <ul class="popup_links">
                                         <li>
                                           <a (click)="onEdit(widget, $event)">Edit</a>
-                                          <a id="oArchive" (click)="onOpenArchiveDlg(widget, $event)">Archive</a>
-                                          <a id="oRemove" (click)="onOpenRemoveDlg(widget, $event)">Remove</a>
+                                          <a id="oArchive" class="popup_menu" (click)="onOpenArchiveDlg(widget, $event)">Archive</a>
+                                          <a id="oRemove" class="popup_menu" (click)="onOpenRemoveDlg(widget, $event)">Remove</a>
                                         </li>
                                       </ul>
                                       <ul class="color-buttons">
-                                        <li><a class="white" (click)="onChangeBg(widget, 'white')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
-                                        <li><a class="yellow" (click)="onChangeBg(widget, 'yellow')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
-                                        <li><a class="orange" (click)="onChangeBg(widget, 'orange')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
-                                        <li><a class="blue" (click)="onChangeBg(widget, 'blue')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
-                                        <li><a class="green" (click)="onChangeBg(widget, 'green')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
-                                        <li><a class="gray" (click)="onChangeBg(widget, 'gray')"><i id="oColor" class="fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="white" (click)="onChangeBg(widget, 'white')"><i id="oColor" class="color fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="yellow" (click)="onChangeBg(widget, 'yellow')"><i id="oColor" class="color fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="orange" (click)="onChangeBg(widget, 'orange')"><i id="oColor" class="color fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="blue" (click)="onChangeBg(widget, 'blue')"><i id="oColor" class="color fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="green" (click)="onChangeBg(widget, 'green')"><i id="oColor" class="color fa fa-sticky-note" aria-hidden="true"></i></a></li>
+                                        <li><a class="gray" (click)="onChangeBg(widget, 'gray')"><i id="oColor" class="color fa fa-sticky-note" aria-hidden="true"></i></a></li>
                                       </ul>
                                   </div>
                               </div>
@@ -133,8 +133,14 @@
       </div>
   </div>
 
-  <div class="grid-view pull-left" [hidden]="viewMode=='card'">
-    <opportunity-grid *ngIf="isShowGrid" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList"></opportunity-grid>
+  <div class="grid-view pull-left" *ngIf="viewMode=='grid'">
+    <opportunity-grid 
+        *ngIf="isShowGrid" 
+        [contactList]="contactList" 
+        [accountList]="accountList" 
+        [statusList]="statusList"
+        [customData]="temp_opportunities">
+    </opportunity-grid>
   </div>
 </div>
 

@@ -12,6 +12,7 @@ export class OpportunityGridComponent {
   @Input() contactList: any = [];
   @Input() accountList: any = [];
   @Input() statusList: any = [];
+  @Input() customData: any = [];
 
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
