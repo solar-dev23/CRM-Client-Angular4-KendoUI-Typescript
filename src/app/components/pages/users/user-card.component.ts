@@ -32,10 +32,6 @@ export class UserCardComponent implements OnInit {
 	protected isConfirmDelete: boolean = false;
 	protected deleteItem: any;
 	protected isPagingHide: boolean = true;
-  protected base64Image: string;
-  protected cropperVisible: boolean;
-  protected isValidEmail: boolean;
-  protected isValidPassword: boolean;
 
 	constructor(private userService: UserService) {
 	}

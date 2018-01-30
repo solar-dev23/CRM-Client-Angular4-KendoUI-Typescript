@@ -26,6 +26,7 @@ export class UserDialogComponent implements OnInit {
 	protected alert_message: string;
   protected countryNames: string[];
   protected statesNames: string[];
+  protected isUpdateImage: boolean;
 
 	constructor(private userService: UserService, private addressService: AddressService) {
 	}
@@ -45,6 +46,7 @@ export class UserDialogComponent implements OnInit {
     this.cropperVisible = false;
     if (croppedInBase64) {
       this.user.image = croppedInBase64;
+      this.isUpdateImage = true;
     }
   }
 
@@ -74,7 +76,7 @@ export class UserDialogComponent implements OnInit {
     let address = await this.addressService.save(this.user.address).toPromise();
     this.user.address_id = address.id;
 
-  	if(this.user.image !== DEFAULT_AVATAR_IMAGE){
+  	if(this.isUpdateImage){
     	let image = await this.userService.uploadImage(this.user.image).toPromise();
     	this.user.image = image.url;
   	}
