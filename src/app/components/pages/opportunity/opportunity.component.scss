@@ -236,6 +236,13 @@ html, body {
   font-size: 20px;
 }
 
+.panel-body ul.list-group li span.card-info {
+  width: 100%;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .panel-body ul.list-group li span.card-name {
   width: calc(100% - 20px);
   display: inline-block;

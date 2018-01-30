@@ -1,4 +1,5 @@
 export * from "./constants";
+export { USA_STATES } from "./usa-states";
 export { HttpUtils } from "./http-utils";
 export { LoginService } from "./service/login.service";
 export { UserService } from "./service/user.service";
@@ -9,6 +10,7 @@ export { ReminderService } from "./service/reminder.service";
 export { EventEmitterService } from "./service/event-emitter.service";
 export { ContactService } from "./service/contact.service";
 export { AccountService } from "./service/account.service";
+export { AddressService } from "./service/address.service";
 export { RouteController } from "./service/route-controller.service";
 export { HttpController } from "./service/http-controller";
 export { CoreModule } from "./core.module";

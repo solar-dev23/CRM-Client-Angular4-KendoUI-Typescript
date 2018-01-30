@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, Input } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ControlMessages } from '../../shared/control-messages';
 import { UserService, DEFAULT_AVATAR_IMAGE } from '../../../core';
@@ -11,7 +11,7 @@ import { ValidationService } from '../../shared/validation.service';
   styleUrls: ['./user-card.component.scss']
 })
 export class UserCardComponent implements OnInit {
-	@Input() isOpenedDialog: boolean;
+	@Output() edit: EventEmitter<{object: any}> = new EventEmitter();
 
 	protected users: Array<any>;
 	protected user: any;
@@ -64,24 +64,6 @@ export class UserCardComponent implements OnInit {
 			return user;
 		});
 	}
-	
-	protected onCloseDialog() {
-	  this.isOpenedDialog = false;
-	  this._clearForm();
-	}
-
-	private _clearForm(){
-		this.user = {
-			firstName: '',
-			lastName: '',
-			displayName: '',
-			email: '',
-			username: '',
-			password: '',
-			confirm_password:'',
-			image: DEFAULT_AVATAR_IMAGE
-		}    	
-	}
 
 	//Show menu
 	public showMenu(e): void {
@@ -105,7 +87,7 @@ export class UserCardComponent implements OnInit {
 		if(!this.user.image || this.user.image == '')
 			this.user.image = DEFAULT_AVATAR_IMAGE;
 
-		this.isOpenedDialog = true;
+		this.edit.emit(this.user);
 	}
 
 	public openDeleteDialog(user): void {
@@ -136,81 +118,4 @@ export class UserCardComponent implements OnInit {
 	// 	e.pageChange.emit(Math.ceil(this.page.totals/this.page.take))
 	// }
 
-	//Image upload
-  protected onCropped(croppedInBase64): void {
-    this.cropperVisible = false;
-    if (croppedInBase64) {
-      this.user.image = croppedInBase64;
-    }
-  }
-
-  protected onProfileImgClick(e): void {
-    document.getElementById("card-upload-input").click();
-  }
-
-  protected fileChangeListener($event) {
-    this.base64Image = undefined;
-    let image: any = new Image();
-    let file: File = $event.target.files[0];
-    let myReader: FileReader = new FileReader();
-    let that = this;
-    myReader.onloadend = function (loadEvent: any) {
-      image.src = loadEvent.target.result;
-      that.base64Image = image.src;
-      that.cropperVisible = true;
-    };
-    myReader.readAsDataURL(file);
-  }
-
-  protected async onFormSubmit(userForm: any) {
-  	if(this.user.image !== DEFAULT_AVATAR_IMAGE){
-    	let image = await this.userService.uploadImage(this.user.image).toPromise();
-    	this.user.image = image.url;
-  	}
-
-  	this.userService.save(this.user).subscribe(
-  		res => {
-  			this.isOpenedDialog = false;
-  		}
-  	)
-  }
-
-  protected updateDisplayName(): void {
-  	this.user.displayName = this.user.firstName + ' ' + this.user.lastName;
-  }
-
-  protected getErrorMessage(type: string): string {
-  	if (type === 'email') {
-	  	let emailValidation =  ValidationService.emailValidator({value: this.user.email});
-	  	if(emailValidation){
-	  		this.isValidEmail = false;
-	  		return 'Invalid Email Address.';
-	  	} else{
-	  		this.isValidEmail = true;
-	  		return '';
-	  	}
-  	} else if (type === 'password'){
-  		if (this.user.password) {
-	  		let passwordValidation =  ValidationService.passwordValidator({value: this.user.password});
-	  		if(passwordValidation){
-		  		this.isValidPassword = false;
-		  		return 'Invalid Password.';
-		  	} else{
-		  		this.isValidPassword = true;
-		  		return '';
-		  	}
-  		}else {
-  			this.isValidPassword = true;
-  			return '';
-  		}
-  	} else if (type === 'confirmPassword'){
-  		if(this.user.password !== this.user.confirm_password) {
-  			this.isValidPassword = false;
-  			return 'Does not match password.';
-  		} else {
-  			this.isValidPassword = true;
-  			return '';
-  		}
-  	}
-  }
 }

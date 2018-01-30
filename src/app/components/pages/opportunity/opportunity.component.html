@@ -110,9 +110,9 @@
                                   </div>
                               </div>
                               <span (click)="onEdit(widget, $event)" class="card-name">{{ (widget.name.length>140)? (widget.name | slice:0:140)+'...':(widget.name) }}</span><br>
-                              <span (click)="onEdit(widget, $event)">{{widget.company.name}}</span><br>
-                              <span (click)="onEdit(widget, $event)">{{widget.contact.name}}</span><br>
-                              <span (click)="onEdit(widget, $event)" [hidden]="!widget.value">{{(widget.currency=='EUR')?'€':'$'}}{{widget.value| number:'1.2-2'}}</span><br>
+                              <span (click)="onEdit(widget, $event)" class="card-info">{{widget.company.name}}</span><br>
+                              <span (click)="onEdit(widget, $event)" class="card-info">{{widget.contact.name}}</span><br>
+                              <span (click)="onEdit(widget, $event)" class="card-info" [hidden]="!widget.value">{{(widget.currency=='EUR')?'€':'$'}}{{widget.value| number:'1.2-2'}}</span><br>
                               <div class="star-ratings-css">
                                 <div class="star-ratings-css-top" [ngClass]="'rate-'+widget.rating">
                                   <span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span><span (click)="onEdit(widget, $event)">★</span>

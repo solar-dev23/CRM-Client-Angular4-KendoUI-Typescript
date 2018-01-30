@@ -12,6 +12,7 @@ import { ReminderService } from "./service/reminder.service";
 import { EventEmitterService } from "./service/event-emitter.service";
 import { ContactService } from "./service/contact.service";
 import { AccountService } from "./service/account.service";
+import { AddressService } from "./service/address.service";
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { AccountService } from "./service/account.service";
     EventEmitterService,
     ContactService,
     AccountService,
+    AddressService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

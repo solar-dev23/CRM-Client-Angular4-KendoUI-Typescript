@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { DEFAULT_AVATAR_IMAGE } from '../../../core';
 
 @Component({
   selector: "users",
@@ -6,12 +7,37 @@ import { Component } from "@angular/core";
   styleUrls: ["./users.component.scss"]
 })
 export class UsersComponent {
-	public viewMode: string = 'card';
+	protected user: any;
+	protected viewMode: string = 'card';
+	protected isShowDialog: boolean;
 
-  public constructor() {
+  constructor() {
   };
 
-  onChangeView(val) {
+  protected onChangeView(val) {
     this.viewMode = val;
+  }
+
+  protected onEdit(user) {
+  	this.user = user;
+  	this.isShowDialog = true;
+  }
+
+  protected onCreate(user) {
+  	this.user = {
+			firstName: '',
+			lastName: '',
+			displayName: '',
+			email: '',
+			username: '',
+			password: '',
+			confirm_password:'',
+			image: DEFAULT_AVATAR_IMAGE
+		}
+  	this.isShowDialog = true;
+  }
+
+  protected onCloseDialog() {
+  	this.isShowDialog = false;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, Output, EventEmitter } from "@angular/core";
 import { Http } from "@angular/http";
 import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
 import { UserService } from "../../../core";
@@ -9,6 +9,7 @@ import { UserService } from "../../../core";
 })
 export class UserGridComponent {
   @ViewChild(ObjectGridComponent) gridComponent: ObjectGridComponent;
+  @Output() create: EventEmitter<any> = new EventEmitter();
 
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
@@ -19,5 +20,9 @@ export class UserGridComponent {
 
   protected edit(object): void {
     this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;
+  }
+
+  protected openCreateDialog() {
+    this.create.emit();
   }
 }

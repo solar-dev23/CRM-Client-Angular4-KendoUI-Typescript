@@ -31,6 +31,7 @@ import { HomeComponent } from "./home.component";
 import { UsersComponent } from "./users/users.component";
 import { UserGridComponent } from "./users/user-grid.component";
 import { UserCardComponent } from "./users/user-card.component";
+import { UserDialogComponent } from "./users/user-dialog.component";
 import { MenuComponent } from './menu/menu.component';
 import { HeaderComponent } from './header/header.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -103,6 +104,7 @@ import { Autofocus } from '../shared/autofocus';
     UsersComponent,
     UserGridComponent,
     UserCardComponent,
+    UserDialogComponent,
     MenuComponent,
     HeaderComponent,
     DashboardComponent,

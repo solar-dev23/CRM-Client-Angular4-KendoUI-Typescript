@@ -6,15 +6,15 @@
     		<div class=" col-lg-3 col-md-3 col-sm-3 col-xs-12 card-padding-col" *ngFor="let user of users | paginate: { itemsPerPage: page.take, currentPage: page.skip, totalItems:page.totals }">
           <div class="user-card media" [ngStyle]="{'background-color': user.color}">
             <span class="card-gear-icon" (click)="showMenu($event)"><i class="fa fa-gear"></i></span>
-              <div class="card-menu" (mouseleave)="menuLeave($event)">
-                <a class="user-option" (click)="onEdit(user)">Edit</a>
-                <a class="user-option" (click)="openDeleteDialog(user)">Delete</a>
-                <div>
-                  <a *ngFor="let color of menuColors" [style.color]="color" class="color-option" (click)="user.color=color">
-                    <i class="fa fa-sticky-note" aria-hidden="true"></i>
-                  </a>
-                </div>
+            <div class="card-menu" (mouseleave)="menuLeave($event)">
+              <a class="user-option" (click)="onEdit(user)">Edit</a>
+              <a class="user-option" (click)="openDeleteDialog(user)">Delete</a>
+              <div>
+                <a *ngFor="let color of menuColors" [style.color]="color" class="color-option" (click)="user.color=color">
+                  <i class="fa fa-sticky-note" aria-hidden="true"></i>
+                </a>
               </div>
+            </div>
             <div (click)="onEdit(user)">
               <div class="media-left">
                 <a><img class="media-object" [src]="user.image" alt="No Image"></a>
@@ -67,76 +67,6 @@
   </div>
 </div>
 
-<kendo-dialog title="" *ngIf="isOpenedDialog" (close)="onCloseDialog()" [width]="500">
-  <form class="k-form" #userForm="ngForm" (ngSubmit)="onFormSubmit(userForm.value)">
-    <div class="row">
-      <div class="col-md-8">
-        <label class="k-form-field">
-          <span>First Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="firstName" [(ngModel)]="user.firstName" required #firstName="ngModel" (ngModelChange)="updateDisplayName()" />
-        </label>
-        <label class="k-form-field">
-          <span>Last Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="lastName" [(ngModel)]="user.lastName" required #lastName="ngModel" (ngModelChange)="updateDisplayName()" />
-        </label>
-      </div>
-      <div class="col-md-4 image-edit-icon">
-        <div class="img-cover">
-          <img [src]="user.image" alt=""/>
-        </div>
-        <input id="card-upload-input" type="file" class="upload custom-file-selector" accept="image/*" (change)="fileChangeListener($event); fileSelector.value=null" #fileSelector />
-        <a class="img-edit-btn" (click)="onProfileImgClick($event)">
-          <span><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
-        </a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <label class="k-form-field">
-          <span>Display Name</span>
-          <input class="k-textbox" name="displayName" [(ngModel)]="user.displayName" #displayName="ngModel" />
-        </label>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <label class="k-form-field">
-          <span>Email<span class="k-required">*</span></span>
-          <input class="k-textbox" name="email" [(ngModel)]="user.email" required #email="ngModel" />
-          <error-label [error]="getErrorMessage('email')"></error-label>
-        </label>
-      </div>
-      <div class="col-md-6">
-        <label class="k-form-field">
-          <span>User Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="username" [(ngModel)]="user.username" required #username="ngModel" />
-        </label>
-      </div>
-    </div>
-    <!--User Name password-->
-    <div class="row">
-      <div class="col-md-6">
-        <label class="k-form-field">
-          <span>New Password</span>
-          <input type="password" class="k-textbox" name="password" [(ngModel)]="user.password" #password="ngModel" />
-          <error-label [error]="getErrorMessage('password')"></error-label>
-        </label>
-      </div>
-      <div class="col-md-6">
-        <label class="k-form-field">
-          <span>Retype Password</span>
-          <input type="password" class="k-textbox" name="confirm_password" [(ngModel)]="user.confirm_password" #confirm_password="ngModel" />
-          <error-label [error]="getErrorMessage('confirmPassword')"></error-label>
-        </label>
-      </div>
-    </div>
-    <div class="buttons col-sm-12">
-      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isValidEmail" primary="true">Save</button>
-      <button type="button" kendoButton class="col-sm-6" (click)="onCloseDialog()">Cancel</button>
-    </div>
-  </form>
-</kendo-dialog>
-
 <kendo-dialog title="Delete?" *ngIf="isConfirmDelete" (close)="isConfirmDelete = false" [minWidth]="250" [width]="450">
   <p style="margin: 30px; text-align: center;">Sure to delete this?</p>
   <kendo-dialog-actions>
@@ -144,5 +74,3 @@
       <button kendoButton (click)="onDelete()" primary="true">Yes</button>
   </kendo-dialog-actions>
 </kendo-dialog>
-
-<app-image-cropper [visible]="cropperVisible" [base64]="base64Image" (onCropped)="onCropped($event)" ></app-image-cropper>
