@@ -85,9 +85,8 @@ export class UserDialogComponent implements OnInit {
   		res => {
   			this.close.emit();
   		}, err => {
-console.log(JSON.parse(err._body));
-  			if(JSON.parse(err._body).error.message){
-          this.alert_message = JSON.parse(err._body).error.message;
+        if(JSON.parse(err._body).type === "unique violation" || JSON.parse(err).type === "unique violation"){
+          this.alert_message = "User name or email already exists.";
           this.isShowAlertDlg = true;
         }
   		}
