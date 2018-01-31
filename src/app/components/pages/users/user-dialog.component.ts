@@ -85,6 +85,7 @@ export class UserDialogComponent implements OnInit {
   		res => {
   			this.close.emit();
   		}, err => {
+console.log(JSON.parse(err._body));
   			if(JSON.parse(err._body).error.message){
           this.alert_message = JSON.parse(err._body).error.message;
           this.isShowAlertDlg = true;

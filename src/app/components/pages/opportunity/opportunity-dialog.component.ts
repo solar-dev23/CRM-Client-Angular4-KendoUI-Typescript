@@ -210,7 +210,8 @@ export class OpportunityDialogComponent {
             this.save.emit(opportunity);            
           }
         )
-      }, err => {          
+      }, err => {
+console.log(JSON.parse(err._body));        
         if(JSON.parse(err._body).error.errors[0].message){
           this.alert_message = "Opportunity already exists.";
           this.isShowAlertDlg = true;

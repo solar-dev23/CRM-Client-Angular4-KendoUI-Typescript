@@ -404,6 +404,7 @@ export class OpportunityComponent implements OnInit {
           this.newColumn = '';
         },
         err => {
+console.log(JSON.parse(err._body));          
           if(JSON.parse(err._body).error.errors[0].message){
             this.alert_message = "Column name already exists.";
             this.isShowAlertDlg = true;
@@ -498,6 +499,7 @@ export class OpportunityComponent implements OnInit {
           that._reorder('opportunity');
         },
         err => {
+console.log(JSON.parse(err._body));          
           if(JSON.parse(err._body).error.errors[0].message){
             this.alert_message = "Card name already exists.";
             this.isShowAlertDlg = true;
