@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ControlMessages } from '../../shared/control-messages';
-import { UserService, AddressService, DEFAULT_AVATAR_IMAGE, USA_STATES } from '../../../core';
+import { UserService, AddressService, RoleService, DEFAULT_AVATAR_IMAGE, USA_STATES } from '../../../core';
 import { ImageCropperDialogComponent } from '../image-cropper/image-cropper.component';
 import { ValidationService } from '../../shared/validation.service';
 import { Address } from '../../../core/model';
@@ -27,18 +27,41 @@ export class UserDialogComponent implements OnInit {
   protected countryNames: string[];
   protected statesNames: string[];
   protected isUpdateImage: boolean;
+  protected roles: any[];
 
-	constructor(private userService: UserService, private addressService: AddressService) {
+	constructor(private userService: UserService, private addressService: AddressService, private roleService: RoleService) {
 	}
 
 	async ngOnInit() {
     this.countryNames = this.getCountryNameList();
     this.statesNames = this.getStatesList();
 
+    if(this.user.date_of_birth) {
+      this.user.date_of_birth = new Date(this.user.date_of_birth);
+    }else {
+      this.user.date_of_birth = new Date();
+    }
+
+    if(this.user.hire_date) {
+      this.user.hire_date = new Date(this.user.hire_date);
+    }else {
+      this.user.hire_date = new Date();
+    }
+
+    if(this.user.termination_date) {
+      this.user.termination_date = new Date(this.user.termination_date);
+    }else {
+      this.user.termination_date = new Date();
+    }
+
     this.user.address = new Address();
     if(this.user.address_id){
       this.user.address = await this.addressService.getById(this.user.address_id).toPromise();
     }
+
+    this.roles = await this.roleService.read().toPromise();
+    if(this.user.roles)
+      this.user.role = this.roles.find(role => role.id === this.user.roles[0].id);
 	}
 
 	//Image upload
@@ -80,6 +103,8 @@ export class UserDialogComponent implements OnInit {
     	let image = await this.userService.uploadImage(this.user.image).toPromise();
     	this.user.image = image.url;
   	}
+
+    this.user.roles[0] = {id:this.user.role.id};
 
   	this.userService.save(this.user).subscribe(
   		res => {

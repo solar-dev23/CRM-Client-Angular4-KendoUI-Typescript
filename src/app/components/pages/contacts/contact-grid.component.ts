@@ -2,6 +2,7 @@ import { Component, ViewChild, Input } from "@angular/core";
 import { Http } from "@angular/http";
 import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
 import { ContactService, AccountService } from "../../../core";
+import { Contact } from '../../../core/model';
 
 @Component({
   selector: "contact-grid",
@@ -12,6 +13,7 @@ export class ContactGridComponent {
 
   @Input() accountList: any[];
 
+  protected contact: any;
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
   protected accountGrid: Grid;
@@ -21,6 +23,7 @@ export class ContactGridComponent {
   protected customData: any = [];
 
   public constructor(protected http: Http, protected contactService: ContactService, protected accountService: AccountService) {
+    this.contact = new Contact();
   }
 
   public async ngOnInit() {

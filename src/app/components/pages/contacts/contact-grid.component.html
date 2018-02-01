@@ -15,4 +15,4 @@
     
     <object-grid2 *ngIf="accountGrid" [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
 </edit-object-dialog>
-<contact-dialog *ngIf="isNewDialog" (save)="addContact($event)" (cancel)="closeDialog()"></contact-dialog>
+<contact-dialog *ngIf="isNewDialog" [contact]="contact" (save)="addContact($event)" (cancel)="closeDialog()"></contact-dialog>

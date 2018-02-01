@@ -7,6 +7,11 @@ body {
     font-size: 16px;
 }
 
+.k-form fieldset:first-child:first-of-type, 
+.k-form-inline fieldset:first-child:first-of-type {
+    margin-top: 20px;
+}
+
 #theme-loader {
     background-color: rgba(248, 124, 115, 0.9);
     top: 0;

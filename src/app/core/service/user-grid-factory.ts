@@ -14,10 +14,6 @@ export class UserGridFactory {
     title: "User Name",
     validators: [
       {
-        type: VALIDATOR_TYPE.required,
-        errorMessage: "User name is required"
-      },
-      {
         type: VALIDATOR_TYPE.min_length,
         errorMessage: `User name should contain minimum ${UserGridFactory.USERNAME_MIN_LENGTH} chars`,
         value: UserGridFactory.USERNAME_MIN_LENGTH
@@ -35,6 +31,10 @@ export class UserGridFactory {
     type: FIELD_TYPE.email,
     title: "Email",
     validators: [
+      {
+        type: VALIDATOR_TYPE.required,
+        errorMessage: "Email is required"
+      },
       {
         type: VALIDATOR_TYPE.email_format,
         errorMessage: ERROR_MESSAGES.incorrect_email
@@ -82,25 +82,6 @@ export class UserGridFactory {
     name: "password",
     type: FIELD_TYPE.password,
     title: "Password",
-    validators: [
-      {
-        type: VALIDATOR_TYPE.required,
-        errorMessage: "Password is required"
-      },
-      {
-        type: VALIDATOR_TYPE.letters_and_numbers,
-        errorMessage: "Password should contain letters and numbers",
-      },
-      {
-        type: VALIDATOR_TYPE.different_register,
-        errorMessage: "Password should contain uppercase and lowercase letters",
-      },
-      {
-        type: VALIDATOR_TYPE.min_length,
-        errorMessage: `Password should be at least ${UserGridFactory.PASSWORD_MIN_LENGTH} characters`,
-        value: UserGridFactory.PASSWORD_MIN_LENGTH
-      }
-    ]
   };
 
   public static DEPARTMENT_FIELD_TEMPLATE: FieldTemplate = {

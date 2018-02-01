@@ -22,12 +22,14 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <label class="k-form-field">
           <span>Display Name</span>
           <input class="k-textbox" name="displayName" [(ngModel)]="user.displayName" #displayName="ngModel" readonly />
         </label>
       </div>
+    </div>
+    <div class="row">
       <div class="col-md-6">
         <label class="k-form-field">
           <span>Email<span class="k-required">*</span></span>
@@ -35,15 +37,15 @@
           <error-label [error]="getErrorMessage('email')"></error-label>
         </label>
       </div>
-    </div>
-    <div class="row">
       <div class="col-md-6">
         <label class="k-form-field">
           <span>Phone</span>
           <input class="k-textbox" name="phone" [(ngModel)]="user.phone" #phone="ngModel" />
         </label>
       </div>
-      <div class="col-md-6">
+    </div>
+    <div class="row">
+      <div class="col-md-12">
         <label class="k-form-field">
           <span>Address</span>
           <input class="k-textbox" name="street1" [(ngModel)]="user.address.street1" #street1="ngModel" />
@@ -82,34 +84,31 @@
       </div>
     </div>
     <div class="row">      
-      <div class="col-md-12">
+      <div class="col-md-6">
         <label class="k-form-field">
           <span>User Name</span>
           <input class="k-textbox" name="username" [(ngModel)]="user.username" #username="ngModel" />
         </label>
       </div>
-    </div>
-    <!--User Name password-->
-    <div class="row">
       <div class="col-md-6">
         <label class="k-form-field">
-          <span>New Password</span>
+          <span>Password</span>
           <input type="password" class="k-textbox" name="password" [(ngModel)]="user.password" #password="ngModel" />
           <error-label [error]="getErrorMessage('password')"></error-label>
         </label>
       </div>
-      <div class="col-md-6">
+<!--       <div class="col-md-6">
         <label class="k-form-field">
           <span>Retype Password</span>
           <input type="password" class="k-textbox" name="confirm_password" [(ngModel)]="user.confirm_password" #confirm_password="ngModel" />
           <error-label [error]="getErrorMessage('confirmPassword')"></error-label>
         </label>
-      </div>
+      </div> -->
     </div>
     <div class="row">
       <div class="col-md-4">
         <label class="k-form-field">
-          <span>Birthday</span>
+          <span>Date of Birth</span>
           <kendo-datepicker name="date_of_birth" [(ngModel)]="user.date_of_birth" #date_of_birth="ngModel"></kendo-datepicker>
         </label>
       </div>
@@ -123,6 +122,27 @@
         <label class="k-form-field">
           <span>Released Date</span>
           <kendo-datepicker name="termination_date" [(ngModel)]="user.termination_date" #termination_date="ngModel"></kendo-datepicker>
+        </label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="k-form-field">
+          <span>Role</span>
+          <kendo-dropdownlist
+              [data]="roles"
+              [textField]="'title'"
+              [valueField]="'id'"
+              [(ngModel)]="user.role"
+              name="role"
+              #role="ngModel">
+          </kendo-dropdownlist>
+        </label>
+      </div>
+      <div class="col-md-6">
+        <label class="k-form-field">
+          <input type="checkbox" id="active" name="active" class="k-checkbox" checked="checked" [(ngModel)]="user.active" #active="ngModel">
+          <label class="k-checkbox-label" for="active">Active</label>
         </label>
       </div>
     </div>

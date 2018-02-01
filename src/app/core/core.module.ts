@@ -13,6 +13,8 @@ import { EventEmitterService } from "./service/event-emitter.service";
 import { ContactService } from "./service/contact.service";
 import { AccountService } from "./service/account.service";
 import { AddressService } from "./service/address.service";
+import { RoleService } from "./service/role.service";
+import { SocialNetworkService } from "./service/social-network.service";
 
 @NgModule({
   imports: [
@@ -35,6 +37,8 @@ import { AddressService } from "./service/address.service";
     ContactService,
     AccountService,
     AddressService,
+    RoleService,
+    SocialNetworkService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

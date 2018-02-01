@@ -11,6 +11,8 @@ export { EventEmitterService } from "./service/event-emitter.service";
 export { ContactService } from "./service/contact.service";
 export { AccountService } from "./service/account.service";
 export { AddressService } from "./service/address.service";
+export { RoleService } from "./service/role.service";
+export { SocialNetworkService } from "./service/social-network.service";
 export { RouteController } from "./service/route-controller.service";
 export { HttpController } from "./service/http-controller";
 export { CoreModule } from "./core.module";

@@ -9,13 +9,7 @@ export class AccountGridFactory {
   public static DISPLAY_NAME_FIELD_TEMPLATE: FieldTemplate = {
     name: "displayName",
     type: FIELD_TYPE.text,
-    title: "Display Name",
-    validators: [
-      {
-        type: VALIDATOR_TYPE.required,
-        errorMessage: "Display name is required"
-      }
-    ]
+    title: "Display Name"
   };
 
   public static COMPANY_NAME_FIELD_TEMPLATE: FieldTemplate = {
