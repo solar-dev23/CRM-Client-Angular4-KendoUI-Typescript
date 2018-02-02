@@ -8,6 +8,7 @@ export class Contact {
   extension: string = '';
   fax: string = '';
   mobile: string = '';
-  social_networks_id: string = '';
+  social_network_id: string = '';
   address_id: string = '';
+  accounts: any = [];
 }

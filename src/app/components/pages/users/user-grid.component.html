@@ -1,5 +1,5 @@
-<object-grid [grid]="grid" [dataSource]="userService" (create)="openCreateDialog($event)"></object-grid>
-<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
+<object-grid [grid]="grid" [dataSource]="userService" [customData]="customData" (create)="openCreateDialog($event)" (edit)="editUser($event)"></object-grid>
+<!-- <edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
   <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
       <editor-field [fieldName]="'displayName'" [formGroup]="formGroup"></editor-field>
       <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
@@ -11,4 +11,4 @@
       <editor-field [fieldName]="'roles'" [formGroup]="formGroup"></editor-field>
       <editor-field [fieldName]="'password'" [formGroup]="formGroup"></editor-field>
   </form>
-</edit-object-dialog>
+</edit-object-dialog> -->

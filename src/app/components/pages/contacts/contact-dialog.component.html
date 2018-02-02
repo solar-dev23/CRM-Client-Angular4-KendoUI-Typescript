@@ -1,18 +1,18 @@
-<kendo-dialog id="contactDlg"  [width]="500" title="Add Contact" (close)="onClose()">
+<kendo-dialog id="contactDlg"  [width]="550" title="Add/Edit Contact" (close)="onClose()">
   <form class="k-form" #contactForm="ngForm" (ngSubmit)="onFormSubmit(contactForm.value)">
     <div class="row">
       <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>First Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="firstName" [(ngModel)]="contact.firstName" required #firstName="ngModel">
+          <input class="k-textbox" name="firstName" [(ngModel)]="contact.firstName" required #firstName="ngModel" (ngModelChange)="updateDisplayName()" />
         </label>
       </div>
       <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>Last Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="lastName" [(ngModel)]="contact.lastName" required #lastName="ngModel">          
+          <input class="k-textbox" name="lastName" [(ngModel)]="contact.lastName" required #lastName="ngModel" (ngModelChange)="updateDisplayName()" />          
         </label>
-      </div>      
+      </div>
     </div>
     <div class="row">
       <div class="k-form-field col-sm-6">
@@ -112,7 +112,7 @@
           <div class="row">
             <label class="k-form-field col-sm-12">
               <span>Address</span>
-              <input class="k-textbox" name="address" [(ngModel)]="address.street1" #address="ngModel">
+              <input class="k-textbox" name="street1" [(ngModel)]="address.street1" #street1="ngModel">
             </label>            
           </div>
           <div class="row">
@@ -122,23 +122,26 @@
             </label>
             <label class="k-form-field col-sm-6">
               <span>State</span>
-              <input class="k-textbox" name="state" [(ngModel)]="address.state" #state="ngModel">
+              <kendo-dropdownlist name="state" [data]="statesNames" [(ngModel)]="address.state" *ngIf="address.country == 'United States'" #state="ngModel">
+              </kendo-dropdownlist>
+              <input class="k-textbox" name="state" [(ngModel)]="address.state" *ngIf="address.country != 'United States'" #state="ngModel" />
             </label>            
           </div>
           <div class="row">
             <label class="k-form-field col-sm-6">
               <span>Zip</span>
-              <input class="k-textbox" name="zip" [(ngModel)]="address.zip" #zip="ngModel">
+              <input class="k-textbox" name="zip" [(ngModel)]="address.zip" #zip="ngModel" (input)="changeZipcode($event.target.value)" />
             </label>
             <label class="k-form-field col-sm-6">
               <span>Country</span>
-              <input class="k-textbox" name="country" [(ngModel)]="address.country" #country="ngModel">
+              <kendo-dropdownlist name="country" [data]="countryNames" [(ngModel)]="address.country" (valueChange)="countryChange($event)" #country="ngModel">
+              </kendo-dropdownlist>
             </label>            
           </div>
         </fieldset>
       </div>
     </div>
-    <object-grid2 *ngIf="accountGrid" [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
+    <object-grid2 *ngIf="isShowGrid" [grid]="accountGrid" [dataSource]="accountService" [initialData]="contact.accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
 
     <div class="buttons col-sm-12">
         <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>

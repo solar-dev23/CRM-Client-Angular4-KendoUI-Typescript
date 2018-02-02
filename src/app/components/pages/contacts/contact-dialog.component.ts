@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, Input } from "@angular/core";
 import { Grid } from "crm-platform";
-import { ContactService, AccountService, AddressService, USA_STATES } from "../../../core";
+import { ContactService, AccountService, AddressService, SocialNetworkService, USA_STATES } from "../../../core";
 import { Contact, SocialNetwork, Address } from '../../../core/model';
 import * as countriesLib from 'country-list';
 const countries = countriesLib();
@@ -12,53 +12,85 @@ import * as zipcodes from 'zipcodes';
   styleUrls: ["./contact-dialog.component.scss"]
 })
 export class ContactDialogComponent {
-  @Input() contact: Contact = new Contact(); 
+  @Input() contact: any;
 
 	@Output() save: EventEmitter<{object: any}> = new EventEmitter();
 	@Output() cancel: EventEmitter<any> = new EventEmitter();
 
   protected accountGrid: Grid;
-  protected accounts: any = [];
+  // protected accounts: any = [];
   protected dialogGridData: any = {};
-  protected address: Address = new Address();
-  protected socialNetwork: SocialNetwork = new SocialNetwork();
+  protected address: any;
+  protected socialNetwork: any;
+  protected accountList: any;
+  protected isShowGrid: boolean;
 
 	public constructor(
 		private contactService: ContactService,
     private accountService: AccountService,
-    private addressService: AddressService
+    private addressService: AddressService,
+    private socialNetworkService: SocialNetworkService
 	) {
   }
 
   async ngOnInit() {
+    this.address = new Address();
+    this.socialNetwork = new SocialNetwork();
+
+    if(this.contact.address_id){
+      this.address = await this.addressService.getById(this.contact.address_id).toPromise();
+    }
+
+    if(this.contact.social_network_id){
+      this.socialNetwork = await this.socialNetworkService.getById(this.contact.social_network_id).toPromise();
+    }
+
     let contactList = await this.contactService.read().toPromise();
-    this.accountGrid = await this.accountService.getAccountGrid(contactList);
+    this.accountGrid = this.accountService.getAccountGrid(contactList);
+    this.accountList = await this.accountService.read().toPromise();
+
+    let that = this;
+    if(this.contact.accounts.length>0) {
+      this.contact.accounts.forEach(function(cAccount, i) {
+        let index = that.accountList.findIndex(account => account.id === cAccount.id);
+        if(index > -1)
+          that.contact.accounts[i] = that.accountList[index];
+      })
+    }
+
+    this.isShowGrid = true;
   }
 
   protected async onFormSubmit(contactForm: any) {
-console.log(contactForm);
-    if(this.contact.address_id !== ''){
+    if(this.contact.address_id){
       this.address.id = this.contact.address_id;
+    }else {
+      delete this.address.id;
     }
-
     let address = await this.addressService.save(this.address).toPromise();
     this.contact.address_id = address.id;
 
-    // this.contactService.save(contactForm).subscribe(
-    //   res => {
-    //     this.save.emit(res);
-    //   }
-    // )
+    if(this.contact.social_network_id){
+      this.socialNetwork.id = this.contact.social_network_id;
+    }else {
+      delete this.socialNetwork['id'];
+    }  
+    let socialNetwork = await this.socialNetworkService.save(this.socialNetwork).toPromise();
+    this.contact.social_network_id = socialNetwork.id;
+
+    this.contactService.save(this.contact).subscribe(
+      res => {
+        this.save.emit(res);
+      }
+    )
   }
 
   protected onClose() {
   	this.cancel.emit();
   }
 
-  protected updateDialogGridData(data): void {
-    this.dialogGridData = {
-      accounts: data
-    };
+  protected updateDialogGridData(data): void {    
+    this.contact.accounts = data;
   }
 
   protected changeZipcode(e) {
@@ -85,5 +117,9 @@ console.log(contactForm);
 
   protected getCountryNameList() {
     return countries.getNames();
+  }
+
+  protected updateDisplayName(): void {
+    this.contact.displayName = this.contact.firstName + ' ' + this.contact.lastName;
   }
 }

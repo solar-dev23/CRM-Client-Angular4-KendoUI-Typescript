@@ -4,7 +4,7 @@ export class DisplayNameField extends Field {
   public constructor() {
     super({});
     this.setName("displayName");
-    this.setType(FIELD_TYPE.readonly);
+    this.setType(FIELD_TYPE.text);
     this.setTitle("Display Name");
   }
 

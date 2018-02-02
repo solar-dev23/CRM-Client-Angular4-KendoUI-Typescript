@@ -9,8 +9,8 @@
       <a class="k-button k-primary" (click)="onChangeView('grid')"><span class="k-icon k-i-grid-layout"></span></a>
     </div>
   </div>
-  <user-grid *ngIf="viewMode=='grid'" (create)="onCreate($event)"></user-grid>
+  <user-grid *ngIf="viewMode=='grid'" [customData]="customData" (create)="onCreate($event)" (edit)="onEdit($event)"></user-grid>
   <user-card *ngIf="viewMode=='card'" (edit)="onEdit($event)"></user-card>
 </div>
 
-<user-dialog *ngIf="isShowDialog" [user]="user" (close)="onCloseDialog()"></user-dialog>
+<user-dialog *ngIf="isShowDialog" [user]="user" (save)="onAddUser($event)" (close)="onCloseDialog()"></user-dialog>

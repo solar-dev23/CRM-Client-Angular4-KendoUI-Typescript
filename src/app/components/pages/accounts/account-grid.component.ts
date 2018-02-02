@@ -2,6 +2,7 @@ import { Component, ViewChild, Input } from "@angular/core";
 import { Http } from "@angular/http";
 import { Grid, ObjectFormGroup, ObjectGridComponent } from "crm-platform";
 import { AccountService, ContactService } from "../../../core";
+import { Account } from '../../../core/model';
 
 @Component({
   selector: "account-grid",
@@ -12,15 +13,16 @@ export class AccountGridComponent {
 
   @Input() contactList: any[];
 
+  protected account: any;
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
   protected contactGrid: Grid;
-  protected contacts: any = [];
   protected dialogGridData: any = {};
-  protected isNewDialog: boolean;
+  protected isShowDialog: boolean;
   protected customData: any = [];
 
   public constructor(protected http: Http, protected accountService: AccountService, protected contactService: ContactService) {
+    this.account = new Account();
   }
 
   public async ngOnInit() {
@@ -31,29 +33,25 @@ export class AccountGridComponent {
     this.customData = await this.accountService.read().toPromise();
   }
 
-  protected edit(object): void {
-    if(object){
-      this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;
-      this.contacts = object.contacts;
+  protected edit(event): void {
+    let account = event.object;
+    if(account){
+      this.account = account;
+      this.isShowDialog = true;
     }
   }
 
   protected create(): void {
-    this.isNewDialog = true;
-  }
-
-  protected updateDialogGridData(data): void {
-    this.dialogGridData = {
-      contacts: data
-    };
+    this.account = new Account();
+    this.isShowDialog = true;
   }
 
   protected async addAccount(account) {
-    this.isNewDialog = false;
+    this.isShowDialog = false;
     this.customData = await this.accountService.read().toPromise();
   }
 
   protected closeDialog(): void {
-    this.isNewDialog = false;
+    this.isShowDialog = false;
   }
 }

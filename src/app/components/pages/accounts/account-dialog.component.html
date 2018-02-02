@@ -1,53 +1,176 @@
-<kendo-dialog id="accountDlg"  [width]="500" title="Add Account" (close)="onClose()">
+<kendo-dialog id="accountDlg"  [width]="550" title="Add/Edit Account" (close)="onClose()">
   <form class="k-form" #accountForm="ngForm" (ngSubmit)="onFormSubmit(accountForm.value)">
-    <div class="k-form-field col-sm-12">
-        <span>Company Name<span class="k-required">*</span></span>
-        <input class="k-textbox" name="companyName" required ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-12">
+        <label class="k-form-field">
+          <span>Company Name<span class="k-required">*</span></span>
+          <input class="k-textbox" name="companyName" [(ngModel)]="account.companyName" required #companyName="ngModel">
+        </label>
+      </div>
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Account Type</span>
-        <input class="k-textbox" name="account_type" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Display Name</span>
+          <input class="k-textbox" name="displayName" [(ngModel)]="account.displayName" #displayName="ngModel">
+        </label>
+      </div>
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Account Type</span>
+          <input class="k-textbox" name="account_type" [(ngModel)]="account.account_type" #account_type="ngModel">
+          <!-- <ss-multiselect-dropdown [options]="card_quick_filter_options" [texts]="card_quick_filter_texts" [settings]="card_quick_filter_settings" [(ngModel)]="cardQuickFilterModel" (ngModelChange)="onChangeCardQuickFilter($event)"></ss-multiselect-dropdown> -->
+        </label>
+      </div>      
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Social Network</span>
-        <input class="k-textbox" name="social_network" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Prefered Payment Method</span>
+          <input class="k-textbox" name="prefered_payment_method" [(ngModel)]="account.prefered_payment_method" #prefered_payment_method="ngModel">
+        </label>
+      </div>
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Prefered Delivery Method</span>
+          <input class="k-textbox" name="prefered_delivery_method" [(ngModel)]="account.prefered_delivery_method" #prefered_delivery_method="ngModel">
+        </label>
+      </div>
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Address</span>
-        <input class="k-textbox" name="address" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Terms</span>
+          <input class="k-textbox" name="terms" [(ngModel)]="account.terms" #terms="ngModel">
+        </label>
+      </div>
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Number of Employees</span>
+          <kendo-numerictextbox
+              name="number_of_employees" [(ngModel)]="account.number_of_employees" #number_of_employees="ngModel">
+          </kendo-numerictextbox>
+        </label>
+      </div>      
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Prefered Payment Method</span>
-        <input class="k-textbox" name="prefered_payment_method" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Annual Revenue</span>
+          <input class="k-textbox" name="annual_revenue" [(ngModel)]="account.annual_revenue" #annual_revenue="ngModel">
+        </label>
+      </div>
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Lead Source</span>
+          <input class="k-textbox" name="lead_source" [(ngModel)]="account.lead_source" #lead_source="ngModel">
+        </label>
+      </div>      
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Prefered Delivery Method</span>
-        <input class="k-textbox" name="prefered_delivery_method" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-12">
+        <label class="k-form-field">
+          <span>Lead Rating</span>
+          <div class="star-ratings-css">
+            <div class="star-ratings-css-top" [ngClass]="'rate-'+account.lead_rating">
+              <span (click)="account.lead_rating=1">★</span><span (click)="account.lead_rating=2">★</span><span (click)="account.lead_rating=3">★</span><span (click)="account.lead_rating=4">★</span><span (click)="account.lead_rating=5">★</span>
+            </div>
+            <div class="star-ratings-css-bottom">
+              <span (click)="account.lead_rating=1">☆</span><span (click)="account.lead_rating=2">☆</span><span (click)="account.lead_rating=3">☆</span><span (click)="account.lead_rating=4">☆</span><span (click)="account.lead_rating=5">☆</span>
+            </div>
+          </div>
+        </label>
+      </div>      
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Terms</span>
-        <input class="k-textbox" name="terms" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-12">
+        <label class="k-form-field">
+          <span>Notes</span>
+          <textarea class="k-textarea" name="notes" [(ngModel)]="account.notes" #notes="ngModel">{{account.notes}}</textarea>
+        </label>
+      </div>      
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Number of Employees</span>
-        <input class="k-textbox" name="number_of_employees" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-12">
+        <fieldset>
+          <legend class="k-form-field">Social Network</legend>
+          <div class="row">
+            <label class="k-form-field col-sm-6">
+              <span>Facebook</span>
+              <input class="k-textbox" name="facebook" [(ngModel)]="socialNetwork.facebook" #facebook="ngModel">
+            </label>
+            <label class="k-form-field col-sm-6">
+              <span>Twitter</span>
+              <input class="k-textbox" name="twitter" [(ngModel)]="socialNetwork.twitter" #twitter="ngModel">
+            </label>
+          </div>
+          <div class="row">
+            <label class="k-form-field col-sm-6">
+              <span>LinkedIn</span>
+              <input class="k-textbox" name="linked_in" [(ngModel)]="socialNetwork.linked_in" #linked_in="ngModel">
+            </label>
+            <label class="k-form-field col-sm-6">
+              <span>Instagram</span>
+              <input class="k-textbox" name="instagram" [(ngModel)]="socialNetwork.instagram" #instagram="ngModel">
+            </label>            
+          </div>
+          <div class="row">
+            <label class="k-form-field col-sm-6">
+              <span>Pinterest</span>
+              <input class="k-textbox" name="pinterest" [(ngModel)]="socialNetwork.pinterest" #pinterest="ngModel">
+            </label>
+            <label class="k-form-field col-sm-6">
+              <span>Youtube</span>
+              <input class="k-textbox" name="youtube" [(ngModel)]="socialNetwork.youtube" #youtube="ngModel">
+            </label>            
+          </div>
+          <div class="row">
+            <label class="k-form-field col-sm-6">
+              <span>Google +</span>
+              <input class="k-textbox" name="google_plus" [(ngModel)]="socialNetwork.google_plus" #google_plus="ngModel">
+            </label>            
+          </div>
+        </fieldset>
+      </div>
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Annual Revenue</span>
-        <input class="k-textbox" name="annual_revenue" ngModel>
+    <div class="row">
+      <div class="k-form-field col-sm-12">
+        <fieldset>
+          <legend class="k-form-field">Address</legend>
+          <div class="row">
+            <label class="k-form-field col-sm-12">
+              <span>Address</span>
+              <input class="k-textbox" name="street1" [(ngModel)]="address.street1" #street1="ngModel">
+            </label>            
+          </div>
+          <div class="row">
+            <label class="k-form-field col-sm-6">
+              <span>City</span>
+              <input class="k-textbox" name="city" [(ngModel)]="address.city" #city="ngModel">
+            </label>
+            <label class="k-form-field col-sm-6">
+              <span>State</span>
+              <kendo-dropdownlist name="state" [data]="statesNames" [(ngModel)]="address.state" *ngIf="address.country == 'United States'" #state="ngModel">
+              </kendo-dropdownlist>
+              <input class="k-textbox" name="state" [(ngModel)]="address.state" *ngIf="address.country != 'United States'" #state="ngModel" />
+            </label>            
+          </div>
+          <div class="row">
+            <label class="k-form-field col-sm-6">
+              <span>Zip</span>
+              <input class="k-textbox" name="zip" [(ngModel)]="address.zip" #zip="ngModel" (input)="changeZipcode($event.target.value)" />
+            </label>
+            <label class="k-form-field col-sm-6">
+              <span>Country</span>
+              <kendo-dropdownlist name="country" [data]="countryNames" [(ngModel)]="address.country" (valueChange)="countryChange($event)" #country="ngModel">
+              </kendo-dropdownlist>
+            </label>            
+          </div>
+        </fieldset>
+      </div>
     </div>
-    <div class="k-form-field col-sm-12">
-        <span>Lead Source</span>
-        <input class="k-textbox" name="lead_source" ngModel>
-    </div>
-    <div class="k-form-field col-sm-12">
-        <span>Lead Rating</span>
-        <input class="k-textbox" name="lead_rating" ngModel>
-    </div>
-    <div class="k-form-field col-sm-12">
-        <span>Notes</span>
-        <input class="k-textbox" name="notes" ngModel>
-    </div>
+    <object-grid2 *ngIf="isShowGrid" [grid]="contactGrid" [dataSource]="contactService" [initialData]="account.contacts" (updateData)="updateDialogGridData($event)"></object-grid2>
+
     <div class="buttons col-sm-12">
         <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
         <button kendoButton class="col-sm-6" primary="true" [disabled]="!accountForm.valid">Save</button>

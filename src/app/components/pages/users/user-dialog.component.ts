@@ -16,6 +16,7 @@ import * as zipcodes from 'zipcodes';
 })
 export class UserDialogComponent implements OnInit {
 	@Input() user: any;
+  @Output() save: EventEmitter<{object: any}> = new EventEmitter();
 	@Output() close: EventEmitter<{object: any}> = new EventEmitter();
 
 	protected base64Image: string;
@@ -108,7 +109,7 @@ export class UserDialogComponent implements OnInit {
 
   	this.userService.save(this.user).subscribe(
   		res => {
-  			this.close.emit();
+  			this.save.emit(res);
   		}, err => {
         // if(JSON.parse(err._body).type === "unique violation" || JSON.parse(err).type === "unique violation"){
         //   this.alert_message = "User name or email already exists.";

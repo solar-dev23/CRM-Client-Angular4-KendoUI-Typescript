@@ -1,5 +1,5 @@
-<object-grid [grid]="grid" [dataSource]="contactService" [customData]="customData" (create)="create($event)"></object-grid>
-<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [dialogGridData]="dialogGridData" [width]="550" (edit)="edit($event)">
+<object-grid [grid]="grid" [dataSource]="contactService" [customData]="customData" (create)="create($event)" (edit)="edit($event)"></object-grid>
+<!-- <edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [dialogGridData]="dialogGridData" [width]="550" (edit)="edit($event)">
     <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
         <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>
         <editor-field [fieldName]="'lastName'" [formGroup]="formGroup"></editor-field>
@@ -14,5 +14,5 @@
     </form>
     
     <object-grid2 *ngIf="accountGrid" [grid]="accountGrid" [dataSource]="accountService" [initialData]="accounts" (updateData)="updateDialogGridData($event)"></object-grid2>
-</edit-object-dialog>
-<contact-dialog *ngIf="isNewDialog" [contact]="contact" (save)="addContact($event)" (cancel)="closeDialog()"></contact-dialog>
+</edit-object-dialog> -->
+<contact-dialog *ngIf="isShowDialog" [contact]="contact" (save)="addContact($event)" (cancel)="closeDialog()"></contact-dialog>

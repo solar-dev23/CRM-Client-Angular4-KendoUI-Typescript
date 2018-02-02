@@ -17,9 +17,8 @@ export class ContactGridComponent {
   protected grid: Grid;
   protected formGroup: ObjectFormGroup;
   protected accountGrid: Grid;
-  protected accounts: any = [];
   protected dialogGridData: any = {};
-  protected isNewDialog: boolean;
+  protected isShowDialog: boolean;
   protected customData: any = [];
 
   public constructor(protected http: Http, protected contactService: ContactService, protected accountService: AccountService) {
@@ -34,29 +33,25 @@ export class ContactGridComponent {
     this.customData = await this.contactService.read().toPromise();
   }
 
-  protected edit(object): void {
-    if(object){
-      this.formGroup = object ? new ObjectFormGroup(object, this.gridComponent.fields, this.http) : null;
-      this.accounts = object.accounts;
+  protected edit(event): void {
+    let contact = event.object;
+    if(contact){
+      this.contact = contact;
+      this.isShowDialog = true;
     }
   }
 
   protected create(): void {
-    this.isNewDialog = true;
-  }
-
-  protected updateDialogGridData(data): void {
-    this.dialogGridData = {
-      accounts: data
-    };
+    this.contact = new Contact();
+    this.isShowDialog = true;
   }
 
   protected async addContact(contact) {
-    this.isNewDialog = false;
+    this.isShowDialog = false;
     this.customData = await this.contactService.read().toPromise();
   }
 
   protected closeDialog(): void {
-    this.isNewDialog = false;
+    this.isShowDialog = false;
   }
 }
