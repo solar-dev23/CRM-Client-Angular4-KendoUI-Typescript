@@ -33,12 +33,14 @@
         <label class="k-form-field">
           <span>Email</span>
           <input class="k-textbox" name="email" [(ngModel)]="contact.email" #email="ngModel">
+          <error-label [error]="getErrorMessage('email')"></error-label>
         </label>
       </div>
       <div class="k-form-field col-sm-4">
         <label class="k-form-field">
           <span>Phone</span>
           <input class="k-textbox" name="phone" [(ngModel)]="contact.phone" #phone="ngModel">
+          <error-label [error]="getErrorMessage('phone')"></error-label>
         </label>
       </div>
       <div class="k-form-field col-sm-2">
@@ -145,7 +147,7 @@
 
     <div class="buttons col-sm-12">
         <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
-        <button kendoButton class="col-sm-6" primary="true" [disabled]="!contactForm.valid">Save</button>
+        <button kendoButton class="col-sm-6" primary="true" [disabled]="!contactForm.valid || !isFormValid">Save</button>
     </div>
   </form>
 </kendo-dialog>

@@ -32,4 +32,11 @@ export class AccountService extends DataSourceAdapter<any> {
   public getAccountGrid(contacts): Grid {
     return AccountGridFactory.newGridInstance(contacts);
   }
+
+  public uploadDocument(base64: string) {
+    let requestOptions = HttpUtils.buildRequestOptions({base64: base64});
+    return this.http.post('/rest/account/upload', null, requestOptions).map(res => {
+        return res.json();
+    })
+  }
 }

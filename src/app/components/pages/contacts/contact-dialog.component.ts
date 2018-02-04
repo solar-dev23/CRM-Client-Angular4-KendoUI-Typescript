@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, Input } from "@angular/core";
 import { Grid } from "crm-platform";
 import { ContactService, AccountService, AddressService, SocialNetworkService, USA_STATES } from "../../../core";
 import { Contact, SocialNetwork, Address } from '../../../core/model';
+import { ValidationService } from '../../shared/validation.service';
 import * as countriesLib from 'country-list';
 const countries = countriesLib();
 import * as zipcodes from 'zipcodes';
@@ -24,6 +25,7 @@ export class ContactDialogComponent {
   protected socialNetwork: any;
   protected accountList: any;
   protected isShowGrid: boolean;
+  protected isFormValid: boolean;
 
 	public constructor(
 		private contactService: ContactService,
@@ -121,5 +123,27 @@ export class ContactDialogComponent {
 
   protected updateDisplayName(): void {
     this.contact.displayName = this.contact.firstName + ' ' + this.contact.lastName;
+  }
+
+  protected getErrorMessage(type: string): string {
+    if (type === 'email') {
+      let emailValidation =  ValidationService.emailValidator({value: this.contact.email});
+      if(emailValidation){
+        this.isFormValid = false;
+        return 'Invalid Email Address.';
+      } else{
+        this.isFormValid = true;
+        return '';
+      }
+    }else if (type === 'phone') {
+      let phoneValidation =  ValidationService.phoneValidator({value: this.contact.phone});
+      if(phoneValidation){
+        this.isFormValid = false;
+        return 'Invalid Phone Number.';
+      } else{
+        this.isFormValid = true;
+        return '';
+      }
+    }
   }
 }

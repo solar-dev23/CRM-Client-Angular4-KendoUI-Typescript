@@ -1,5 +1,5 @@
-<object-grid [grid]="grid" [dataSource]="opportunityService" [customData]="customData"></object-grid>
-<edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
+<object-grid [grid]="grid" [dataSource]="opportunityService" [customData]="customData" (create)="create($event)" (edit)="edit($event)"></object-grid>
+<!-- <edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
     <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
         <editor-field [fieldName]="'name'" [formGroup]="formGroup"></editor-field>
         <editor-field [fieldName]="'company_id'" [formGroup]="formGroup"></editor-field>
@@ -11,3 +11,5 @@
         <editor-field [fieldName]="'description'" [formGroup]="formGroup"></editor-field>
     </form>
 </edit-object-dialog>    
+ -->
+<opportunity-dialog *ngIf="isShowDialog" [opportunity]="opportunity" [contactList]="contactList" [accountList]="accountList" [statusList]="statusList" (save)="updateOpportunity($event)" (close)="closeDialog()"></opportunity-dialog>

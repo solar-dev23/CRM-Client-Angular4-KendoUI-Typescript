@@ -24,24 +24,6 @@ export class AccountGridFactory {
     ]
   };
 
-  public static ACCOUNT_TYPE_FIELD_TEMPLATE: FieldTemplate = {
-    name: "account_type",
-    type: FIELD_TYPE.text,
-    title: "Account Type"
-  };
-
-  public static SOCIAL_NETWORK_FIELD_TEMPLATE: FieldTemplate = {
-    name: "social_networks_id",
-    type: FIELD_TYPE.text,
-    title: "Social Network"
-  };
-
-  public static ADDRESS_FIELD_TEMPLATE: FieldTemplate = {
-    name: "address_id",
-    type: FIELD_TYPE.text,
-    title: "Address"
-  };
-
   public static PREFERED_PAYMENT_METHOD_FIELD_TEMPLATE: FieldTemplate = {
     name: "prefered_payment_method",
     type: FIELD_TYPE.text,
@@ -62,7 +44,7 @@ export class AccountGridFactory {
 
   public static NUMBER_OF_EMPLOYEES_FIELD_TEMPLATE: FieldTemplate = {
     name: "number_of_employees",
-    type: FIELD_TYPE.text,
+    type: FIELD_TYPE.integer,
     title: "Number of Employees"
   };
 
@@ -80,7 +62,7 @@ export class AccountGridFactory {
 
   public static LEAD_RATING_FIELD_TEMPLATE: FieldTemplate = {
     name: "lead_rating",
-    type: FIELD_TYPE.text,
+    type: FIELD_TYPE.rating,
     title: "Lead Rating"
   };
 
@@ -95,9 +77,6 @@ export class AccountGridFactory {
     columns: [
       {field: AccountGridFactory.DISPLAY_NAME_FIELD_TEMPLATE},
       {field: AccountGridFactory.COMPANY_NAME_FIELD_TEMPLATE},
-      {field: AccountGridFactory.ACCOUNT_TYPE_FIELD_TEMPLATE},
-      {field: AccountGridFactory.SOCIAL_NETWORK_FIELD_TEMPLATE},
-      {field: AccountGridFactory.ADDRESS_FIELD_TEMPLATE},
       {field: AccountGridFactory.PREFERED_PAYMENT_METHOD_FIELD_TEMPLATE},
       {field: AccountGridFactory.PREFERED_DELIVERY_METHOD_FIELD_TEMPLATE},
       {field: AccountGridFactory.TERMS_FIELD_TEMPLATE},

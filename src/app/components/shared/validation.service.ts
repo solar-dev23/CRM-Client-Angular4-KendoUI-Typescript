@@ -53,4 +53,13 @@ export class ValidationService {
             return { 'invalidPassword': true };
         }
     }
+
+    static phoneValidator(control) {
+        if(control.value==null || control.value=='')
+            return  null;
+        if(control.value.length>2 && control.value.match(/^\d+$/))
+            return null;
+        else
+            return { 'invalidPhoneNumber': true };
+    }
 }

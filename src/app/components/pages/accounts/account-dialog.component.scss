@@ -1,3 +1,50 @@
 .k-form {
 	width: 100%;
 }
+
+.k-textarea {
+	width: 100%;
+}
+
+.star-ratings-css {
+  unicode-bidi: bidi-override;
+  color: #c5c5c5;
+  font-size: 20px;
+  height: 25px;
+  width: auto;
+  display: table;
+  position: relative;
+  padding: 0;
+  text-shadow: 0px 1px 0 #a2a2a2;
+
+  &-top {
+    color: #e7711b;
+    padding: 0;
+    position: absolute;
+    z-index: 1;
+    display: block;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+  }
+  &-top.rate-1 {
+    width: 20%;
+  }
+  &-top.rate-2 {
+    width: 40%;
+  }
+  &-top.rate-3 {
+    width: 60%;
+  }
+  &-top.rate-4 {
+    width: 80%;
+  }
+  &-top.rate-5 {
+    width: 100%;
+  }
+  &-bottom {
+    padding: 0;
+    display: block;
+    z-index: 0;
+  }
+}

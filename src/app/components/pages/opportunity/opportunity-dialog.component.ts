@@ -41,25 +41,59 @@ export class OpportunityDialogComponent {
   }
 
   public async ngOnInit() {
-    if (!this.opportunity) {
-      this.opportunity = {
-        name: '',
-        company: {
-          id: '',
-          name: ''
-        },
-        contact: {
-          id: '',
-          name: ''
-        },
-        value: 0,
-        currency: this.currencies[0],
-        description: '',
-        status_id: this.statusList[0].id,
-        rating: 3,
-        is_active: true,
-        notify: true
+    let that = this;
+
+    // if (!this.opportunity) {
+    //   this.opportunity = {
+    //     name: '',
+    //     company: {
+    //       id: '',
+    //       name: ''
+    //     },
+    //     contact: {
+    //       id: '',
+    //       name: ''
+    //     },
+    //     value: 0,
+    //     currency: this.currencies[0],
+    //     description: '',
+    //     status_id: this.statusList[0].id,
+    //     rating: 3,
+    //     is_active: true,
+    //     notify: true
+    //   }
+    // }
+
+    if(!this.opportunity.company_id) {
+      this.opportunity.company = {
+        id: '',
+        name: ''
       }
+    }else {
+      this.accountList.forEach(account => {
+        if (account.id === that.opportunity.company_id) {
+          that.opportunity.company = {
+            id: account.id,
+            name: account.companyName
+          }
+        }
+      });
+    }
+
+    if(!this.opportunity.contact_id) {
+      this.opportunity.contact = {
+        id: '',
+        name: ''
+      }
+    }else {
+      this.contactList.forEach(contact => {
+        if (contact.id === that.opportunity.contact_id) {
+          that.opportunity.contact = {
+            id: contact.id,
+            name: contact.firstName + ' ' + contact.lastName
+          }
+        }
+      });
     }
 
     this.loggedUser = this.loginService.getUserData();

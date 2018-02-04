@@ -10,7 +10,7 @@ export class Account {
   lead_source: string = '';
   notes: string = '';
   physical_address_id: string = '';
-  shipping_address_id: string = '';
+  shipping_address_id: string = null;
   number_of_employees: number = 0;
   lead_rating: number = 3;
   contacts: any = [];

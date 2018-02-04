@@ -4,7 +4,7 @@
       <div class="k-form-field col-sm-12">
         <label class="k-form-field">
           <span>Company Name<span class="k-required">*</span></span>
-          <input class="k-textbox" name="companyName" [(ngModel)]="account.companyName" required #companyName="ngModel">
+          <input class="k-textbox" name="companyName" [(ngModel)]="account.companyName" required #companyName="ngModel" (ngModelChange)="updateDisplayName()">
         </label>
       </div>
     </div>
@@ -18,8 +18,7 @@
       <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>Account Type</span>
-          <input class="k-textbox" name="account_type" [(ngModel)]="account.account_type" #account_type="ngModel">
-          <!-- <ss-multiselect-dropdown [options]="card_quick_filter_options" [texts]="card_quick_filter_texts" [settings]="card_quick_filter_settings" [(ngModel)]="cardQuickFilterModel" (ngModelChange)="onChangeCardQuickFilter($event)"></ss-multiselect-dropdown> -->
+          <ss-multiselect-dropdown name="account_type" [options]="account_type_options" [texts]="account_type_texts" [settings]="account_type_settings" [(ngModel)]="account.account_type" #account_type="ngModel"></ss-multiselect-dropdown>
         </label>
       </div>      
     </div>
@@ -68,7 +67,7 @@
       </div>      
     </div>
     <div class="row">
-      <div class="k-form-field col-sm-12">
+      <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>Lead Rating</span>
           <div class="star-ratings-css">
@@ -80,7 +79,13 @@
             </div>
           </div>
         </label>
-      </div>      
+      </div>
+      <div class="k-form-field col-sm-6">
+        <label class="k-form-field">
+          <span>Document</span>
+          <input type="file" class="upload" (change)="fileChangeListener($event);" />
+        </label>
+      </div>
     </div>
     <div class="row">
       <div class="k-form-field col-sm-12">

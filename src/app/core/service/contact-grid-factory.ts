@@ -73,18 +73,6 @@ export class ContactGridFactory {
     title: "Mobile"
   };
 
-  public static SOCIAL_NETWORK_FIELD_TEMPLATE: FieldTemplate = {
-    name: "social_networks_id",
-    type: FIELD_TYPE.text,
-    title: "Social Networks"
-  };
-
-  public static ADDRESS_FIELD_TEMPLATE: FieldTemplate = {
-    name: "address_id",
-    type: FIELD_TYPE.text,
-    title: "Address"
-  };
-
   public static CONTACT_GRID_TEMPLATE: GridTemplate = {
     id: ENTITY_NAME.contact,
     columns: [
@@ -95,9 +83,7 @@ export class ContactGridFactory {
       {field: ContactGridFactory.PHONE_FIELD_TEMPLATE},
       {field: ContactGridFactory.EXTENSION_FIELD_TEMPLATE},
       {field: ContactGridFactory.FAX_FIELD_TEMPLATE},
-      {field: ContactGridFactory.MOBILE_FIELD_TEMPLATE},
-      {field: ContactGridFactory.SOCIAL_NETWORK_FIELD_TEMPLATE},
-      {field: ContactGridFactory.ADDRESS_FIELD_TEMPLATE}
+      {field: ContactGridFactory.MOBILE_FIELD_TEMPLATE}
     ]
   };
 
