@@ -10,5 +10,6 @@ export class Contact {
   mobile: string = '';
   social_network_id: string = '';
   address_id: string = '';
+  department_id: string = '';
   accounts: any = [];
 }
