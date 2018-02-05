@@ -41,6 +41,7 @@
         <label class="k-form-field">
           <span>Phone</span>
           <input class="k-textbox" name="phone" [(ngModel)]="user.phone" #phone="ngModel" />
+          <error-label [error]="getErrorMessage('phone')"></error-label>
         </label>
       </div>
     </div>
@@ -147,7 +148,7 @@
       </div>
     </div>
     <div class="buttons col-sm-12">
-      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isValidEmail" primary="true">Save</button>
+      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isFormValid" primary="true">Save</button>
       <button type="button" kendoButton class="col-sm-6" (click)="onCloseDialog()">Cancel</button>
     </div>
   </form>

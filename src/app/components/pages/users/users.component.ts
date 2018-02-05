@@ -12,9 +12,15 @@ export class UsersComponent {
 	protected viewMode: string = 'card';
 	protected isShowDialog: boolean;
   protected customData: any;
+  protected isLoadedData: boolean;
 
   constructor(protected userService: UserService) {
   };
+
+  public async ngOnInit() {
+    this.customData = await this.userService.read().toPromise();
+    this.isLoadedData = true;
+  }
 
   protected onChangeView(val) {
     this.viewMode = val;

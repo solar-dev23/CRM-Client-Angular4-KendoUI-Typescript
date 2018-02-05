@@ -47,4 +47,9 @@ export class OpportunityGridComponent {
   protected closeDialog(): void {
     this.isShowDialog = false;
   }
+
+  protected async updateOpportunity(opportunity) {
+    this.customData = await this.opportunityService.read().toPromise();
+    this.isShowDialog = false;
+  }
 }

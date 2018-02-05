@@ -12,8 +12,9 @@ import { ValidationService } from '../../shared/validation.service';
 })
 export class UserCardComponent implements OnInit {
 	@Output() edit: EventEmitter<{object: any}> = new EventEmitter();
+	@Input() users: any = [];
 
-	protected users: Array<any>;
+	// protected users: Array<any>;
 	protected user: any;
 	protected page: any = {
 			take: 20, 
@@ -50,8 +51,7 @@ export class UserCardComponent implements OnInit {
 		}
 	}
 
-	private async _getUserList() {
-		this.users = await this.userService.read().toPromise();
+	private _getUserList() {
 		this.users = this.users.filter(user => {
 			if(!user.image || user.image === ''){
 				user.image = DEFAULT_AVATAR_IMAGE;
@@ -93,6 +93,7 @@ export class UserCardComponent implements OnInit {
 
 	public onDelete() {
 		this.userService.remove(this.deleteItem).subscribe(async (res) => {
+			this.users = await this.userService.read().toPromise();
 			this._getUserList();
 			this.isConfirmDelete = false;
 		})

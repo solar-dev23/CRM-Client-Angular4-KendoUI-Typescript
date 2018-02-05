@@ -21,8 +21,7 @@ export class UserDialogComponent implements OnInit {
 
 	protected base64Image: string;
   protected cropperVisible: boolean;
-  protected isValidEmail: boolean;
-  protected isValidPassword: boolean;
+  protected isFormValid: boolean;
 	protected isShowAlertDlg: boolean;
 	protected alert_message: string;
   protected countryNames: string[];
@@ -61,8 +60,12 @@ export class UserDialogComponent implements OnInit {
     }
 
     this.roles = await this.roleService.read().toPromise();
-    if(this.user.roles)
+    if(this.user.roles){
       this.user.role = this.roles.find(role => role.id === this.user.roles[0].id);
+    }else {
+      this.user.roles = [];
+      this.user.role = this.roles[1];
+    }
 	}
 
 	//Image upload
@@ -130,35 +133,44 @@ export class UserDialogComponent implements OnInit {
   	if (type === 'email') {
 	  	let emailValidation =  ValidationService.emailValidator({value: this.user.email});
 	  	if(emailValidation){
-	  		this.isValidEmail = false;
+	  		this.isFormValid = false;
 	  		return 'Invalid Email Address.';
 	  	} else{
-	  		this.isValidEmail = true;
+	  		this.isFormValid = true;
 	  		return '';
 	  	}
   	} else if (type === 'password'){
   		if (this.user.password) {
 	  		let passwordValidation =  ValidationService.passwordValidator({value: this.user.password});
 	  		if(passwordValidation){
-		  		this.isValidPassword = false;
+		  		this.isFormValid = false;
 		  		return 'Invalid Password.';
 		  	} else{
-		  		this.isValidPassword = true;
+		  		this.isFormValid = true;
 		  		return '';
 		  	}
   		}else {
-  			this.isValidPassword = true;
+  			this.isFormValid = true;
   			return '';
   		}
   	} else if (type === 'confirmPassword'){
   		if(this.user.password !== this.user.confirm_password) {
-  			this.isValidPassword = false;
+  			this.isFormValid = false;
   			return 'Does not match password.';
   		} else {
-  			this.isValidPassword = true;
+  			this.isFormValid = true;
   			return '';
   		}
-  	}
+  	}else if (type === 'phone') {
+      let phoneValidation =  ValidationService.phoneValidator({value: this.user.phone});
+      if(phoneValidation){
+        this.isFormValid = false;
+        return 'Invalid Phone Number.';
+      } else{
+        this.isFormValid = true;
+        return '';
+      }
+    }
   }
 
   protected onCloseDialog() {
