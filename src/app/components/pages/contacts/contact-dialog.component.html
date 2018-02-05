@@ -24,7 +24,16 @@
       <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>Department</span>
-          <input class="k-textbox" name="department" [(ngModel)]="contact.department" #department="ngModel">
+          <kendo-dropdownlist
+              [data]="departmentList"
+              [textField]="'type'"
+              [valueField]="'id'"
+              [valuePrimitive]="true"
+              name="department"
+              [(ngModel)]="contact.department_id"
+              required
+              #department="ngModel">
+          </kendo-dropdownlist>          
         </label>
       </div>
     </div>

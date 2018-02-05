@@ -15,6 +15,7 @@ import { AccountService } from "./service/account.service";
 import { AddressService } from "./service/address.service";
 import { RoleService } from "./service/role.service";
 import { SocialNetworkService } from "./service/social-network.service";
+import { DepartmentService } from "./service/department.service";
 
 @NgModule({
   imports: [
@@ -39,6 +40,7 @@ import { SocialNetworkService } from "./service/social-network.service";
     AddressService,
     RoleService,
     SocialNetworkService,
+    DepartmentService,
     {
       provide: Http,
       deps: [XHRBackend, RequestOptions],

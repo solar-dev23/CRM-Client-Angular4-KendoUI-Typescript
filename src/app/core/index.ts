@@ -13,6 +13,7 @@ export { AccountService } from "./service/account.service";
 export { AddressService } from "./service/address.service";
 export { RoleService } from "./service/role.service";
 export { SocialNetworkService } from "./service/social-network.service";
+export { DepartmentService } from "./service/department.service";
 export { RouteController } from "./service/route-controller.service";
 export { HttpController } from "./service/http-controller";
 export { CoreModule } from "./core.module";

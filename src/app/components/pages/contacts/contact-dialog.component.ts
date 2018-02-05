@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, Input } from "@angular/core";
 import { Grid } from "crm-platform";
-import { ContactService, AccountService, AddressService, SocialNetworkService, USA_STATES } from "../../../core";
+import { ContactService, AccountService, AddressService, SocialNetworkService, DepartmentService, USA_STATES } from "../../../core";
 import { Contact, SocialNetwork, Address } from '../../../core/model';
 import { ValidationService } from '../../shared/validation.service';
 import * as countriesLib from 'country-list';
@@ -26,12 +26,14 @@ export class ContactDialogComponent {
   protected accountList: any;
   protected isShowGrid: boolean;
   protected isFormValid: boolean;
+  protected departmentList: any = [];
 
 	public constructor(
 		private contactService: ContactService,
     private accountService: AccountService,
     private addressService: AddressService,
-    private socialNetworkService: SocialNetworkService
+    private socialNetworkService: SocialNetworkService,
+    private departmentService: DepartmentService
 	) {
   }
 
@@ -60,6 +62,7 @@ export class ContactDialogComponent {
       })
     }
 
+    this.departmentList = await this.departmentService.read().toPromise();
     this.isShowGrid = true;
   }
 
