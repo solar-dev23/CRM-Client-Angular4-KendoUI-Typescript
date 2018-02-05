@@ -84,11 +84,11 @@ export class UserGridFactory {
     title: "Password",
   };
 
-  public static DEPARTMENT_FIELD_TEMPLATE: FieldTemplate = {
-    name: "department_id",
-    type: FIELD_TYPE.text,
-    title: "Department"
-  };
+  // public static DEPARTMENT_FIELD_TEMPLATE: FieldTemplate = {
+  //   name: "department_id",
+  //   type: FIELD_TYPE.text,
+  //   title: "Department"
+  // };
 
   public static USER_GRID_TEMPLATE: GridTemplate = {
     id: ENTITY_NAME.user,
@@ -99,7 +99,7 @@ export class UserGridFactory {
       {field: UserGridFactory.LAST_NAME_FIELD_TEMPLATE},
       {field: UserGridFactory.ACTIVE_FIELD_TEMPLATE},
       {field: UserGridFactory.PASSWORD_FIELD_TEMPLATE},
-      {field: UserGridFactory.DEPARTMENT_FIELD_TEMPLATE}
+      // {field: UserGridFactory.DEPARTMENT_FIELD_TEMPLATE}
     ]
   };
 
