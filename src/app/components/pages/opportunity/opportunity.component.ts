@@ -11,6 +11,7 @@ import {
   CARD_QUICK_FILTER_OPTIONS,
   REMINDERS
 } from "../../../core";
+import { Opportunity } from '../../../core/model';
 import { IMultiSelectOption, IMultiSelectTexts, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
 
 @Component({
@@ -452,7 +453,7 @@ export class OpportunityComponent implements OnInit {
   }
 
   protected onCreate() {
-    this.opportunity = undefined;
+    this.opportunity = new Opportunity();
     this.isShowDialog = true;
   }
 
