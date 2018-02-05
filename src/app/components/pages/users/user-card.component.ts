@@ -94,7 +94,7 @@ export class UserCardComponent implements OnInit {
 	public onDelete() {
 		this.userService.remove(this.deleteItem).subscribe(async (res) => {
 			this.users = await this.userService.read().toPromise();
-			this._getUserList();
+			this._getUserList();		
 			this.isConfirmDelete = false;
 		})
 	}

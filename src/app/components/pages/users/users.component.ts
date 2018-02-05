@@ -51,6 +51,13 @@ export class UsersComponent {
 
   protected async onAddUser(user) {
     this.customData = await this.userService.read().toPromise();
+    this.customData = this.customData.filter(user => {
+      if(!user.image || user.image === ''){
+        user.image = DEFAULT_AVATAR_IMAGE;
+      }
+
+      return user;
+    });
     this.isShowDialog = false;
   }
 }
