@@ -26,7 +26,7 @@ export class OpportunityGridComponent {
   ) {
   }
 
-  public ngOnInit() {
+  public ngOnInit() {    
     this.grid = this.opportunityService.getOpportunityGrid(this.contactList, this.accountList, this.statusList);
   }
 
@@ -35,7 +35,7 @@ export class OpportunityGridComponent {
     this.isShowDialog = true;
   }
 
-  protected edit(event): void {    
+  protected edit(event): void {
     let opportunity = event.object;
     if(opportunity){
       this.opportunity = opportunity;

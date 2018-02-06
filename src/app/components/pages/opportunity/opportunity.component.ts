@@ -26,16 +26,16 @@ export class OpportunityComponent implements OnInit {
   protected isColumnDraggable: boolean = true;
   protected isCardDraggable: boolean = true;
   protected containers: any = [];
-  protected activeColumnId: number = -1;
+  protected activeColumnId: string = '';
   protected cardId: string = '';
   protected newColumn: string = '';
   protected addColumn: boolean = false;
   protected newColumnName: string = '';
   protected opportunities: any = [];
-  protected temp_opportunities: any = [];  
+  protected grid_opportunities: any = [];  
   protected isShowDialog: boolean = false;
   protected newOpportunityName: string = '';
-  protected qColumnId: number = -1;
+  protected qColumnId: string = '';
   protected isShowRemoveDlg: boolean = false;
   protected isShowArchiveDlg: boolean = false;
   protected isShowArchiveAllDlg: boolean = false;
@@ -46,16 +46,16 @@ export class OpportunityComponent implements OnInit {
   protected archiveObj: Object;
   protected viewMode: string = 'card';
   protected searchStr: string = '';
+  protected filter_default: { id: string, name: string } = {id: '0', name:"All"};
   protected filter: string = '';
-  protected filter_default: Object={id: '0', name:"All"};
   protected criterias: any = [];
   protected grid_criterias: any = [];
   protected card_criterias: any = [];
   protected enablePop: boolean = false;  
   protected loggedUser: any;
   protected grid_quick_filter_options: any = [];
-  protected sColumnId: number = -1;
-  protected archiveColumnId: number = 0;
+  protected sColumnIndex: number = -1;
+  protected archiveColumnId: string = '';
   protected alert_message: string = '';
   protected removeColumnName: string = '';
   protected isShowGrid: boolean = false;
@@ -132,12 +132,7 @@ export class OpportunityComponent implements OnInit {
     this.contactList = await this.contactService.read().toPromise();
     this.accountList = await this.accountSerivce.read().toPromise();
     this.statusList = await this.statusService.read().toPromise();
-    this.opportunities = await this.opportunityService.read().toPromise();
-    // Filter container with active opportunities
-    this.temp_opportunities = await this.opportunities.filter(function(oppo){
-      if(oppo.is_active)
-        return oppo;
-    });
+    this.opportunities = this.grid_opportunities = await this.opportunityService.read().toPromise();
 
     this.accountList.forEach(account => {
       if (account.companyName)
@@ -164,7 +159,6 @@ export class OpportunityComponent implements OnInit {
     this._getContainer();
 
     this.isShowGrid = true;
-    // this.o_reminder = this.reminder_list[0];
   }
 
   @HostListener('document:click', ['$event'])
@@ -177,12 +171,12 @@ export class OpportunityComponent implements OnInit {
       this.addColumn = false;
     }
 
-    if(!_.includes(event.target.classList, 'column-name')){
+    if(!_.includes(event.target.classList, 'column-name') && !_.includes(event.target.classList, 'column-name-input')){
       this.onUpdateColumn();
     }
 
     if(!_.includes(event.target.classList, 'column-popup')){
-      this.sColumnId = -1;
+      this.sColumnIndex = -1;
     }
 
     if(!_.includes(event.target.classList, 'card-popup')){
@@ -199,18 +193,9 @@ export class OpportunityComponent implements OnInit {
     });
 
     // Add opportunities to containers
-    _.forEach(this.containers, function(val) {
-        val.widgets = that.opportunities.filter(function(opp){
-          if(val.id == opp.status_id)
-            return opp;
-        });
+    this._getContainerByOppo(this.opportunities);
 
-        val.widgets = _.orderBy(val.widgets, 'order');
-    });
-
-    this._getContainerByOppo(this.temp_opportunities);
-
-    _.forEach(this.temp_opportunities, function(opportunity) {
+    _.forEach(this.opportunities, function(opportunity) {
       _.forEach(that.containers, function(container) {
         if(opportunity.status_id == container.id){
           opportunity.status_name = container.name;
@@ -236,8 +221,13 @@ export class OpportunityComponent implements OnInit {
   }
   
   private _getContainerByOppo(opportunities) {
+    let active_opportunities = opportunities.filter(function(oppo){
+      if(oppo.is_active)
+        return oppo;
+    });
+
     _.forEach(this.containers, function(val) {
-        val.widgets = opportunities.filter(function(opp){
+        val.widgets = active_opportunities.filter(function(opp){
           if(val.id == opp.status_id)
             return opp;
         });
@@ -289,12 +279,12 @@ export class OpportunityComponent implements OnInit {
     this.isCardDraggable = true;
 
     if(val == 'opportunity'){
-      // For checking notify
+      // Send nofify email for this card
       this.opportunityService.save(event).subscribe(
-          res => {
-            this._reorder(val);
-          }
-        )
+        res => {
+          this._reorder(val);
+        }
+      )
     }else{
       this._reorder(val);
     }
@@ -303,24 +293,14 @@ export class OpportunityComponent implements OnInit {
       _.forEach(container.widgets, function(widget) {
         widget.status_id = container.id;
 
-        // Update temp_opportunities and opportunities
-        var i = that.temp_opportunities.findIndex(opportunity => opportunity.id === widget.id);
-        if (that.temp_opportunities[i]) {
-          that.temp_opportunities[i].status_id = container.id;
-          that.temp_opportunities[i].status_name = container.name;
-
-          // if(that.o_isActive){
-          //   that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-          //       return obj.is_active;
-          //   });
-          // }else {
-          //   that.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-          //       return !obj.is_active;
-          //   });
-          // }
+        // Update grid_opportunities and opportunities
+        let i = that.grid_opportunities.findIndex(opportunity => opportunity.id === widget.id);
+        if (that.grid_opportunities[i]) {
+          that.grid_opportunities[i].status_id = container.id;
+          that.grid_opportunities[i].status_name = container.name;
         }
 
-        var j = that.opportunities.findIndex(opportunity => opportunity.id === widget.id);
+        let j = that.opportunities.findIndex(opportunity => opportunity.id === widget.id);
         if (that.opportunities[j]) {
           that.opportunities[j].status_id = container.id;
           that.opportunities[j].status_name = container.name;
@@ -365,11 +345,6 @@ export class OpportunityComponent implements OnInit {
     // }
   }
 
-  protected onClear() {
-    // this.containers = containers;
-    // this.addColumn = false;
-  }
-
   protected onAddNewColumn() {
     if(!this.newColumn.length){
       return;
@@ -377,15 +352,10 @@ export class OpportunityComponent implements OnInit {
 
     let params = {
       name: this.newColumn,
-      order: this.containers.length+1
+      order: this.containers.length + 1
     }
     this.statusService.save(params).subscribe(
         res => {
-          let tmp_containers = this.containers.filter(function(container) {
-            if(container.name.toLowerCase() === res.name.toLowerCase())
-              return container;
-          })
-
           this.containers.push({
             id: res.id,
             name: res.name,
@@ -393,7 +363,7 @@ export class OpportunityComponent implements OnInit {
             widgets: []
           });
 
-          // For quick filter in grid view.
+          // Add new column into quick filter options in grid view.
           let index = this.grid_quick_filter_options.length - 1;
           this.grid_quick_filter_options.splice(index, 0, {
             id: res.id,
@@ -402,6 +372,7 @@ export class OpportunityComponent implements OnInit {
             widgets: []
           });
 
+          this._reorder('status');
           this.newColumn = '';
         },
         err => {
@@ -415,7 +386,7 @@ export class OpportunityComponent implements OnInit {
   }
 
   protected onUpdateColumn() {
-    if(this.activeColumnId == -1 || !this.newColumnName.length)
+    if(this.activeColumnId == '' || !this.newColumnName.length)
       return;
 
     let params = {
@@ -428,9 +399,15 @@ export class OpportunityComponent implements OnInit {
             if(val.id == res.id)
               val.name = res.name;
           })
-          this.activeColumnId = -1;
+          this.activeColumnId = '';
         },
-        err => console.log(err, 'status update error')
+        err => {
+          if(JSON.parse(err._body).type === "unique violation" || JSON.parse(err).type === "unique violation"){
+            this.alert_message = "Column name already exists.";
+            this.isShowAlertDlg = true;
+            this.activeColumnId = '';
+          }
+        }
       )
   }
 
@@ -473,7 +450,7 @@ export class OpportunityComponent implements OnInit {
       return;
 
     let statusId = status.id;
-    let order = status.widgets.length + 1;
+    let order = 1;
 
     let params = {
       name: this.newOpportunityName,
@@ -488,7 +465,7 @@ export class OpportunityComponent implements OnInit {
           res.company = this._buildCompanyObject('', this.accountList);
 
           that.newOpportunityName = '';
-          that.qColumnId = -1;
+          that.qColumnId = '';
 
           _.forEach(that.containers, function(container){
               if(container.id == res.status_id){
@@ -524,92 +501,36 @@ export class OpportunityComponent implements OnInit {
 
     this.opportunityService.remove(params).subscribe(
         res => {
-            _.forEach(that.containers, function(container){
-                if(container.id == that.removeObj['status_id']){
-                  var i = container.widgets.findIndex(widget => widget.id === that.removeObj['id']);
-                  container.widgets.splice(i, 1);
-                }
-            })
+          _.forEach(that.containers, function(container){
+            if(container.id == that.removeObj['status_id']){
+              let i = container.widgets.findIndex(widget => widget.id === that.removeObj['id']);
+              container.widgets.splice(i, 1);
+            }
+          })
 
-            var j = that.temp_opportunities.findIndex(opportunity => opportunity.id === that.removeObj['id']);
-            that.temp_opportunities.splice(j, 1);
+          let j = that.grid_opportunities.findIndex(opportunity => opportunity.id === that.removeObj['id']);
+          that.grid_opportunities.splice(j, 1);
+          let k = that.opportunities.findIndex(opportunity => opportunity.id === that.removeObj['id']);
+          that.opportunities.splice(k, 1);
 
-            that.removeObj = {};
-            that.isShowRemoveDlg = false;
+          that.removeObj = {};
+          that.isShowRemoveDlg = false;
         },
         err => console.log(err, 'opportunity delete error')
       )
   }
 
-  // protected onSearch(event) {
-  //   let that = this;
-  //   that.searchStr = that.searchStr.toLowerCase();
-
-  //   if(this.viewMode == 'grid'){
-  //       this.temp_opportunities = this.opportunities;
-  //       this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-  //           return (obj.is_active) && (
-  //             (obj.name && obj.name.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //             (obj.company && obj.company.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //             (obj.contact && obj.contact.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //             (obj.status_name && obj.status_name.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //             (obj.description && obj.description.toLowerCase().indexOf(that.searchStr) > -1)
-  //           );
-  //       });
-
-  //   }else {
-  //       _.forEach(that.containers, function(val) {
-  //           val.widgets = that.opportunities.filter(function(opp){
-  //             if(val.id == opp.status_id)
-  //               return opp;
-  //           });
-
-  //           val.widgets = _.orderBy(val.widgets, 'order');
-  //       })
-
-  //       this.containers = _.filter(that.containers, function(container) {
-  //           container.widgets = _.filter(container.widgets, function(obj) {
-  //               return (obj.is_active) && (
-  //                 (obj.name && obj.name.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //                 (obj.company && obj.company.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //                 (obj.contact && obj.contact.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //                 (obj.status_name && obj.status_name.toLowerCase().indexOf(that.searchStr) > -1) ||
-  //                 (obj.description && obj.description.toLowerCase().indexOf(that.searchStr) > -1)
-  //               );
-  //           })
-
-  //           return container;
-  //       });
-  //   }
-  // }
-
   protected onChangeGridQuickFilter(event) {
     let that = this;
-    this.temp_opportunities = this.opportunities;
-    // let archivedColumn = this.statusList.find(function(status) {
-    //   if(status.name === 'Archived')
-    //     return status.id;
-    // });
-
-    // if(this.filter != '0' && this.filter != archivedColumn.id){
-    //   this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-    //       return (obj.status_id && obj.status_id == that.filter && obj.is_active);
-    //   });
-    // }else if(this.filter != '0' && this.filter == archivedColumn.id){
-    //   this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-    //       return !obj.is_active;
-    //   });
-    // }else {
-    //   this.temp_opportunities = this.opportunities;
-    // }
+    this.grid_opportunities = this.opportunities;
 
     if(this.filter != '0'){
-      this.temp_opportunities = _.filter(that.temp_opportunities, function(obj) {
-          return (obj.status_id && obj.status_id == that.filter);
+      this.grid_opportunities = _.filter(that.grid_opportunities, function(obj) {
+        return (obj.status_id && obj.status_id == that.filter);
       });
     }
 
-    _.forEach(this.temp_opportunities, function(opportunity) {
+    _.forEach(this.grid_opportunities, function(opportunity) {
       _.forEach(that.containers, function(container) {
         if(opportunity.status_id == container.id){
           opportunity.status_name = container.name;
@@ -688,16 +609,10 @@ export class OpportunityComponent implements OnInit {
     let that = this;
 
     if(this.viewMode == 'grid'){
-        this.temp_opportunities = [];
-        // let active_opportunities = this.opportunities.filter(function(oppo){
-        //   if(oppo.is_active)
-        //     return oppo;
-        // });
-
-        let active_opportunities = this.opportunities;
+        this.grid_opportunities = [];
 
         if(this.criterias.length > 0){
-          _.forEach(active_opportunities, function(obj) {
+          _.forEach(this.opportunities, function(obj) {
             _.forEach(that.criterias, function(criteria) {
                 let criteria_ary = criteria.split(" ");
                 let val;
@@ -720,25 +635,18 @@ export class OpportunityComponent implements OnInit {
                 }
 
                 if(val > -1){
-                  if(!_.find(that.temp_opportunities, {id: obj.id})) {
-                    that.temp_opportunities.push(obj);
+                  if(!_.find(that.grid_opportunities, {id: obj.id})) {
+                    that.grid_opportunities.push(obj);
                   }
                 }
             });
           })
         }else {
-          this.temp_opportunities = active_opportunities;
+          this.grid_opportunities = this.opportunities;
         }
     }else {
       // Init container before filter
-      _.forEach(that.containers, function(val) {
-          val.widgets = that.opportunities.filter(function(opp){
-            if(val.id == opp.status_id && opp.is_active)
-              return opp;
-          });
-
-          val.widgets = _.orderBy(val.widgets, 'order');
-      })
+      this._getContainerByOppo(this.opportunities);
 
       if(this.criterias.length > 0){
         // Filter container
@@ -784,7 +692,7 @@ export class OpportunityComponent implements OnInit {
   protected onChangeView(val) {
     this.viewMode = val;
     if(this.viewMode == 'grid'){
-      this.filter = this.filter_default['id'];
+      // this.filter = this.filter_default['id'];
       this.criterias = this.grid_criterias;
     } else {
       this.cardQuickFilterModel = [];
@@ -814,10 +722,10 @@ export class OpportunityComponent implements OnInit {
   }
 
   protected onPopupColumnSetting(index, event) {
-    if(this.sColumnId == index)
-      this.sColumnId = -1;
+    if(this.sColumnIndex == index)
+      this.sColumnIndex = -1;
     else
-      this.sColumnId = index;
+      this.sColumnIndex = index;
   }
 
   protected onOpenArchiveDlg(opportunity, event) {
@@ -843,12 +751,8 @@ export class OpportunityComponent implements OnInit {
                 oppo.is_active = false;
             })
 
-            let active_opportunities = that.opportunities.filter(function(oppo){
-              if(oppo.is_active)
-                return oppo;
-            })
-            that._getContainerByOppo(active_opportunities);
-
+            that.grid_opportunities = that.opportunities;
+            that._getContainerByOppo(that.opportunities);
             that._reorder('opportunity');
             that.isShowArchiveDlg = false;
         },
@@ -876,19 +780,19 @@ export class OpportunityComponent implements OnInit {
         }
       }
     })
-    this.sColumnId = -1;
+    this.sColumnIndex = -1;
   }
 
   protected onArchiveAll(event){
     let that = this;
 
-    let opportunities = this.opportunities.filter(function(oppo){
+    let archive_opportunities = this.opportunities.filter(function(oppo){
       if(oppo.status_id == that.archiveColumnId && oppo.is_active)
         return oppo;
     });
 
     let params={
-      opportunities: opportunities
+      opportunities: archive_opportunities
     }
     this.opportunityService.archiveOpportunities(params).subscribe(
         res => {
@@ -897,13 +801,8 @@ export class OpportunityComponent implements OnInit {
               oppo.is_active = false;
           });
 
-          let active_opportunities = that.opportunities.filter(function(oppo){
-            if(oppo.is_active)
-              return oppo;
-          })
-          that._getContainerByOppo(active_opportunities);
-
-          that._reorder('opportunity');
+          that.grid_opportunities = that.opportunities;
+          that._getContainerByOppo(that.opportunities);
           that.isShowArchiveAllDlg = false;
         }, err => console.log(err)
     )
@@ -915,33 +814,31 @@ export class OpportunityComponent implements OnInit {
     this.removeColumnName = columnName;
 
     // Check if there is any active card
-    _.forEach(this.containers, function(container) {
-      if(container.id == that.archiveColumnId){
-        let active_opportunities = container.widgets.filter(function(oppo){
-          if(oppo.is_active)
-            return oppo;
-        })
-
-        if(active_opportunities.length > 0){
-          that.isShowArchiveAllDlg2 = true;
-        }else{
-          that.isShowRemoveAllDlg = true;
-        }
-      }
+    let index = this.containers.findIndex(container => container.id == this.archiveColumnId);
+    let active_opportunities = this.containers[index].widgets.filter(function(oppo){
+      if(oppo.is_active)
+        return oppo;
     })
-    this.sColumnId = -1;
+
+    if(active_opportunities.length > 0){
+      that.isShowArchiveAllDlg2 = true;
+    }else{
+      that.isShowRemoveAllDlg = true;
+    }
+
+    this.sColumnIndex = -1;
   }
 
   protected onArchiveAll2(event){
     let that = this;
 
-    let opportunities = this.opportunities.filter(function(oppo){
+    let archive_opportunities = this.opportunities.filter(function(oppo){
       if(oppo.status_id == that.archiveColumnId && oppo.is_active)
         return oppo;
     });
 
     let params={
-      opportunities: opportunities
+      opportunities: archive_opportunities
     }
     this.opportunityService.archiveOpportunities(params).subscribe(
         res => {
@@ -950,13 +847,8 @@ export class OpportunityComponent implements OnInit {
               oppo.is_active = false;
           });
 
-          let active_opportunities = that.opportunities.filter(function(oppo){
-            if(oppo.is_active)
-              return oppo;
-          })
-          that._getContainerByOppo(active_opportunities);
-
-          that._reorder('opportunity');
+          that.grid_opportunities = that.opportunities;
+          that._getContainerByOppo(that.opportunities);
           that.isShowArchiveAllDlg2 = false;
           that.isShowRemoveAllDlg = true;
         }, err => console.log(err)
@@ -976,27 +868,36 @@ export class OpportunityComponent implements OnInit {
       opportunities: opportunities
     }
     this.statusService.remove(params).subscribe(
-        res => {
+        async (res) => {
             that.containers = that.containers.filter(function(container){
               if(container.id != that.archiveColumnId)
                 return container;
             });
 
             // For quick filter in grid view.
-            that.grid_quick_filter_options = that.grid_quick_filter_options.filter(function(container) {
+            that.statusList = that.grid_quick_filter_options = that.grid_quick_filter_options.filter(function(container) {
               if(container.id != that.archiveColumnId)
                 return container;
             });
 
-            that.temp_opportunities = that.temp_opportunities.filter(function(oppo){
-              if(oppo.status_id != that.archiveColumnId){
-                return oppo;
-              }else {
-                if(!oppo.is_active)
-                  return oppo;
+            that.opportunities = that.grid_opportunities = await that.opportunityService.read().toPromise();
+            // Set Opportunity notify and contact/company values.
+            _.forEach(that.opportunities, function(opportunity){
+              // Set notify value to opportunities for current user.
+              opportunity.notify = false;
+              if(opportunity.notify_users && opportunity.notify_users.length > 0){
+                let notify_list = opportunity.notify_users.split(',');
+                if(notify_list.indexOf(that.loggedUser.id) !== -1){
+                  opportunity.notify = true;
+                }
               }
+
+              // Set contact/company to opportunities.
+              opportunity.contact = that._buildContactObject(opportunity.contact_id, that.contactList);
+              opportunity.company = that._buildCompanyObject(opportunity.company_id, that.accountList);
             });
 
+            that._reorder('status');
             that.isShowRemoveAllDlg = false;
         }, err => console.log(err)
     )
@@ -1005,14 +906,7 @@ export class OpportunityComponent implements OnInit {
   protected onChangeCardQuickFilter(event) {
     let that = this;
     if(this.cardQuickFilterModel.length == 0){
-      _.forEach(that.containers, function(val) {
-          val.widgets = that.opportunities.filter(function(opp){
-            if(val.id == opp.status_id && opp.is_active == true)
-              return opp;
-          });
-
-          val.widgets = _.orderBy(val.widgets, 'order');
-      });
+      this._getContainerByOppo(this.opportunities);
     }
 
     if(this.cardQuickFilterModel.includes(1) && this.cardQuickFilterModel.includes(2)){
@@ -1026,6 +920,8 @@ export class OpportunityComponent implements OnInit {
             if(val.id == opp.status_id && opp.user_id == that.loggedUser.id && diffDays >= 30 && opp.is_active == true)
               return opp;
           });
+
+          val.widgets = _.orderBy(val.widgets, 'order');
       })
     }else {
       if(this.cardQuickFilterModel.includes(1)){
@@ -1087,8 +983,8 @@ export class OpportunityComponent implements OnInit {
   }
 
   protected updateOpportunity(opportunity) {
-    this.isShowDialog = false;   
     this._init();
+    this.isShowDialog = false;
   }
 
   protected closeDialog() {

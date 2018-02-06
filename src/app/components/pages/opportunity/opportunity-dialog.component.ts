@@ -43,26 +43,7 @@ export class OpportunityDialogComponent {
   public async ngOnInit() {
     let that = this;
 
-    // if (!this.opportunity) {
-    //   this.opportunity = {
-    //     name: '',
-    //     company: {
-    //       id: '',
-    //       name: ''
-    //     },
-    //     contact: {
-    //       id: '',
-    //       name: ''
-    //     },
-    //     value: 0,
-    //     currency: this.currencies[0],
-    //     description: '',
-    //     status_id: this.statusList[0].id,
-    //     rating: 3,
-    //     is_active: true,
-    //     notify: true
-    //   }
-    // }
+    this.statusList = this.statusList.filter(status => status.is_active);
 
     if(!this.opportunity.company_id) {
       this.opportunity.company = {
@@ -107,6 +88,17 @@ export class OpportunityDialogComponent {
     } else {
       this.opportunity.reminder = this.reminders[0];
     }
+
+    if(!this.opportunity.currency || this.opportunity.currency ==='')
+      this.opportunity.currency = CURRENCIES[0];
+
+    if(!this.opportunity.status_id || this.opportunity.status_id === '')
+      this.opportunity.status_id = this.statusList[0].id;
+
+    // Change archived status to first status
+    let active_status = this.statusList.find(status=> status.id === this.opportunity.status_id);
+    if(!active_status)
+      this.opportunity.status_id = this.statusList[0].id;      
   }
 
   @HostListener('document:click', ['$event'])
@@ -136,13 +128,29 @@ export class OpportunityDialogComponent {
     }
   }
 
+  protected focusCompany(): void {
+    this.isFilterCompany = true;
+    this.isFilterContact = false;
+console.log(this.contacts);
+  }
+
   protected updateCompany(company): void {
+    let that = this;
     this.opportunity.company = {
       id: company.id,
       name: company.companyName
     };
     this.opportunity.company_id = company.id;
     this.isFilterCompany = false;
+
+    this.contacts = [];
+    if (company.contacts.length> 0) {
+      company.contacts.forEach(contact => {
+        let object = that.contactList.find(obj => obj.id === contact.id);
+        that.contacts.push(object);
+      });
+      that.opportunity.contact = that.contacts[0];
+    }
   }
 
   protected createCompany(): void {
@@ -181,13 +189,29 @@ export class OpportunityDialogComponent {
     }
   }
 
+  protected focusContact(): void {
+    this.isFilterContact = true;
+    this.isFilterCompany = false;
+console.log(this.contacts);
+  }
+
   protected updateContact(contact): void {
+    let that = this;
     this.opportunity.contact = {
       id: contact.id,
       name: contact.firstName + ' ' + contact.lastName
     };
     this.opportunity.contact_id = contact.id;
     this.isFilterContact = false;
+
+    this.companies = [];
+    if (contact.accounts.length> 0) {
+      contact.accounts.forEach(company => {
+        let object = that.accountList.find(obj => obj.id === company.id);
+        that.companies.push(object);
+      });
+      that.opportunity.company = that.companies[0];
+    }
   }
 
   protected createContact(): void {
@@ -219,6 +243,9 @@ export class OpportunityDialogComponent {
 
     if(!this.opportunity.order)
       this.opportunity.order = 0;
+
+    if(!this.opportunity.is_active)
+      this.opportunity.is_active = true;
 
     this.opportunity.notify_user_id = this.loggedUser.id;       
     this.opportunityService.save(this.opportunity).subscribe(

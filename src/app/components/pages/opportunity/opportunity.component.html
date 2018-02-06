@@ -10,12 +10,12 @@
           <label class="">
               <span>Filter: &nbsp;</span>
               <kendo-dropdownlist
+                  [defaultItem]="filter_default"
                   [data]="grid_quick_filter_options"
                   [textField]="'name'"
                   [valueField]="'id'"
-                  [valuePrimitive]="true"
-                  [defaultItem]="filter_default"
                   [(ngModel)]="filter"
+                  [valuePrimitive]="true"
                   (ngModelChange)="onChangeGridQuickFilter($event)">
               </kendo-dropdownlist>
           </label>
@@ -61,10 +61,10 @@
                       <input type="text" [autofocus]="true" name="column_name" class="column-name-input" [(ngModel)]="newColumnName" *ngIf="activeColumnId == container.id" (keyup.enter)="onUpdateColumn()">
                       <div class="panel-heading-ops">
                         <a (click)="onPopupColumnSetting(i, $event)"><i class="column-popup fa fa-cog"></i></a>
-                        <div class="popup_container" *ngIf="sColumnId == i">
+                        <div class="popup_container" *ngIf="sColumnIndex == i">
                             <ul class="popup_links">
                               <li>
-                                <a (click)="onCollapse(i, $event); sColumnId=-1">Fold</a>
+                                <a (click)="onCollapse(i, $event); sColumnIndex=-1">Fold</a>
                                 <a (click)="onOpenArchiveAllDlg(container.id, $event)">Archive All</a>
                                 <a (click)="onOpenRemoveAllDlg(container.id, container.name, $event)">Delete</a>
                               </li>
@@ -77,7 +77,7 @@
                       <div class="quick-add-opportunity" *ngIf="qColumnId == container.id">
                         <input type="text" [autofocus]="true" name="opportunity" kendoTextBox class="opportunity-name" [(ngModel)]="newOpportunityName" (keyup.enter)="onQuickAddOpportunity(container)">
                         <button kendoButton class="btn pull-left" [primary]="true" (click)="onQuickAddOpportunity(container)">Save</button>
-                        <button kendoButton class="btn pull-right" (click)="qColumnId = -1">Cancel</button>
+                        <button kendoButton class="btn pull-right" (click)="qColumnId = ''">Cancel</button>
                       </div>
                       <ul class="list-group">
                           <li *ngFor="let widget of container.widgets; let x = index"
@@ -139,7 +139,7 @@
         [contactList]="contactList" 
         [accountList]="accountList" 
         [statusList]="statusList"
-        [customData]="temp_opportunities">
+        [customData]="grid_opportunities">
     </opportunity-grid>
   </div>
 </div>

@@ -10,7 +10,7 @@
                  type="text"
                  placeholder="Search Company"
                  name="company" 
-                 (focus)="filterCompany()"
+                 (focus)="focusCompany()"
                  [(ngModel)]="opportunity.company.name" 
                  (ngModelChange)="filterCompany()"
                  required 
@@ -27,7 +27,7 @@
                  type="text"
                  placeholder="Search Contact"
                  name="contact" 
-                 (focus)="filterContact()"
+                 (focus)="focusContact()"
                  [(ngModel)]="opportunity.contact.name" 
                  (ngModelChange)="filterContact()"
                  required 
