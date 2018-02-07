@@ -104,8 +104,8 @@
       </div>
       <div class="buttons col-sm-12">
           <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
-          <button *ngIf="opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Save</button>
-          <button *ngIf="!opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid">Restore</button>
+          <button *ngIf="opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid && isDisabled">Save</button>
+          <button *ngIf="!opportunity.is_active" kendoButton class="col-sm-6" primary="true" [disabled]="!opportunityForm.valid && isDisabled">Restore</button>
       </div>
     </form>
 </kendo-dialog>

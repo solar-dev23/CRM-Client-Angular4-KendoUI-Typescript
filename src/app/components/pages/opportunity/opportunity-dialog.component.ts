@@ -33,6 +33,7 @@ export class OpportunityDialogComponent {
   protected reminderList: any[];
   protected isShowAlertDlg: boolean;
   protected alert_message: string = '';
+  protected isDisabled: boolean = false;
 
   constructor(
     private opportunityService: OpportunityService, 
@@ -146,6 +147,7 @@ export class OpportunityDialogComponent {
         that.contacts.push(object);
       });
       that.opportunity.contact = that._getContact(that.contacts[0]);
+      that.opportunity.contact_id = that.opportunity.contact.id;
     }else {
       this.opportunity.contact = {
         id: '',
@@ -214,6 +216,7 @@ export class OpportunityDialogComponent {
         that.companies.push(object);
       });
       that.opportunity.company = that._getCompany(that.companies[0]);
+      that.opportunity.company_id = that.opportunity.company.id;
     } else {
       this.opportunity.company = {
         id: '',
@@ -246,6 +249,7 @@ export class OpportunityDialogComponent {
   }
 
   protected async onFormSubmit(opportunityForm: any) {
+    this.isDisabled = true;
     if(!this.opportunity.user_id)
       this.opportunity.user_id = this.loggedUser.id;
 
@@ -276,7 +280,8 @@ export class OpportunityDialogComponent {
 
         this.reminderService.save(reminder).subscribe(
           res => {
-            this.save.emit(opportunity);            
+            this.save.emit(opportunity);
+            this.isDisabled = false;
           }
         )
       }, err =>{

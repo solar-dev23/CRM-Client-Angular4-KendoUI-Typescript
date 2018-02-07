@@ -96,6 +96,7 @@ export class OpportunityComponent implements OnInit {
   protected columnPadding: number = 15;
   protected defaultCriteriaHeight: number = 30;
   protected cardViewStyle: any;
+  protected isLoadData: boolean = false;
 
   constructor(
     private opportunityService: OpportunityService,
@@ -122,6 +123,7 @@ export class OpportunityComponent implements OnInit {
   }
 
   private async _init() {
+    this.isLoadData = true;
     this.loggedUser = this.loginService.getUserData();
 
     if(this.loggedUser.wide_menu)
@@ -157,9 +159,9 @@ export class OpportunityComponent implements OnInit {
 
     this._fixColumnHeader();
     this._getContainer();
-
-    this._reorder('opportunity');
+    // await this._reorder('opportunity');
     this.isShowGrid = true;
+    this.isLoadData = false;
   }
 
   @HostListener('document:click', ['$event'])
