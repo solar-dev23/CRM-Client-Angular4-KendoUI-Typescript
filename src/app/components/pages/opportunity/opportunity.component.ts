@@ -692,15 +692,19 @@ export class OpportunityComponent implements OnInit {
     }
   }
 
-  protected onChangeView(val) {
+  protected async onChangeView(val) {
     this.viewMode = val;
     if(this.viewMode == 'grid'){
       // this.filter = this.filter_default['id'];
       this.criterias = this.grid_criterias;
     } else {
+      this.isLoadData = true;
       this.cardQuickFilterModel = [];
       this.criterias = this.card_criterias;
-      this._init();
+      this.opportunities = this.grid_opportunities = await this.opportunityService.read().toPromise();
+      this._getContainer();
+      this.isLoadData = false;
+      // this._init();
     }
   }
 
