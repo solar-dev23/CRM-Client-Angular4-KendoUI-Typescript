@@ -10,7 +10,7 @@ export class ChartLegendComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() title: any[] = [];
 
-  colors = ["#ff6358", "#ffd246", "#78d237", "#28b4c8", "#2d73f5", "#aa46be"];
+  // colors = ["#ff6358", "#ffd246", "#78d237", "#28b4c8", "#2d73f5", "#aa46be"];
   limit: number = 12;
 
   constructor() { }
@@ -18,7 +18,7 @@ export class ChartLegendComponent implements OnInit {
   ngOnInit() {
   }
 
-  getBackgroundColor(index) {
-    return this.colors[index % 6];
-  }
+  // getBackgroundColor(index) {
+  //   return this.colors[index % 6];
+  // }
 }

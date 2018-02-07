@@ -43,14 +43,22 @@ export class ValidationService {
     }
 
     static passwordValidator(control) {
-        // {6,100}           - Assert password is between 6 and 100 characters
-        // (?=.*[0-9])       - Assert a string has at least one number
-        //if (control.value.match(/^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,100}$/)) { //^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$
-        //if (control.value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$/)) { 
-        if (control.value.match(/^.{4,}$/)){
+        // (/^
+        // (?=.*\d)                //should contain at least one digit
+        // (?=.*[a-z])             //should contain at least one lower case
+        // (?=.*[A-Z])             //should contain at least one upper case
+        // [a-zA-Z0-9]{8,}         //should contain at least 8 from the mentioned characters
+        // $/)
+        if (control.value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)){
             return null;
         } else {
-            return { 'invalidPassword': true };
+            if (!control.value.match(/^[a-zA-Z0-9]{8,}$/)) {
+                return 'Password should be at least 8 characters';
+            }else if(!control.value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)$/)) {
+                return 'Password should contain uppercase/lowercase and numbers';
+            }else {
+                return 'Invalid Password';
+            }
         }
     }
 

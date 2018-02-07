@@ -68,3 +68,12 @@ export const ACCOUNT_TYPES = [
   { id: 1, name: 'Lead' },
   { id: 2, name: 'Customer' }
 ]
+
+export const COLORS = [
+  "#ff6358", 
+  "#ffd246", 
+  "#78d237", 
+  "#28b4c8", 
+  "#2d73f5", 
+  "#aa46be"
+]

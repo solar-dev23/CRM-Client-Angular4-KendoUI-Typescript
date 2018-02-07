@@ -13,7 +13,7 @@
     <!-- Pie Chart -->
     <kendo-chart>
       <kendo-chart-series>
-        <kendo-chart-legend position="right"></kendo-chart-legend>
+        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
         <kendo-chart-area background="transparent" [margin]="-30" [height]="300">
         </kendo-chart-area>
         <kendo-chart-series-item type="pie" [data]="pieData2" field="value" categoryField="category">
@@ -27,7 +27,7 @@
     <!-- Donut Chart -->
     <kendo-chart>
       <kendo-chart-series>
-        <kendo-chart-legend position="right"></kendo-chart-legend>
+        <kendo-chart-legend [visible]="false"></kendo-chart-legend>
         <kendo-chart-area background="transparent" [margin]="-30" [height]="300">
         </kendo-chart-area>
         <kendo-chart-series-item type="donut" [data]="pieData2" field="value" categoryField="category">
@@ -42,7 +42,7 @@
   <div class="chart" *ngIf="type==chartType.FUNNEL">
     <!-- Funnel Chart -->
     <kendo-chart>
-      <kendo-chart-legend position="right"></kendo-chart-legend>
+      <kendo-chart-legend [visible]="false"></kendo-chart-legend>
       <kendo-chart-area background="transparent" [margin]="30" [height]="300">
       </kendo-chart-area>
       <kendo-chart-series>
@@ -107,9 +107,9 @@
       </kendo-chart-series>
     </kendo-chart>
   </div>
-  <!-- <div class="legend" *ngIf="type==chartType.PIE || type==chartType.DONUT || type==chartType.FUNNEL">
+  <div class="legend" *ngIf="type==chartType.PIE || type==chartType.DONUT || type==chartType.FUNNEL">
     <app-chart-legend [data]="valueMarks" [title]="filter.showBy"></app-chart-legend>
-  </div> -->
+  </div>
 </div>
 <div class="clearfix" style="margin: 0"></div>
 <!-- Filter on Bottom -->

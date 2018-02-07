@@ -2,8 +2,8 @@
 <div class="seperator"></div>
 <div *ngFor="let element of data;let i = index">
   <div *ngIf="i < limit " style="height:20px">
-    <span>{{element.label}}</span>
-    <div class="color_div" [ngStyle]="{ 'background': getBackgroundColor(i) }"></div>
+    <span>{{element.label}} ({{element.value | number:'1.0-2'}})</span>
+    <div class="color_div" [ngStyle]="{ 'background': element.color }"></div>
   </div>
   <div *ngIf="i == limit">
     Other

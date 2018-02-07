@@ -1,4 +1,4 @@
-<object-grid [grid]="grid" [dataSource]="userService" [customData]="customData" (create)="openCreateDialog($event)" (edit)="editUser($event)"></object-grid>
+<object-grid [grid]="grid" [dataSource]="userService" [customData]="customData" (create)="openCreateDialog($event)" (edit)="editUser($event)" [removeConfirmation]="'Are you sure you want to delete this user?'"></object-grid>
 <!-- <edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [width]="550" (edit)="edit($event)">
   <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
       <editor-field [fieldName]="'displayName'" [formGroup]="formGroup"></editor-field>

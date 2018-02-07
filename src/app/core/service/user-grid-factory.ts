@@ -8,6 +8,12 @@ export class UserGridFactory {
   private static USERNAME_MIN_LENGTH: number = 4;
   private static PASSWORD_MIN_LENGTH: number = 8;
 
+  public static DISPLAY_NAME_FIELD_TEMPLATE: FieldTemplate = {
+    name: "displayName",
+    type: FIELD_TYPE.text,
+    title: "Display Name"
+  };
+
   public static USER_NAME_FIELD_TEMPLATE: FieldTemplate = {
     name: "username",
     type: FIELD_TYPE.text,
@@ -93,6 +99,7 @@ export class UserGridFactory {
   public static USER_GRID_TEMPLATE: GridTemplate = {
     id: ENTITY_NAME.user,
     columns: [
+      {field: UserGridFactory.DISPLAY_NAME_FIELD_TEMPLATE},
       {field: UserGridFactory.USER_NAME_FIELD_TEMPLATE},
       {field: UserGridFactory.EMAIL_FIELD_TEMPLATE},
       {field: UserGridFactory.FIRST_NAME_FIELD_TEMPLATE},
@@ -109,7 +116,7 @@ export class UserGridFactory {
 
   public static newGridInstance(roles: UserRole[]): Grid {
     let grid = Grid.newInstance(UserGridFactory.USER_GRID_TEMPLATE);
-    grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
+    // grid.addColumn(GridColumn.newInstanceByField(new DisplayNameField()), 0);
     let roleField = UserRoleField.newUserRoleFieldInstance(UserGridFactory.ROLE_FIELD_TEMPLATE, roles);
     grid.addColumn(GridColumn.newInstanceByField(roleField), grid.columns.length - 1);
     return grid;

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ValueAxisLabels } from '@progress/kendo-angular-charts';
-import { DashboardService, CHART_TYPE } from '../../../../core';
+import { DashboardService, CHART_TYPE, COLORS } from '../../../../core';
 
 @Component({
   selector: 'report-chart',
@@ -56,24 +56,27 @@ export class ReportChartComponent implements OnInit {
       sum += element[fieldToShow];
     });
 
-    dataToShow.forEach(dataPoint => {
+    dataToShow.forEach((dataPoint, i) => {
       if (this.filter.showBy == 'Currency') {
         let value = dataPoint.count;
-        this.pieData.push({ category: dataPoint.name, value: value });
-        this.pieData2.push({ category: dataPoint.name, value: value });
+        this.pieData.push({ category: dataPoint.name, value: value, color: COLORS[i % 6] });
+        this.pieData2.push({ category: dataPoint.name, value: value, color: COLORS[i % 6] });
         let temp = {
           "label": dataPoint.name,
-          "value": value
+          "value": value,
+          "color": COLORS[i % 6]
         }
         this.valueMarks.push(temp);
       } else {
         let value = Math.round(dataPoint[fieldToShow] * 100) / 100
-        this.pieData.push({ category: dataPoint.name, value: value });
+        this.pieData.push({ category: dataPoint.name, value: value, color: COLORS[i % 6] });
         if (value / sum > 0.02)
-          this.pieData2.push({ category: dataPoint.name, value: value });
+          this.pieData2.push({ category: dataPoint.name, value: value, color: COLORS[i % 6] });
+        
         let temp = {
           "label": dataPoint.name,
-          "value": value
+          "value": value,
+          "color": COLORS[i % 6]
         }
         this.valueMarks.push(temp);
       }

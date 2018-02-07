@@ -13,7 +13,7 @@
       </div>
       <div class="col-md-4 image-edit-icon">
         <div class="img-cover">
-          <img [src]="user.image" alt=""/>
+          <img [src]="image" alt=""/>
         </div>
         <input id="card-upload-input" type="file" class="upload custom-file-selector" accept="image/*" (change)="fileChangeListener($event); fileSelector.value=null; " #fileSelector />
         <a class="img-edit-btn" (click)="onProfileImgClick($event)">
@@ -25,7 +25,7 @@
       <div class="col-md-12">
         <label class="k-form-field">
           <span>Display Name</span>
-          <input class="k-textbox" name="displayName" [(ngModel)]="user.displayName" #displayName="ngModel" readonly />
+          <input class="k-textbox" name="displayName" [(ngModel)]="user.displayName" #displayName="ngModel" />
         </label>
       </div>
     </div>
@@ -74,6 +74,7 @@
         <label class="k-form-field">
           <span>Zip</span>
           <input class="k-textbox" name="zip" [(ngModel)]="user.address.zip" #zip="ngModel" (input)="changeZipcode($event.target.value)" />
+          <error-label [error]="getErrorMessage('zipcode')"></error-label>
         </label>
       </div>
       <div class="col-md-6">
@@ -148,8 +149,8 @@
       </div>
     </div>
     <div class="buttons col-sm-12">
-      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isFormValid" primary="true">Save</button>
       <button type="button" kendoButton class="col-sm-6" (click)="onCloseDialog()">Cancel</button>
+      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isFormValid" primary="true">Save</button>
     </div>
   </form>
 </kendo-dialog>

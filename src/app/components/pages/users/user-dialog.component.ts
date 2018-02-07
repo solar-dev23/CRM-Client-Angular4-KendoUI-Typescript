@@ -20,6 +20,7 @@ export class UserDialogComponent implements OnInit {
 	@Output() close: EventEmitter<{object: any}> = new EventEmitter();
 
 	protected base64Image: string;
+  protected image: string;
   protected cropperVisible: boolean;
   protected isFormValid: boolean;
 	protected isShowAlertDlg: boolean;
@@ -28,6 +29,7 @@ export class UserDialogComponent implements OnInit {
   protected statesNames: string[];
   protected isUpdateImage: boolean;
   protected roles: any[];
+  protected isValidZipcode: boolean = true;
 
 	constructor(private userService: UserService, private addressService: AddressService, private roleService: RoleService) {
 	}
@@ -35,6 +37,10 @@ export class UserDialogComponent implements OnInit {
 	async ngOnInit() {
     this.countryNames = this.getCountryNameList();
     this.statesNames = this.getStatesList();
+
+    if(this.user.image) {
+      this.image = this.user.image;
+    }
 
     if(this.user.date_of_birth) {
       this.user.date_of_birth = new Date(this.user.date_of_birth);
@@ -72,7 +78,7 @@ export class UserDialogComponent implements OnInit {
   protected onCropped(croppedInBase64): void {
     this.cropperVisible = false;
     if (croppedInBase64) {
-      this.user.image = croppedInBase64;
+      this.image = croppedInBase64;
       this.isUpdateImage = true;
     }
   }
@@ -96,6 +102,7 @@ export class UserDialogComponent implements OnInit {
   }
 
   protected async onFormSubmit(userForm: any) {
+    this.isFormValid = false;
     if(this.user.address_id){
       this.user.address.id = this.user.address_id;
     }
@@ -104,7 +111,7 @@ export class UserDialogComponent implements OnInit {
     this.user.address_id = address.id;
 
   	if(this.isUpdateImage){
-    	let image = await this.userService.uploadImage(this.user.image).toPromise();
+    	let image = await this.userService.uploadImage(this.image).toPromise();
     	this.user.image = image.url;
   	}
 
@@ -113,6 +120,7 @@ export class UserDialogComponent implements OnInit {
   	this.userService.save(this.user).subscribe(
   		res => {
   			this.save.emit(res);
+        this.isFormValid = true;
   		}, err => {
         // if(JSON.parse(err._body).type === "unique violation" || JSON.parse(err).type === "unique violation"){
         //   this.alert_message = "User name or email already exists.";
@@ -144,7 +152,7 @@ export class UserDialogComponent implements OnInit {
 	  		let passwordValidation =  ValidationService.passwordValidator({value: this.user.password});
 	  		if(passwordValidation){
 		  		this.isFormValid = false;
-		  		return 'Invalid Password.';
+		  		return passwordValidation;
 		  	} else{
 		  		this.isFormValid = true;
 		  		return '';
@@ -170,6 +178,14 @@ export class UserDialogComponent implements OnInit {
         this.isFormValid = true;
         return '';
       }
+    }else if (type === 'zipcode') {
+      if(!this.isValidZipcode){
+        this.isFormValid = false;
+        return 'Invalid Zipcode.';
+      } else{
+        this.isFormValid = true;
+        return '';
+      }
     }
   }
 
@@ -182,17 +198,46 @@ export class UserDialogComponent implements OnInit {
   }
 
   protected changeZipcode(e) {
-    if (e.length < 5) return;
-    const location = this.zipcodeLookup(e.substr(0, 5));
+    if(e.length === 0){
+      this.isValidZipcode = true;
+      return;
+    }else if (0 < e.length && e.length < 5){
+      if(this.user.address.country === 'United States')
+        this.isValidZipcode = false;
+      else
+        this.isValidZipcode = true;
+
+      return;
+    }
+
+    const location = this.zipcodeLookup(e);
     if (location) {
+      this.user.address.country = 'United States';
       this.user.address.city = location.city;
       this.user.address.state = location.state;
+      this.isValidZipcode = true;
+    } else {
+      if(this.user.address.country === 'United States'){
+        this.isValidZipcode = false;
+      }else {
+        this.user.address.city = '';
+        this.user.address.state = '';
+        this.isValidZipcode = true;
+      }
     }
   }
 
   protected countryChange(e) {
-    if (e == 'United States') this.user.address.state = 'AL';
-    else this.user.address.state = '';
+    if (e == 'United States') {
+      this.user.address.state = 'AL';
+      this.user.address.city = '';
+      this.user.address.zip = '';
+    } else{
+      this.user.address.state = '';
+      this.user.address.city = '';
+      this.user.address.zip = '';
+      this.isValidZipcode = true;
+    }
   }
 
   protected zipcodeLookup(code) {

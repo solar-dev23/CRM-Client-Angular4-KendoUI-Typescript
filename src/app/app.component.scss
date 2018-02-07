@@ -65,8 +65,7 @@ report-chart, report-chart-two {
     }
     .chart {
         display: inline-block;
-        // width: calc(100% - 170px);
-        width: 100%;
+        width: calc(100% - 170px);
     }
     .legend {
         float: right;

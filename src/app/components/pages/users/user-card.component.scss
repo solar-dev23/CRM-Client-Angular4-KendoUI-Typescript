@@ -35,18 +35,19 @@
 	text-decoration: none;
 	display: block;
 	font-size: 11px;
+	cursor: pointer;
 }
 
 .card-menu .color-option{
 	text-decoration: none;
 	margin-left: 2px;
+	cursor: pointer;	
 }
 
 .card-menu .color-list li{
 	display: inline;
 	list-style-type: none;
-	padding-right: 1px;
-	
+	padding-right: 1px;	
 }
 
 .card-padding-col{
