@@ -53,10 +53,7 @@ export class OpportunityDialogComponent {
     }else {
       this.accountList.forEach(account => {
         if (account.id === that.opportunity.company_id) {
-          that.opportunity.company = {
-            id: account.id,
-            name: account.companyName
-          }
+          that.opportunity.company = that._getCompany(account);          
         }
       });
     }
@@ -69,10 +66,7 @@ export class OpportunityDialogComponent {
     }else {
       this.contactList.forEach(contact => {
         if (contact.id === that.opportunity.contact_id) {
-          that.opportunity.contact = {
-            id: contact.id,
-            name: contact.firstName + ' ' + contact.lastName
-          }
+          that.opportunity.contact = that._getContact(contact);
         }
       });
     }
@@ -131,7 +125,9 @@ export class OpportunityDialogComponent {
   protected focusCompany(): void {
     this.isFilterCompany = true;
     this.isFilterContact = false;
-console.log(this.contacts);
+    
+    if(!this.companies || this.opportunity.contact.name === '')
+      this.companies = this.accountList;
   }
 
   protected updateCompany(company): void {
@@ -149,7 +145,12 @@ console.log(this.contacts);
         let object = that.contactList.find(obj => obj.id === contact.id);
         that.contacts.push(object);
       });
-      that.opportunity.contact = that.contacts[0];
+      that.opportunity.contact = that._getContact(that.contacts[0]);
+    }else {
+      this.opportunity.contact = {
+        id: '',
+        name: ''
+      }
     }
   }
 
@@ -192,7 +193,9 @@ console.log(this.contacts);
   protected focusContact(): void {
     this.isFilterContact = true;
     this.isFilterCompany = false;
-console.log(this.contacts);
+
+    if(!this.contacts || this.opportunity.company.name === '')
+      this.contacts = this.contactList;
   }
 
   protected updateContact(contact): void {
@@ -210,7 +213,12 @@ console.log(this.contacts);
         let object = that.accountList.find(obj => obj.id === company.id);
         that.companies.push(object);
       });
-      that.opportunity.company = that.companies[0];
+      that.opportunity.company = that._getCompany(that.companies[0]);
+    } else {
+      this.opportunity.company = {
+        id: '',
+        name: ''
+      }
     }
   }
 
@@ -312,5 +320,19 @@ console.log(this.contacts);
     }
 
     return reminder_date;
+  }
+
+  private _getCompany(company) {
+    return {
+      id: company.id,
+      name: company.companyName
+    }
+  }
+
+  private _getContact(contact) {
+    return {
+      id: contact.id,
+      name: contact.firstName + ' ' + contact.lastName
+    }
   }
 }

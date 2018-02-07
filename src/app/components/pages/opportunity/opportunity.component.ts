@@ -158,6 +158,7 @@ export class OpportunityComponent implements OnInit {
     this._fixColumnHeader();
     this._getContainer();
 
+    this._reorder('opportunity');
     this.isShowGrid = true;
   }
 
