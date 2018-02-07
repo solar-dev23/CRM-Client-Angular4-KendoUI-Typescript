@@ -990,11 +990,11 @@ export class OpportunityComponent implements OnInit {
   }
 
   protected async updateOpportunity(opportunity) {
+    this.isShowDialog = false;
     this.isLoadData = true;
     this.opportunities = this.grid_opportunities = await this.opportunityService.read().toPromise();
     this._getContainer();
     this.isLoadData = false;
-    this.isShowDialog = false;
   }
 
   protected closeDialog() {
