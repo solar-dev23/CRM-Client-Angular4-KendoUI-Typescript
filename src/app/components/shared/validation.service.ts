@@ -70,4 +70,14 @@ export class ValidationService {
         else
             return { 'invalidPhoneNumber': true };
     }
+
+    static usernameValidator(control) {
+        if(control.value==null || control.value=='')
+            return  null;
+
+        if(control.value.length >= 4)
+            return null;
+        else
+            return { 'invalidUserName': true };
+    }
 }

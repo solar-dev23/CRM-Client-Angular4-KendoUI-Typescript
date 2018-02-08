@@ -56,7 +56,9 @@
       <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>Annual Revenue</span>
-          <input class="k-textbox" name="annual_revenue" [(ngModel)]="account.annual_revenue" #annual_revenue="ngModel">
+          <kendo-numerictextbox
+              name="annual_revenue" [(ngModel)]="account.annual_revenue" #annual_revenue="ngModel">
+          </kendo-numerictextbox>
         </label>
       </div>
       <div class="k-form-field col-sm-6">
@@ -164,6 +166,7 @@
             <label class="k-form-field col-sm-6">
               <span>Zip</span>
               <input class="k-textbox" name="zip" [(ngModel)]="address.zip" #zip="ngModel" (input)="changeZipcode($event.target.value)" />
+              <error-label [error]="getErrorMessage('zipcode')"></error-label>
             </label>
             <label class="k-form-field col-sm-6">
               <span>Country</span>
@@ -178,7 +181,7 @@
 
     <div class="buttons col-sm-12">
         <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
-        <button kendoButton class="col-sm-6" primary="true" [disabled]="!accountForm.valid">Save</button>
+        <button kendoButton class="col-sm-6" primary="true" [disabled]="!accountForm.valid || isDisabled || !isValidZipcode">Save</button>
     </div>
   </form>
 </kendo-dialog>

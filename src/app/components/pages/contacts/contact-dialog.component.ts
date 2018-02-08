@@ -25,8 +25,15 @@ export class ContactDialogComponent {
   protected socialNetwork: any;
   protected accountList: any;
   protected isShowGrid: boolean;
-  protected isFormValid: boolean;
   protected departmentList: any = [];
+  protected isValidEmail: boolean = true;
+  protected isValidPhone: boolean = true;
+  protected isValidFax: boolean = true;
+  protected isValidMobile: boolean = true;
+  protected isValidZipcode: boolean = true;
+  protected countryNames: string[];
+  protected statesNames: string[];
+  protected isDisabled: boolean;
 
 	public constructor(
 		private contactService: ContactService,
@@ -38,6 +45,9 @@ export class ContactDialogComponent {
   }
 
   async ngOnInit() {
+    this.countryNames = this.getCountryNameList();
+    this.statesNames = this.getStatesList();
+
     this.address = new Address();
     this.socialNetwork = new SocialNetwork();
 
@@ -67,6 +77,7 @@ export class ContactDialogComponent {
   }
 
   protected async onFormSubmit(contactForm: any) {
+    this.isDisabled = true;
     if(this.contact.address_id){
       this.address.id = this.contact.address_id;
     }else {
@@ -86,6 +97,7 @@ export class ContactDialogComponent {
     this.contactService.save(this.contact).subscribe(
       res => {
         this.save.emit(res);
+        this.isDisabled = false;
       }
     )
   }
@@ -99,17 +111,46 @@ export class ContactDialogComponent {
   }
 
   protected changeZipcode(e) {
-    if (e.length < 5) return;
-    const location = this.zipcodeLookup(e.substr(0, 5));
+    if(e.length === 0){
+      this.isValidZipcode = true;
+      return;
+    }else if (0 < e.length && e.length < 5){
+      if(this.address.country === 'United States')
+        this.isValidZipcode = false;
+      else
+        this.isValidZipcode = true;
+
+      return;
+    }
+
+    const location = this.zipcodeLookup(e);
     if (location) {
+      this.address.country = 'United States';
       this.address.city = location.city;
       this.address.state = location.state;
+      this.isValidZipcode = true;
+    } else {
+      if(this.address.country === 'United States'){
+        this.isValidZipcode = false;
+      }else {
+        this.address.city = '';
+        this.address.state = '';
+        this.isValidZipcode = true;
+      }
     }
   }
 
   protected countryChange(e) {
-    if (e == 'United States') this.address.state = 'AL';
-    else this.address.state = '';
+    if (e == 'United States') {
+      this.address.state = 'AL';
+      this.address.city = '';
+      this.address.zip = '';
+    } else{
+      this.address.state = '';
+      this.address.city = '';
+      this.address.zip = '';
+      this.isValidZipcode = true;
+    }
   }
 
   protected zipcodeLookup(code) {
@@ -132,19 +173,43 @@ export class ContactDialogComponent {
     if (type === 'email') {
       let emailValidation =  ValidationService.emailValidator({value: this.contact.email});
       if(emailValidation){
-        this.isFormValid = false;
+        this.isValidEmail = false;
         return 'Invalid Email Address.';
       } else{
-        this.isFormValid = true;
+        this.isValidEmail = true;
         return '';
       }
     }else if (type === 'phone') {
       let phoneValidation =  ValidationService.phoneValidator({value: this.contact.phone});
       if(phoneValidation){
-        this.isFormValid = false;
+        this.isValidPhone = false;
         return 'Invalid Phone Number.';
       } else{
-        this.isFormValid = true;
+        this.isValidPhone = true;
+        return '';
+      }
+    }else if (type === 'fax') {
+      let faxValidation =  ValidationService.phoneValidator({value: this.contact.fax});
+      if(faxValidation){
+        this.isValidFax = false;
+        return 'Invalid Fax.';
+      } else{
+        this.isValidFax = true;
+        return '';
+      }
+    }else if (type === 'mobile') {
+      let mobileValidation =  ValidationService.phoneValidator({value: this.contact.mobile});
+      if(mobileValidation){
+        this.isValidMobile = false;
+        return 'Invalid Mobile.';
+      } else{
+        this.isValidMobile = true;
+        return '';
+      }
+    }else if (type === 'zipcode') {
+      if(!this.isValidZipcode){
+        return 'Invalid Zipcode.';
+      } else{
         return '';
       }
     }

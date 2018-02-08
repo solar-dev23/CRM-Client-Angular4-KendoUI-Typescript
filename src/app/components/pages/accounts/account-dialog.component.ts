@@ -45,6 +45,10 @@ export class AccountDialogComponent {
       defaultTitle: 'Select',
       allSelected: 'All selected',
   };
+  protected isValidZipcode: boolean = true;
+  protected countryNames: string[];
+  protected statesNames: string[];
+  protected isDisabled: boolean;
 
 	public constructor(
 		private contactService: ContactService,
@@ -55,6 +59,9 @@ export class AccountDialogComponent {
   }
 
   async ngOnInit() {
+    this.countryNames = this.getCountryNameList();
+    this.statesNames = this.getStatesList();
+
     this.address = new Address();
     this.socialNetwork = new SocialNetwork();
 
@@ -87,8 +94,6 @@ export class AccountDialogComponent {
     }else {
       this.account.account_type = null;
     }
-console.log(this.account.account_type);    
-
     this.isShowGrid = true;
   }
 
@@ -106,6 +111,7 @@ console.log(this.account.account_type);
   }
 
   protected async onFormSubmit(accountForm: any) {
+    this.isDisabled = true;
     if(this.account.physical_address_id){
       this.address.id = this.account.physical_address_id;
     }else {
@@ -131,6 +137,7 @@ console.log(this.account.account_type);
     this.accountService.save(this.account).subscribe(
       res => {
         this.save.emit(res);
+        this.isDisabled = false;
       }
     )
   }
@@ -144,17 +151,46 @@ console.log(this.account.account_type);
   }
 
   protected changeZipcode(e) {
-    if (e.length < 5) return;
-    const location = this.zipcodeLookup(e.substr(0, 5));
+    if(e.length === 0){
+      this.isValidZipcode = true;
+      return;
+    }else if (0 < e.length && e.length < 5){
+      if(this.address.country === 'United States')
+        this.isValidZipcode = false;
+      else
+        this.isValidZipcode = true;
+
+      return;
+    }
+
+    const location = this.zipcodeLookup(e);
     if (location) {
+      this.address.country = 'United States';
       this.address.city = location.city;
       this.address.state = location.state;
+      this.isValidZipcode = true;
+    } else {
+      if(this.address.country === 'United States'){
+        this.isValidZipcode = false;
+      }else {
+        this.address.city = '';
+        this.address.state = '';
+        this.isValidZipcode = true;
+      }
     }
   }
 
   protected countryChange(e) {
-    if (e == 'United States') this.address.state = 'AL';
-    else this.address.state = '';
+    if (e == 'United States') {
+      this.address.state = 'AL';
+      this.address.city = '';
+      this.address.zip = '';
+    } else{
+      this.address.state = '';
+      this.address.city = '';
+      this.address.zip = '';
+      this.isValidZipcode = true;
+    }
   }
 
   protected zipcodeLookup(code) {
@@ -171,5 +207,15 @@ console.log(this.account.account_type);
 
   protected updateDisplayName(): void {
     this.account.displayName = this.account.companyName;
+  }
+
+  protected getErrorMessage(type: string): string {
+    if (type === 'zipcode') {
+      if(!this.isValidZipcode){
+        return 'Invalid Zipcode.';
+      } else{
+        return '';
+      }
+    }
   }
 }

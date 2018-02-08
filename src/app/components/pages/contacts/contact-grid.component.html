@@ -1,4 +1,4 @@
-<object-grid [grid]="grid" [dataSource]="contactService" [customData]="customData" (create)="create($event)" (edit)="edit($event)"></object-grid>
+<object-grid [grid]="grid" [dataSource]="contactService" [customData]="customData" (create)="create($event)" (edit)="edit($event)" [removeConfirmation]="'Are you sure you want to delete this contact?'"></object-grid>
 <!-- <edit-object-dialog [objectFormGroup]="formGroup" [objectGrid]="gridComponent" [dialogGridData]="dialogGridData" [width]="550" (edit)="edit($event)">
     <form *ngIf="formGroup" class="ma-form ma-not-collapsible-labels" novalidate [formGroup]="formGroup">
         <editor-field [fieldName]="'firstName'" [formGroup]="formGroup"></editor-field>

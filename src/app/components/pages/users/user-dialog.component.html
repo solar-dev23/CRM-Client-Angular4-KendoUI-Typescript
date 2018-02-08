@@ -90,6 +90,7 @@
         <label class="k-form-field">
           <span>User Name</span>
           <input class="k-textbox" name="username" [(ngModel)]="user.username" #username="ngModel" autocomplete="off" />
+          <error-label [error]="getErrorMessage('username')"></error-label>
         </label>
       </div>
       <div class="col-md-6">
@@ -150,7 +151,7 @@
     </div>
     <div class="buttons col-sm-12">
       <button type="button" kendoButton class="col-sm-6" (click)="onCloseDialog()">Cancel</button>
-      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || !isFormValid" primary="true">Save</button>
+      <button kendoButton class="col-sm-6" [disabled]="!userForm.valid || isDisabled || !isValidZipcode || !isValidEmail || !isValidPhone || !isValidPassword || !isValidUsername" primary="true">Save</button>
     </div>
   </form>
 </kendo-dialog>

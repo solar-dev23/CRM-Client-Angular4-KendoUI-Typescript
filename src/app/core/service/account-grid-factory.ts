@@ -50,7 +50,7 @@ export class AccountGridFactory {
 
   public static ANNUAL_REVENUE_FIELD_TEMPLATE: FieldTemplate = {
     name: "annual_revenue",
-    type: FIELD_TYPE.text,
+    type: FIELD_TYPE.integer,
     title: "Annual Revenue"
   };
 

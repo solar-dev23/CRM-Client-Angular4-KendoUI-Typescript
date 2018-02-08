@@ -6,7 +6,7 @@ export class Account {
   prefered_payment_method: string = '';
   prefered_delivery_method: string = '';
   terms: string = '';
-  annual_revenue: string = '';
+  annual_revenue: number = 0;
   lead_source: string = '';
   notes: string = '';
   physical_address_id: string = '';

@@ -30,8 +30,7 @@
               [valueField]="'id'"
               [valuePrimitive]="true"
               name="department"
-              [(ngModel)]="contact.department_id"
-              required
+              [(ngModel)]="contact.department_id"              
               #department="ngModel">
           </kendo-dropdownlist>          
         </label>
@@ -64,12 +63,14 @@
         <label class="k-form-field">
           <span>Fax</span>
           <input class="k-textbox" name="fax" [(ngModel)]="contact.fax" #fax="ngModel">
+          <error-label [error]="getErrorMessage('fax')"></error-label>
         </label>
       </div>
       <div class="k-form-field col-sm-6">
         <label class="k-form-field">
           <span>Mobile</span>
           <input class="k-textbox" name="mobile" [(ngModel)]="contact.mobile" #mobile="ngModel">
+          <error-label [error]="getErrorMessage('mobile')"></error-label>
         </label>
       </div>
     </div>
@@ -142,6 +143,7 @@
             <label class="k-form-field col-sm-6">
               <span>Zip</span>
               <input class="k-textbox" name="zip" [(ngModel)]="address.zip" #zip="ngModel" (input)="changeZipcode($event.target.value)" />
+              <error-label [error]="getErrorMessage('zipcode')"></error-label>
             </label>
             <label class="k-form-field col-sm-6">
               <span>Country</span>
@@ -156,7 +158,7 @@
 
     <div class="buttons col-sm-12">
         <button type="button" kendoButton class="col-sm-6" (click)="onClose()">Cancel</button>
-        <button kendoButton class="col-sm-6" primary="true" [disabled]="!contactForm.valid || !isFormValid">Save</button>
+        <button kendoButton class="col-sm-6" primary="true" [disabled]="!contactForm.valid || isDisabled || !isValidEmail || !isValidPhone || !isValidFax || !isValidMobile || !isValidZipcode">Save</button>
     </div>
   </form>
 </kendo-dialog>

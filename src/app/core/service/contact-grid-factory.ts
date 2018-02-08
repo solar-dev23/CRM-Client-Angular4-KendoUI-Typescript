@@ -51,8 +51,14 @@ export class ContactGridFactory {
 
   public static PHONE_FIELD_TEMPLATE: FieldTemplate = {
     name: "phone",
-    type: FIELD_TYPE.text,
-    title: "Phone"
+    type: FIELD_TYPE.phone,
+    title: "Phone",
+    validators: [
+      {
+        type: VALIDATOR_TYPE.phone_number_format,
+        errorMessage: ERROR_MESSAGES.phone_number_format
+      }
+    ]
   };
 
   public static EXTENSION_FIELD_TEMPLATE: FieldTemplate = {
@@ -64,13 +70,25 @@ export class ContactGridFactory {
   public static FAX_FIELD_TEMPLATE: FieldTemplate = {
     name: "fax",
     type: FIELD_TYPE.text,
-    title: "Fax"
+    title: "Fax",
+    validators: [
+      {
+        type: VALIDATOR_TYPE.phone_number_format,
+        errorMessage: ERROR_MESSAGES.phone_number_format
+      }
+    ]
   };
 
   public static MOBILE_FIELD_TEMPLATE: FieldTemplate = {
     name: "mobile",
     type: FIELD_TYPE.text,
-    title: "Mobile"
+    title: "Mobile",
+    validators: [
+      {
+        type: VALIDATOR_TYPE.phone_number_format,
+        errorMessage: ERROR_MESSAGES.phone_number_format
+      }
+    ]
   };
 
   public static CONTACT_GRID_TEMPLATE: GridTemplate = {

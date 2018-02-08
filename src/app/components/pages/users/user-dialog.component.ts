@@ -22,7 +22,7 @@ export class UserDialogComponent implements OnInit {
 	protected base64Image: string;
   protected image: string;
   protected cropperVisible: boolean;
-  protected isFormValid: boolean;
+  protected isDisabled: boolean;
 	protected isShowAlertDlg: boolean;
 	protected alert_message: string;
   protected countryNames: string[];
@@ -30,6 +30,11 @@ export class UserDialogComponent implements OnInit {
   protected isUpdateImage: boolean;
   protected roles: any[];
   protected isValidZipcode: boolean = true;
+  protected isValidEmail: boolean = true;
+  protected isValidUsername: boolean = true;
+  protected isValidPhone: boolean = true;
+  protected isValidPassword: boolean = true;
+  protected isValidConfirmPassword: boolean = true;
 
 	constructor(private userService: UserService, private addressService: AddressService, private roleService: RoleService) {
 	}
@@ -66,18 +71,12 @@ export class UserDialogComponent implements OnInit {
     }
 
     this.roles = await this.roleService.read().toPromise();
-console.log("ROLES:", this.roles);
     if(this.user.roles){
-console.log("USER ROLES:", this.user.roles);
       this.user.role = this.roles.find(role => role.id === this.user.roles[0].id);
     }else {
       this.user.roles = [];
       this.user.role = this.roles[1];
     }
-console.log("USER ROLE:", this.user.role);
-console.log("USER Name", this.user.username);
-console.log("USER Password", this.user.password);
-console.log("USER OBJECT", this.user);
 	}
 
 	//Image upload
@@ -108,7 +107,7 @@ console.log("USER OBJECT", this.user);
   }
 
   protected async onFormSubmit(userForm: any) {
-    this.isFormValid = false;
+    this.isDisabled = true;
     if(this.user.address_id){
       this.user.address.id = this.user.address_id;
     }
@@ -126,7 +125,7 @@ console.log("USER OBJECT", this.user);
   	this.userService.save(this.user).subscribe(
   		res => {
   			this.save.emit(res);
-        this.isFormValid = true;
+        this.isDisabled = false;
   		}, err => {
         // if(JSON.parse(err._body).type === "unique violation" || JSON.parse(err).type === "unique violation"){
         //   this.alert_message = "User name or email already exists.";
@@ -147,49 +146,56 @@ console.log("USER OBJECT", this.user);
   	if (type === 'email') {
 	  	let emailValidation =  ValidationService.emailValidator({value: this.user.email});
 	  	if(emailValidation){
-	  		this.isFormValid = false;
+	  		this.isValidEmail = false;
 	  		return 'Invalid Email Address.';
 	  	} else{
-	  		this.isFormValid = true;
+	  		this.isValidEmail = true;
 	  		return '';
 	  	}
-  	} else if (type === 'password'){
-  		if (this.user.password) {
+  	} else if (type === 'username') {
+      let usernameValidation =  ValidationService.usernameValidator({value: this.user.username});
+      if(usernameValidation){
+        this.isValidUsername = false;
+        return 'User name should contain minimum 4 chars.';
+      } else{
+        this.isValidUsername = true;
+        return '';
+      }
+    } else if (type === 'password'){
+  		if (this.user.password && this.user.password.length > 0) {
 	  		let passwordValidation =  ValidationService.passwordValidator({value: this.user.password});
 	  		if(passwordValidation){
-		  		this.isFormValid = false;
+		  		this.isValidPassword = false;
 		  		return passwordValidation;
 		  	} else{
-		  		this.isFormValid = true;
+		  		this.isValidPassword = true;
 		  		return '';
 		  	}
   		}else {
-  			this.isFormValid = true;
+  			this.isValidPassword = true;
   			return '';
   		}
   	} else if (type === 'confirmPassword'){
   		if(this.user.password !== this.user.confirm_password) {
-  			this.isFormValid = false;
+  			this.isValidConfirmPassword = false;
   			return 'Does not match password.';
   		} else {
-  			this.isFormValid = true;
+  			this.isValidConfirmPassword = true;
   			return '';
   		}
   	}else if (type === 'phone') {
       let phoneValidation =  ValidationService.phoneValidator({value: this.user.phone});
       if(phoneValidation){
-        this.isFormValid = false;
+        this.isValidPhone = false;
         return 'Invalid Phone Number.';
       } else{
-        this.isFormValid = true;
+        this.isValidPhone = true;
         return '';
       }
     }else if (type === 'zipcode') {
       if(!this.isValidZipcode){
-        this.isFormValid = false;
         return 'Invalid Zipcode.';
       } else{
-        this.isFormValid = true;
         return '';
       }
     }

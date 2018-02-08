@@ -527,9 +527,14 @@ export class OpportunityComponent implements OnInit {
     let that = this;
     this.grid_opportunities = this.opportunities;
 
-    if(this.filter != '0'){
+    let archivedStatus = this.statusList.find(status => status.name === 'Archived');
+    if(this.filter === archivedStatus.id) {
       this.grid_opportunities = _.filter(that.grid_opportunities, function(obj) {
-        return (obj.status_id && obj.status_id == that.filter);
+        return !obj.is_active;
+      });
+    }else if(this.filter != '0'){
+      this.grid_opportunities = _.filter(that.grid_opportunities, function(obj) {
+        return (obj.status_id && obj.status_id == that.filter && obj.is_active);
       });
     }
 
