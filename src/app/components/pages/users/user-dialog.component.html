@@ -89,13 +89,13 @@
       <div class="col-md-6">
         <label class="k-form-field">
           <span>User Name</span>
-          <input class="k-textbox" name="username" [(ngModel)]="user.username" #username="ngModel" />
+          <input class="k-textbox" name="username" [(ngModel)]="user.username" #username="ngModel" autocomplete="off" />
         </label>
       </div>
       <div class="col-md-6">
         <label class="k-form-field">
           <span>Password</span>
-          <input type="password" class="k-textbox" name="password" [(ngModel)]="user.password" #password="ngModel" />
+          <input type="password" class="k-textbox" name="password" [(ngModel)]="user.password" #password="ngModel" autocomplete="off" />
           <error-label [error]="getErrorMessage('password')"></error-label>
         </label>
       </div>
