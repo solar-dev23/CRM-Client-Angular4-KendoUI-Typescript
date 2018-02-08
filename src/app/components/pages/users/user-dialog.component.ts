@@ -66,12 +66,18 @@ export class UserDialogComponent implements OnInit {
     }
 
     this.roles = await this.roleService.read().toPromise();
+console.log("ROLES:", this.roles);
     if(this.user.roles){
+console.log("USER ROLES:", this.user.roles);
       this.user.role = this.roles.find(role => role.id === this.user.roles[0].id);
     }else {
       this.user.roles = [];
       this.user.role = this.roles[1];
     }
+console.log("USER ROLE:", this.user.role);
+console.log("USER Name", this.user.username);
+console.log("USER Password", this.user.password);
+console.log("USER OBJECT", this.user);
 	}
 
 	//Image upload
