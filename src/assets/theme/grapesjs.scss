@@ -1,0 +1,29 @@
+#gjs-rte-toolbar,
+.gjs-bg-main,
+.gjs-clm-select option,
+.gjs-clm-tags .gjs-sm-colorp-c,
+.gjs-editor,
+.gjs-mdl-dialog,
+.gjs-nv-item .gjs-nv-title-c,
+.gjs-off-prv,
+.gjs-pn-panel,
+.gjs-block,
+.gjs-select option,
+.gjs-sm-sector .gjs-sm-colorp-c,
+.gjs-sm-select option,
+.gjs-sm-unit option,
+.sp-container {
+  background-color: $secondary;
+}
+
+.gjs-btnt.gjs-pn-active,
+.gjs-color-active,
+.gjs-pn-btn.gjs-pn-active,
+.gjs-pn-btn:active,
+.gjs-block:hover {
+    color: $primary;
+}
+
+#gjs-pn-views .gjs-pn-active {
+    border-bottom: 2px solid $primary;
+}

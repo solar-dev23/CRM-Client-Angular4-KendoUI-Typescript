@@ -2,7 +2,13 @@
 
   <!-- Sidebar -->
   <div id="sidebar-wrapper" #sidebar [style.width.px]="width">
-    <img src="~assets/img/logo.jpg" class="navbar-brand" [ngStyle]="logoStyle" />
+    <div class="logo">
+      <div class="icon">
+        <img class="inject-me" src="~assets/icons/pie-chart.svg">
+      </div>
+      <span>TESTCRM</span>
+    </div>
+    <!-- <img src="~assets/img/logo.jpg" class="navbar-brand" [ngStyle]="logoStyle" /> -->
     <ul class="sidebar-nav pt-4">
       <li>
         <a routerLink="/dashboard">

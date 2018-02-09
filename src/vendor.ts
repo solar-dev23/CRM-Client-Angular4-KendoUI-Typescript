@@ -9,3 +9,5 @@ import 'jquery';
 // RxJS
 import "rxjs";
 import "rxjs/Rx";
+
+// import "./assets/js/svg-injector.min.js";

@@ -1,6 +1,9 @@
 import { Component, OnInit, HostListener, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { LoginService, UserService, EventEmitterService } from "../../../core";
 
+declare var $: any;
+declare var SVGInjector: any;
+
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -49,6 +52,9 @@ export class MenuComponent implements OnInit {
       }
       this._eventEmitter.menuChange('collapsed');
     }
+
+    let mySVGsToInject = document.querySelectorAll('img.inject-me');
+    SVGInjector(mySVGsToInject);
   }
 
   protected get hasAdministrationPermission(): boolean {
