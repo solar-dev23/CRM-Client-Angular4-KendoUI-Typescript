@@ -47,7 +47,7 @@
     "b64-to-blob": "^1.2.19",
     "country-list": "^1.1.0",
     "crm-platform": "git+https://crmbitbucket:zKg76TMTSN2GPUT3KRJk@bitbucket.org/mateambitbucket/crm-platform.git#develop",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "hammerjs": "^2.0.8",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
